@@ -1,0 +1,49 @@
+.media-component {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #000; /* Black border */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  /* Ensure it spans the width with margins on both sides */
+  width: calc(100% - 20px); /* Adjust based on your design */
+  max-width: 600px; /* Example: limit width to 600px */
+}
+
+.media-component:hover {
+  background-color: #f0f0f0;
+}
+
+.media-image img {
+  width: 80px; /* Adjust image size as needed */
+  height: 80px; /* Adjust image size as needed */
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.media-details {
+  width: calc(100% - 100px); /* Adjust based on your design */
+  margin-left: 10px; /* Adjust spacing between image and details */
+}
+
+.media-title {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.media-creator,
+.media-rating,
+.media-status {
+  font-size: 0.9rem;
+  margin-bottom: 3px;
+  color: #666;
+}
+
+.media-description {
+  font-size: 0.8rem;
+  color: #888;
+}
