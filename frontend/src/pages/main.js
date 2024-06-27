@@ -1,139 +1,164 @@
 // Imports
 import React, { useState, useEffect } from 'react'; 
 import styles from './main.module.css'; 
-import MediaComponent from '../components/mediaobject';
-import '../components/mediaobject.module.css'
-import axios from 'axios'
-
-//Dummy data
-// const dummyMediaData = [
-//   {
-//     id: 1,
-//     image: 'https://via.placeholder.com/150',
-//     title: 'Sample Media 1',
-//     creator: 'Creator 1',
-//     rating: 4.5,
-//     status: 'Available',
-//     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-//   },
-//   {
-//     id: 2,
-//     image: 'https://via.placeholder.com/150',
-//     title: 'Sample Media 2',
-//     creator: 'Creator 2',
-//     rating: 3.8,
-//     status: 'In Progress',
-//     description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-//   },
-//   // Add more dummy data as needed
-// ];
-
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Navbar, Nav, Form, FormControl, Button, Container, Row, Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const MainPage = () => {
+  const CLIENT_ID = "9c9e11af68d84276b6cabc7148ffc82c";
+  const REDIRECT_URI = "http://localhost:3000";
+  const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
+  const RESPONSE_TYPE = "token";
 
-  // Spotify connection info
-  const CLIENT_ID = "9c9e11af68d84276b6cabc7148ffc82c"
-  const REDIRECT_URI = "http://localhost:3000"
-  const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
-  const RESPONSE_TYPE = "token"
-
-  const [token, setToken] = useState("")
-  const [searchKey, setSearchKey] = useState("")
-  const [artists, setArtists] = useState([])
-
-  // const getToken = () => {
-  //     let urlParams = new URLSearchParams(window.location.hash.replace("#","?"));
-  //     let token = urlParams.get('access_token');
-  // }
+  const [token, setToken] = useState("");
+  const [searchKey, setSearchKey] = useState("");
+  const [albums, setAlbums] = useState([]);
 
   useEffect(() => {
-      const hash = window.location.hash
-      let token = window.localStorage.getItem("token")
-
-      // getToken()
-
+      const hash = window.location.hash;
+      let token = window.localStorage.getItem("token");
 
       if (!token && hash) {
-          token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1]
-
-          window.location.hash = ""
-          window.localStorage.setItem("token", token)
+          token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1];
+          window.location.hash = "";
+          window.localStorage.setItem("token", token);
       }
 
-      setToken(token)
-
-  }, [])
+      setToken(token);
+  }, []);
 
   const logout = () => {
-      setToken("")
-      window.localStorage.removeItem("token")
-  }
+      setToken("");
+      window.localStorage.removeItem("token");
+  };
 
-  const searchArtists = async (e) => {
-      e.preventDefault()
-      const {data} = await axios.get("https://api.spotify.com/v1/search", {
+  const searchAlbums = async (e) => {
+      e.preventDefault();
+      const { data } = await axios.get("https://api.spotify.com/v1/search", {
           headers: {
               Authorization: `Bearer ${token}`
           },
           params: {
               q: searchKey,
-              type: "artist"
+              type: "album"
           }
-      })
+      });
 
-      setArtists(data.artists.items)
-  }
-
-  const renderArtists = () => {
-      return artists.map(artist => (
-          <div key={artist.id}>
-              {artist.images.length ? <img width={"25%"} src={artist.images[0].url} alt=""/> : <div>No Image</div>}
-              {artist.name}
-          </div>
-      ))
-  }
+      setAlbums(data.albums.items);
+  };
 
   return (
-    <div className={styles.mainPage}>
-
-      {/* Toolbar */}
-      <header className={styles.toolbar}>
-        <div className={styles.logo}>MyMediaApp</div>
-        <div className={styles.searchBar}>
-          <input
-            type="text"
-            placeholder="Search for media..."
-            className={styles.searchInput}
-          />
-          <button className={styles.searchButton}>Search</button>
-        </div>
-        <nav className={styles.navButtons}>
-          <button className={styles.navButton}>Profile</button>
-          <button className={styles.navButton}>Lists</button>
-         
-        </nav>
-      </header>
-      <div>
-        {!token ?
-            <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
-                to Spotify</a>
-            : <button onClick={logout}>Logout</button>}
-
-        {token ?
-            <form onSubmit={searchArtists}>
-                <input type="text" onChange={e => setSearchKey(e.target.value)}/>
-                <button type={"submit"}>Search</button>
-            </form>
-
-            : <h2>Please login</h2>
-        }
-
-        {renderArtists()}
-      </div>
-    </div>
+    <>
+      <Navbar bg="dark" variant="dark" expand="lg">
+        <Container>
+          <Navbar.Brand as={Link} to="/">Whimsy</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
+              <Nav.Link href="#">Lists</Nav.Link>
+            </Nav>
+            <Form className="d-flex" onSubmit={searchAlbums}>
+              <FormControl
+                type="search"
+                placeholder="Search for media..."
+                className="me-2"
+                aria-label="Search"
+                onChange={(e) => setSearchKey(e.target.value)}
+              />
+              <Button variant="outline-success" type="submit">Search</Button>
+            </Form>
+            {token ? (
+              <Button variant="outline-danger" onClick={logout}>Logout</Button>
+            ) : (
+              <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`} className="btn btn-outline-light ml-2">Login to Spotify</a>
+            )}
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <MainPageContent albums={albums} />
+    </>
   );
-}
+};
+
+const MainPageContent = ({ albums }) => {
+  return (
+    <Container>
+      <Row className="mx-2 row row-cols-4">
+        {albums.map((album) => (
+          <Card key={album.id}>
+            <Card.Img src={album.images[0].url} />
+            <Card.Body>
+              <Card.Title>{album.name}</Card.Title>
+            </Card.Body>
+          </Card>
+        ))}
+      </Row>
+    </Container>
+  );
+};
 
 export default MainPage;
+
+
+
+
+
+
+//     // Nav bar 
+//     <div className={styles.mainPage}>
+//       <div className={styles.mainPage}>
+//       <Navbar bg="dark" variant="dark" expand="lg">
+//         <Container>
+//           <Navbar.Brand href="#">Whimsy</Navbar.Brand>
+//           <Navbar.Toggle aria-controls="basic-navbar-nav" />
+//           <Navbar.Collapse id="basic-navbar-nav">
+//             <Nav className="me-auto">
+//               <Nav.Link href="#">Profile</Nav.Link>
+//               <Nav.Link href="#">Lists</Nav.Link>
+//             </Nav>
+//             <Form className="d-flex" onSubmit={searchAlbums}>
+//               <FormControl
+//                 type="search"
+//                 placeholder="Search for media..."
+//                 className="me-2"
+//                 aria-label="Search"
+//                 onChange={(e) => setSearchKey(e.target.value)}
+//               />
+//               <Button variant="outline-success" type="submit">Search</Button>
+//             </Form>
+//             {token ? (
+//               <Button variant="outline-danger" onClick={logout}>Logout</Button>
+//             ) : (
+//               <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`} className="btn btn-outline-light ml-2">Login to Spotify</a>
+//             )}
+//           </Navbar.Collapse>
+//         </Container>
+//       </Navbar>
+
+//       {/* Display Search Results */}
+//       <Container>
+//         <Row className = "mx-2 row row-cols-4">
+//           {albums.map( (album, i) => {
+//             return(
+//               <Card>
+//                 <Card.Img src={album.images[0].url}/>
+//                 <Card.Body>
+//                   <Card.Title> {album.name} </Card.Title>
+//                 </Card.Body>
+//               </Card>
+//             )
+//           })}
+//         </Row>
+//       </Container>
+
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default MainPage;
 
 
