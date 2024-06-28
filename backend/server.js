@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -13,7 +13,7 @@ app.use(express.json());
 
 // Route to handle Spotify authentication
 app.get('/auth/spotify', (req, res) => {
-  const authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&scope=user-read-private`;
+  const authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=user-read-private`;
   res.redirect(authUrl);
 });
 
@@ -40,10 +40,10 @@ app.post('/auth/spotify/callback', async (req, res) => {
 });
 
 // Test route
-app.get("/api", (req, res) =>{
-  res.json({"users": ["userOne", "userTwo", "userThree"] })
+app.get("/api", (req, res) => {
+  res.json({ "users": ["userOne", "userTwo", "userThree"] });
 });
 
-app.listen(PORT, () => { 
+app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
