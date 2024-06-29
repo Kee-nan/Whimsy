@@ -4,31 +4,33 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, FormControl, Button, Container, Row, Card } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 
-const Movies = () => {
+const Shows = () => {
   const [searchKey, setSearchKey] = useState("");
-  const [movies, setMovies] = useState([]);
+  const [shows, setShows] = useState([]);
 
-  // Function to search movies using the OMDb API
-  const searchMovies = async (e) => {
+  // Function to search shows using the TVMaze API
+  const searchShows = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
     try {
-      const response = await axios.get(`http://www.omdbapi.com/?s=${searchKey}&apikey=7a51cf18`);
+      const response = await axios.get('https://api.tvmaze.com/search/shows', {
+        params: { q: searchKey } // Use the search key as a query parameter
+      });
       const responseJson = response.data;
 
-      if (responseJson.Search) {
-        setMovies(responseJson.Search); // Update the state with the search results
+      if (responseJson) {
+        setShows(responseJson); // Update the state with the search results
       } else {
-        setMovies([]); // Clear the movies if no results are found
+        setShows([]); // Clear the shows if no results are found
       }
     } catch (error) {
-      console.error("Error fetching movies:", error);
-      setMovies([]); // Clear the movies in case of an error
+      console.error("Error fetching shows:", error);
+      setShows([]); // Clear the shows in case of an error
     }
   };
 
-  // Function to clear the list of movies
-  const clearMovies = () => {
-    setMovies([]);
+  // Function to clear the list of shows
+  const clearShows = () => {
+    setShows([]);
   };
 
   return (
@@ -37,10 +39,10 @@ const Movies = () => {
 
       <div className="search-bar-container bg-light py-3">
         <Container>
-          <Form className="d-flex" onSubmit={searchMovies}>
+          <Form className="d-flex" onSubmit={searchShows}>
             <FormControl
               type="search"
-              placeholder="Search for Movies..."
+              placeholder="Search for Shows..."
               className="form-control-lg"
               aria-label="Search"
               value={searchKey}
@@ -49,7 +51,7 @@ const Movies = () => {
             <Button variant="outline-success" type="submit" className="ms-2">
               Search
             </Button>
-            <Button variant="outline-danger" onClick={clearMovies} className="ms-2">
+            <Button variant="outline-danger" onClick={clearShows} className="ms-2">
               Clear
             </Button>
           </Form>
@@ -58,11 +60,11 @@ const Movies = () => {
 
       <Container className="mt-5">
         <Row className="mx-2 row row-cols-4">
-          {movies.map((movie) => (
-            <Card key={movie.imdbID}>
-              <Card.Img src={movie.Poster} alt={movie.Title} />
+          {shows.map((item) => (
+            <Card key={item.show.id}>
+              <Card.Img src={item.show.image ? item.show.image.medium : 'https://via.placeholder.com/210x295'} alt={item.show.name} />
               <Card.Body>
-                <Card.Title>{movie.Title}</Card.Title>
+                <Card.Title>{item.show.name}</Card.Title>
               </Card.Body>
             </Card>
           ))}
@@ -72,4 +74,4 @@ const Movies = () => {
   );
 };
 
-export default Movies;
+export default Shows;
