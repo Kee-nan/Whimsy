@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Button, Navbar, Nav, Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Container, Button, Card } from 'react-bootstrap';
+import AppNavbar from '../components/Navbar';
 
 const Profile = () => {
   const [spotifyToken, setSpotifyToken] = useState('');
@@ -34,17 +34,7 @@ const Profile = () => {
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" expand="lg">
-        <Container>
-          <Navbar.Brand as={Link} to="/">Whimsy</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      <AppNavbar />
 
       <Container>
         <h1>Profile Page</h1>

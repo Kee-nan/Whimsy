@@ -1,8 +1,8 @@
 import React, { useState } from 'react'; 
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar, Nav, Form, FormControl, Button, Container, Row, Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Form, FormControl, Button, Container, Row, Card } from 'react-bootstrap';
+import AppNavbar from '../components/Navbar';
 
 const MainPage = () => {
   const [searchKey, setSearchKey] = useState("");
@@ -33,14 +33,7 @@ const MainPage = () => {
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" expand="lg">
-        <Container>
-          <Navbar.Brand as={Link} to="/">Whimsy</Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
-          </Nav>
-        </Container>
-      </Navbar>
+      <AppNavbar />
 
       <div className="search-bar-container bg-light py-3">
         <Container>
