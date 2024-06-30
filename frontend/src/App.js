@@ -8,6 +8,7 @@ import Anime from './pages/anime';
 import Manga from './pages/manga';
 import Albums from './pages/albums';
 import Shows from './pages/shows';
+import Books from './pages/books';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/manga" element={<Manga />} />
         <Route path="/albums" element={<Albums />} />
         <Route path="/shows" element={<Shows />} />
+        <Route path="/books" element={<Books />} />
       </Routes>
     </Router>
   );

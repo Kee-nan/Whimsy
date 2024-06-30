@@ -1,8 +1,10 @@
 import React, { useState } from 'react'; 
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, FormControl, Button, Container, Row, Card } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
+import SearchBar from '../components/SearchBar';
+import GridCard from '../components/GridCard';
+import { Card } from 'react-bootstrap';
 
 const Albums = () => {
   const [searchKey, setSearchKey] = useState("");
@@ -31,45 +33,32 @@ const Albums = () => {
     setAlbums([]);
   };
 
+  const renderAlbumCard = (album) => (
+    <>
+      <Card.Img src={album.images[0].url} />
+      <Card.Body>
+        <Card.Title>{album.name}</Card.Title>
+      </Card.Body>
+    </>
+  );
+
   return (
     <>
       <AppNavbar />
-
-      <div className="search-bar-container bg-light py-3">
-        <Container>
-          <Form className="d-flex" onSubmit={searchAlbums}>
-            <FormControl
-              type="search"
-              placeholder="Search for Albums..."
-              className="form-control-lg"
-              aria-label="Search"
-              value={searchKey}
-              onChange={(e) => setSearchKey(e.target.value)}
-            />
-            <Button variant="outline-success" type="submit" className="ms-2">
-              Search
-            </Button>
-            <Button variant="outline-danger" onClick={clearAlbums} className="ms-2">
-              Clear
-            </Button>
-          </Form>
-        </Container>
-      </div>
-
-      <Container className="mt-5">
-        <Row className="mx-2 row row-cols-4">
-          {albums.map((album) => (
-            <Card key={album.id}>
-              <Card.Img src={album.images[0].url} />
-              <Card.Body>
-                <Card.Title>{album.name}</Card.Title>
-              </Card.Body>
-            </Card>
-          ))}
-        </Row>
-      </Container>
+      <SearchBar
+        placeholder="Search for Albums..."
+        searchFunction={searchAlbums}
+        clearFunction={clearAlbums}
+        searchKey={searchKey}
+        setSearchKey={setSearchKey}
+      />
+      <GridCard
+        items={albums}
+        renderItem={renderAlbumCard}
+      />
     </>
   );
 };
 
 export default Albums;
+

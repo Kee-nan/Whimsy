@@ -1,8 +1,10 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, FormControl, Button, Container, Row, Card } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
+import SearchBar from '../components/SearchBar';
+import GridCard from '../components/GridCard';
+import { Card } from 'react-bootstrap';
 
 const Manga = () => {
   const [searchKey, setSearchKey] = useState("");
@@ -28,48 +30,35 @@ const Manga = () => {
     }
   };
 
-  // Function to clear the list of anime
+  // Function to clear the list of manga
   const clearManga = () => {
     setManga([]);
   };
 
+  // Render function for each manga item
+  const renderMangaCard = (item) => (
+    <>
+      <Card.Img src={item.images.jpg.image_url} alt={item.title} />
+      <Card.Body>
+        <Card.Title>{item.title}</Card.Title>
+      </Card.Body>
+    </>
+  );
+
   return (
     <>
       <AppNavbar />
-
-      <div className="search-bar-container bg-light py-3">
-        <Container>
-          <Form className="d-flex" onSubmit={searchManga}>
-            <FormControl
-              type="search"
-              placeholder="Search for Manga..."
-              className="form-control-lg"
-              aria-label="Search"
-              value={searchKey}
-              onChange={(e) => setSearchKey(e.target.value)}
-            />
-            <Button variant="outline-success" type="submit" className="ms-2">
-              Search
-            </Button>
-            <Button variant="outline-danger" onClick={clearManga} className="ms-2">
-              Clear
-            </Button>
-          </Form>
-        </Container>
-      </div>
-
-      <Container className="mt-5">
-        <Row className="mx-2 row row-cols-4">
-          {manga.map((item) => (
-            <Card key={item.mal_id}>
-              <Card.Img src={item.images.jpg.image_url} alt={item.title} />
-              <Card.Body>
-                <Card.Title>{item.title}</Card.Title>
-              </Card.Body>
-            </Card>
-          ))}
-        </Row>
-      </Container>
+      <SearchBar
+        placeholder="Search for Manga..."
+        searchFunction={searchManga}
+        clearFunction={clearManga}
+        searchKey={searchKey}
+        setSearchKey={setSearchKey}
+      />
+      <GridCard
+        items={manga}
+        renderItem={renderMangaCard}
+      />
     </>
   );
 };

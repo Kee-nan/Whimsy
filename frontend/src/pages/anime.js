@@ -1,77 +1,58 @@
 import React, { useState } from 'react'; 
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, FormControl, Button, Container, Row, Card } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
+import SearchBar from '../components/SearchBar';
+import GridCard from '../components/GridCard';
+import { Card } from 'react-bootstrap';
 
 const Anime = () => {
   const [searchKey, setSearchKey] = useState("");
   const [anime, setAnime] = useState([]);
 
-  // Function to search anime using the Jikan API
   const searchAnime = async (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
+    e.preventDefault();
     try {
       const response = await axios.get('https://api.jikan.moe/v4/anime', {
-        params: { q: searchKey, sfw: true } // Use the search key as a query parameter
+        params: { q: searchKey, sfw: true }
       });
-      const responseJson = response.data;
-
-      if (responseJson.data) {
-        setAnime(responseJson.data); // Update the state with the search results
-      } else {
-        setAnime([]); // Clear the Anime if no results are found
-      }
+      setAnime(response.data.data || []);
     } catch (error) {
       console.error("Error fetching Anime:", error);
-      setAnime([]); // Clear the Anime in case of an error
+      setAnime([]);
     }
   };
 
-  // Function to clear the list of anime
   const clearAnime = () => {
     setAnime([]);
   };
 
+  const renderAnimeCard = (item) => (
+    <>
+      <Card.Img src={item.images.jpg.image_url} alt={item.title} />
+      <Card.Body>
+        <Card.Title>{item.title}</Card.Title>
+      </Card.Body>
+    </>
+  );
+
   return (
     <>
       <AppNavbar />
-
-      <div className="search-bar-container bg-light py-3">
-        <Container>
-          <Form className="d-flex" onSubmit={searchAnime}>
-            <FormControl
-              type="search"
-              placeholder="Search for Anime..."
-              className="form-control-lg"
-              aria-label="Search"
-              value={searchKey}
-              onChange={(e) => setSearchKey(e.target.value)}
-            />
-            <Button variant="outline-success" type="submit" className="ms-2">
-              Search
-            </Button>
-            <Button variant="outline-danger" onClick={clearAnime} className="ms-2">
-              Clear
-            </Button>
-          </Form>
-        </Container>
-      </div>
-
-      <Container className="mt-5">
-        <Row className="mx-2 row row-cols-4">
-          {anime.map((item) => (
-            <Card key={item.mal_id}>
-              <Card.Img src={item.images.jpg.image_url} alt={item.title} />
-              <Card.Body>
-                <Card.Title>{item.title}</Card.Title>
-              </Card.Body>
-            </Card>
-          ))}
-        </Row>
-      </Container>
+      <SearchBar
+        placeholder="Search for Anime..."
+        searchFunction={searchAnime}
+        clearFunction={clearAnime}
+        searchKey={searchKey}
+        setSearchKey={setSearchKey}
+      />
+      <GridCard
+        items={anime}
+        renderItem={renderAnimeCard}
+      />
     </>
   );
 };
 
 export default Anime;
+
