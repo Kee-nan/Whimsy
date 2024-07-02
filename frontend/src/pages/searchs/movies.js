@@ -1,6 +1,7 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
 import SearchBar from '../../components/SearchBar';
 import GridCard from '../../components/GridCard';
@@ -9,6 +10,7 @@ import { Card } from 'react-bootstrap';
 const Movies = () => {
   const [searchKey, setSearchKey] = useState("");
   const [movies, setMovies] = useState([]);
+  const navigate = useNavigate();
 
   const searchMovies = async (e) => {
     e.preventDefault();
@@ -25,6 +27,10 @@ const Movies = () => {
 
   const clearMovies = () => {
     setMovies([]);
+  };
+
+  const handleCardClick = (id) => {
+    navigate(`/movies/${id}`);
   };
 
   const renderMovieCard = (movie) => (
@@ -49,6 +55,7 @@ const Movies = () => {
       <GridCard
         items={movies}
         renderItem={renderMovieCard}
+        onCardClick={handleCardClick}
       />
     </>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
 import SearchBar from '../../components/SearchBar';
 import GridCard from '../../components/GridCard';
@@ -9,6 +10,7 @@ import { Card } from 'react-bootstrap';
 const Books = () => {
   const [searchKey, setSearchKey] = useState("");
   const [books, setBooks] = useState([]);
+  const navigate = useNavigate();
 
   // Function to search books using the backend API
   const searchBooks = async (e) => {
@@ -35,6 +37,11 @@ const Books = () => {
     setBooks([]);
   };
 
+  // Handle clicking on a book card
+  const handleCardClick = (id) => {
+    navigate(`/books/${id}`);
+  };
+
   // Render function for each book item
   const renderBookCard = (book) => (
     <>
@@ -57,8 +64,9 @@ const Books = () => {
         setSearchKey={setSearchKey}
       />
       <GridCard
-        items={books}
+        items={books.map(book => ({ ...book, id: book.id }))}
         renderItem={renderBookCard}
+        onCardClick={handleCardClick}
       />
     </>
   );

@@ -29,4 +29,21 @@ router.get('/search', async (req, res) => {
   }
 });
 
+// GET /api/books/:id
+router.get('/:id', async (req, res) => {
+  const bookId = req.params.id;
+  const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+
+  try {
+    const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${bookId}`, {
+      params: { key: apiKey }
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching book details:', error);
+    res.status(500).json({ error: 'An error occurred while fetching book details' });
+  }
+});
+
 module.exports = router;

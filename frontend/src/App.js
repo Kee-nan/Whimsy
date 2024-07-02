@@ -18,6 +18,9 @@ import Books from './pages/searchs/books';
 import AnimeDetail from './pages/details/animeDetails';  // Import the new detail page component
 import MangaDetail from './pages/details/mangaDetails'; // Import the MangaDetail component
 import ShowDetail from './pages/details/showDetails';
+import AlbumDetail from './pages/details/albumDetails';
+import BookDetail from './pages/details/bookDetails';
+import MovieDetail from './pages/details/movieDetails';
 
 
 const App = () => {
@@ -37,6 +40,9 @@ const App = () => {
         <Route path="/anime/:id" element={<AnimeDetail />} />  {/* Add route for anime detail */}
         <Route path="/manga/:id" element={<MangaDetail />} /> {/* Add the MangaDetail route */}
         <Route path="/shows/:id" element={<ShowDetail />} />
+        <Route path="/albums/:id" element={<AlbumDetail />} />
+        <Route path="/books/:id" element={<BookDetail />} />
+        <Route path="/movies/:id" element={<MovieDetail />} />
       </Routes>
     </Router>
   );
