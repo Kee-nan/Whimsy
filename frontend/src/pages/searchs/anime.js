@@ -1,14 +1,16 @@
 import React, { useState } from 'react'; 
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import AppNavbar from '../components/Navbar';
-import SearchBar from '../components/SearchBar';
-import GridCard from '../components/GridCard';
+import { useNavigate } from 'react-router-dom';
+import AppNavbar from '../../components/Navbar';
+import SearchBar from '../../components/SearchBar';
+import GridCard from '../../components/GridCard';
 import { Card } from 'react-bootstrap';
 
 const Anime = () => {
   const [searchKey, setSearchKey] = useState("");
   const [anime, setAnime] = useState([]);
+  const navigate = useNavigate();
 
   const searchAnime = async (e) => {
     e.preventDefault();
@@ -25,6 +27,10 @@ const Anime = () => {
 
   const clearAnime = () => {
     setAnime([]);
+  };
+
+  const handleCardClick = (id) => {
+    navigate(`/anime/${id}`);
   };
 
   const renderAnimeCard = (item) => (
@@ -47,8 +53,9 @@ const Anime = () => {
         setSearchKey={setSearchKey}
       />
       <GridCard
-        items={anime}
+        items={anime.map(a => ({ ...a, id: a.mal_id }))}
         renderItem={renderAnimeCard}
+        onCardClick={handleCardClick}
       />
     </>
   );

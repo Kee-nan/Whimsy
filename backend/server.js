@@ -3,10 +3,10 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 
 // Import route files 
-const omdbRoutes = require('./routes/omdbRoutes');
 const spotifyRoutes = require('./routes/spotifyRoutes');
 const booksRoutes = require('./routes/booksRoutes'); // Import books route
 const moviesRoutes = require('./routes/moviesRoutes'); // Import movies route
+
 
 // Environment config
 dotenv.config();
@@ -18,10 +18,10 @@ app.use(cors());
 app.use(express.json());
 
 // Use route files
-app.use('/api/omdb', omdbRoutes);
 app.use('/auth/spotify', spotifyRoutes);
 app.use('/api/books', booksRoutes); // Use books route
 app.use('/api/movies', moviesRoutes); // Use movies route
+
 
 
 // Start server

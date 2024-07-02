@@ -1,9 +1,9 @@
 import React, { useState } from 'react'; 
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import AppNavbar from '../components/Navbar';
-import SearchBar from '../components/SearchBar';
-import GridCard from '../components/GridCard';
+import AppNavbar from '../../components/Navbar';
+import SearchBar from '../../components/SearchBar';
+import GridCard from '../../components/GridCard';
 import { Card } from 'react-bootstrap';
 
 const Movies = () => {

@@ -14,6 +14,7 @@ const AppNavbar = () => {
           <Nav.Link as={Link} to="/manga">Manga</Nav.Link>
           <Nav.Link as={Link} to="/movies">Movies</Nav.Link>
           <Nav.Link as={Link} to="/shows">Shows</Nav.Link>
+          <Nav.Link as={Link} to="/games">Games</Nav.Link>
         </Nav>
         <Nav>
           <Nav.Link as={Link} to="/profile" className="btn btn-outline-grey me-2">

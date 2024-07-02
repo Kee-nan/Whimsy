@@ -1,14 +1,17 @@
+// src/pages/searchs/manga.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import AppNavbar from '../components/Navbar';
-import SearchBar from '../components/SearchBar';
-import GridCard from '../components/GridCard';
+import { useNavigate } from 'react-router-dom';
+import AppNavbar from '../../components/Navbar';
+import SearchBar from '../../components/SearchBar';
+import GridCard from '../../components/GridCard';
 import { Card } from 'react-bootstrap';
 
 const Manga = () => {
   const [searchKey, setSearchKey] = useState("");
   const [manga, setManga] = useState([]);
+  const navigate = useNavigate();
 
   // Function to search Manga using the Jikan API
   const searchManga = async (e) => {
@@ -35,6 +38,10 @@ const Manga = () => {
     setManga([]);
   };
 
+  const handleCardClick = (id) => {
+    navigate(`/manga/${id}`);
+  };
+
   // Render function for each manga item
   const renderMangaCard = (item) => (
     <>
@@ -56,8 +63,9 @@ const Manga = () => {
         setSearchKey={setSearchKey}
       />
       <GridCard
-        items={manga}
+        items={manga.map(m => ({ ...m, id: m.mal_id }))}
         renderItem={renderMangaCard}
+        onCardClick={handleCardClick} // Pass handleCardClick function
       />
     </>
   );
