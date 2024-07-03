@@ -1,8 +1,9 @@
+// src/pages/details/MovieDetail.js
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
-import { Container, Card } from 'react-bootstrap';
+import { Container, Card, Button } from 'react-bootstrap';
 
 const MovieDetail = () => {
   const { id } = useParams();
@@ -21,6 +22,16 @@ const MovieDetail = () => {
     fetchMovieDetails();
   }, [id]);
 
+  const addToWatchlist = () => {
+    const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+    const movieItem = {
+      url: `movies/${id}`,
+      title: movie.title,
+      image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+    };
+    localStorage.setItem('watchlist', JSON.stringify([...watchlist, movieItem]));
+  };
+
   if (!movie) return <p>Loading...</p>;
 
   return (
@@ -37,6 +48,7 @@ const MovieDetail = () => {
             <Card.Text>Runtime: {movie.runtime} minutes</Card.Text>
             <Card.Text>Average Vote: {movie.vote_average}</Card.Text>
             <Card.Text>Vote Count: {movie.vote_count}</Card.Text>
+            <Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>
           </Card.Body>
         </Card>
       </Container>
@@ -45,3 +57,4 @@ const MovieDetail = () => {
 };
 
 export default MovieDetail;
+

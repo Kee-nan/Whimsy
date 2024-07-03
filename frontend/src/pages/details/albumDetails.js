@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
-import { Container, Card } from 'react-bootstrap';
+import { Container, Card, Button } from 'react-bootstrap';
 
 const AlbumDetail = () => {
   const { id } = useParams();
@@ -29,6 +29,16 @@ const AlbumDetail = () => {
     fetchAlbumDetails();
   }, [id]);
 
+  const addToWatchlist = () => {
+    const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+    const albumItem = {
+      url: `albums/${id}`,
+      title: album.name,
+      image: album.images[0]?.url || 'placeholder.jpg',
+    };
+    localStorage.setItem('watchlist', JSON.stringify([...watchlist, albumItem]));
+  };
+
   if (!album) return <p>Loading...</p>;
 
   return (
@@ -44,6 +54,7 @@ const AlbumDetail = () => {
             <Card.Text><strong>Total Tracks:</strong> {album.total_tracks}</Card.Text>
             <Card.Text><strong>Available Markets:</strong> {album.available_markets.join(', ')}</Card.Text>
             <Card.Text><strong>Spotify URL:</strong> <a href={album.external_urls.spotify} target="_blank" rel="noopener noreferrer">View on Spotify</a></Card.Text>
+            <Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>
           </Card.Body>
         </Card>
       </Container>
@@ -52,3 +63,4 @@ const AlbumDetail = () => {
 };
 
 export default AlbumDetail;
+
