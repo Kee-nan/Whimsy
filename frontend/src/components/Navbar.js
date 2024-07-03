@@ -20,6 +20,9 @@ const AppNavbar = () => {
           <Nav.Link as={Link} to="/profile" className="btn btn-outline-grey me-2">
             Profile
           </Nav.Link>
+          <Nav.Link as={Link} to="/lists" className="btn btn-outline-grey me-2">
+            Lists
+          </Nav.Link>
         </Nav>
       </Container>
     </Navbar>

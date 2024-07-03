@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 //General Pages
 import MainPage from './pages/main';
 import Profile from './pages/profile';
+import Lists from './pages/lists';
 
 //Search Pages
 import Movies from './pages/searchs/movies';
@@ -29,6 +30,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/lists" element={<Lists />} />
       
         <Route path="/movies" element={<Movies />} />
         <Route path="/anime" element={<Anime />} />

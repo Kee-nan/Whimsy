@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
-import { Container, Card } from 'react-bootstrap';
+import { Container, Card, Button } from 'react-bootstrap';
 
 const AnimeDetail = () => {
   const { id } = useParams();
@@ -22,6 +22,16 @@ const AnimeDetail = () => {
     fetchAnimeDetails();
   }, [id]);
 
+  const addToWatchlist = () => {
+    const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+    const animeItem = {
+      url: `anime/${id}`,
+      title: anime.title,
+      image: anime.images.jpg.image_url,
+    };
+    localStorage.setItem('watchlist', JSON.stringify([...watchlist, animeItem]));
+  };
+
   if (!anime) return <p>Loading...</p>;
 
   return (
@@ -33,6 +43,7 @@ const AnimeDetail = () => {
           <Card.Body>
             <Card.Title>{anime.title}</Card.Title>
             <Card.Text>{anime.synopsis}</Card.Text>
+            <Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>
           </Card.Body>
         </Card>
       </Container>
@@ -41,3 +52,4 @@ const AnimeDetail = () => {
 };
 
 export default AnimeDetail;
+
