@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-import { Button } from 'react-bootstrap';
+
 
 const MovieDetail = () => {
   const { id } = useParams();
@@ -23,14 +23,22 @@ const MovieDetail = () => {
     fetchMovieDetails();
   }, [id]);
 
-  const addToWatchlist = () => {
-    const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+  const addToList = (listName) => {
+    const list = JSON.parse(localStorage.getItem(listName)) || [];
     const movieItem = {
       url: `movies/${id}`,
       title: movie.title,
       image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
     };
-    localStorage.setItem('watchlist', JSON.stringify([...watchlist, movieItem]));
+    localStorage.setItem(listName, JSON.stringify([...list, movieItem]));
+  };
+
+  
+  const addToCompleted = () => addToList('completedList');
+  const addToFutures = () => addToList('futuresList');
+  const review = () => {
+    // Review functionality will be added later
+    alert('Review functionality not yet implemented');
   };
 
   if (!movie) return <p>Loading...</p>;
@@ -49,13 +57,16 @@ const MovieDetail = () => {
             <p><strong>Overview:</strong> {movie.overview}</p>
           </>
         }
-        buttons={<Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>}
+        onAddToCompleted={addToCompleted}
+        onAddToFutures={addToFutures}
+        onReview={review}
       />
     </>
   );
 };
 
 export default MovieDetail;
+
 
 
 

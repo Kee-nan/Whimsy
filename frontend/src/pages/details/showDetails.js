@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-import { Button } from 'react-bootstrap';
+
 
 const ShowDetail = () => {
   const { id } = useParams();
@@ -23,14 +23,22 @@ const ShowDetail = () => {
     fetchShowDetails();
   }, [id]);
 
-  const addToWatchlist = () => {
-    const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+  const addToList = (listName) => {
+    const list = JSON.parse(localStorage.getItem(listName)) || [];
     const showItem = {
       url: `shows/${id}`,
       title: show.name,
       image: show.image?.original || 'placeholder.jpg',
     };
-    localStorage.setItem('watchlist', JSON.stringify([...watchlist, showItem]));
+    localStorage.setItem(listName, JSON.stringify([...list, showItem]));
+  };
+
+  
+  const addToCompleted = () => addToList('completedList');
+  const addToFutures = () => addToList('futuresList');
+  const review = () => {
+    // Review functionality will be added later
+    alert('Review functionality not yet implemented');
   };
 
   const stripHtmlTags = (html) => {
@@ -55,13 +63,16 @@ const ShowDetail = () => {
             <p><strong>Summary:</strong> {stripHtmlTags(show.summary)}</p>
           </>
         }
-        buttons={<Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>}
+        onAddToCompleted={addToCompleted}
+        onAddToFutures={addToFutures}
+        onReview={review}
       />
     </>
   );
 };
 
 export default ShowDetail;
+
 
 
 

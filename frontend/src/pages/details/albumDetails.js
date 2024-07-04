@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-import { Button } from 'react-bootstrap';
+
 
 const AlbumDetail = () => {
   const { id } = useParams();
@@ -32,14 +32,21 @@ const AlbumDetail = () => {
     fetchAlbumDetails();
   }, [id]);
 
-  const addToWatchlist = () => {
-    const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+  const handleAddToList = (listName) => {
+    const list = JSON.parse(localStorage.getItem(listName)) || [];
     const albumItem = {
       url: `albums/${id}`,
       title: album.name,
       image: album.images[0]?.url || 'placeholder.jpg',
     };
-    localStorage.setItem('watchlist', JSON.stringify([...watchlist, albumItem]));
+    localStorage.setItem(listName, JSON.stringify([...list, albumItem]));
+  };
+
+  const addToCompleted = () => handleAddToList('completedList');
+  const addToFutures = () => handleAddToList('futuresList');
+  const review = () => {
+    // Review functionality will be added later
+    alert('Review functionality not yet implemented');
   };
 
   if (!album) return <p>Loading...</p>;
@@ -70,7 +77,9 @@ const AlbumDetail = () => {
             </div>
           </>
         }
-        buttons={<Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>}
+        onAddToCompleted={addToCompleted}
+        onAddToFutures={addToFutures}
+        onReview={review}
         type="album"
       />
     </>
@@ -78,3 +87,4 @@ const AlbumDetail = () => {
 };
 
 export default AlbumDetail;
+

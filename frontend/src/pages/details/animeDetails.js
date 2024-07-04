@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-import { Button } from 'react-bootstrap';
+
 
 const AnimeDetail = () => {
   const { id } = useParams();
@@ -23,14 +23,21 @@ const AnimeDetail = () => {
     fetchAnimeDetails();
   }, [id]);
 
-  const addToWatchlist = () => {
-    const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+  const handleAddToList = (listName) => {
+    const list = JSON.parse(localStorage.getItem(listName)) || [];
     const animeItem = {
       url: `anime/${id}`,
       title: anime.title,
       image: anime.images.jpg.image_url,
     };
-    localStorage.setItem('watchlist', JSON.stringify([...watchlist, animeItem]));
+    localStorage.setItem(listName, JSON.stringify([...list, animeItem]));
+  };
+
+  const addToCompleted = () => handleAddToList('completedList');
+  const addToFutures = () => handleAddToList('futuresList');
+  const review = () => {
+    // Review functionality will be added later
+    alert('Review functionality not yet implemented');
   };
 
   if (!anime) return <p>Loading...</p>;
@@ -43,19 +50,22 @@ const AnimeDetail = () => {
         title={anime.title}
         details={
           <>
-          <p>Background: {anime.background}</p>
-          <p>Episodes: {anime.episodes} </p>  
-          <p>Status: {anime.status}</p>
-          <p>Year: {anime.year}</p>
-          <p>Plot: {anime.synopsis} </p>
+            <p><strong>Background:</strong> {anime.background}</p>
+            <p><strong>Episodes:</strong> {anime.episodes}</p>
+            <p><strong>Status:</strong> {anime.status}</p>
+            <p><strong>Year:</strong> {anime.year}</p>
+            <p><strong>Plot:</strong> {anime.synopsis}</p>
           </>
         }
-        buttons={<Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>}
+        onAddToCompleted={addToCompleted}
+        onAddToFutures={addToFutures}
+        onReview={review}
       />
     </>
   );
 };
 
 export default AnimeDetail;
+
 
 

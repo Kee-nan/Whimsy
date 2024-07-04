@@ -1,8 +1,8 @@
 // src/components/DetailCard.js
 import React from 'react';
-import { Card, Container } from 'react-bootstrap';
+import { Card, Container, Button } from 'react-bootstrap';
 
-const DetailCard = ({ image, title, details, buttons, type = 'poster' }) => {
+const DetailCard = ({ image, title, details, buttons, type = 'poster', onAddToCompleted, onAddToFutures, onReview }) => {
   const styles = {
     card: {
       width: '100%',
@@ -37,7 +37,7 @@ const DetailCard = ({ image, title, details, buttons, type = 'poster' }) => {
     },
     cardContainer: {
       display: 'flex',
-    }
+    },
   };
 
   return (
@@ -48,7 +48,12 @@ const DetailCard = ({ image, title, details, buttons, type = 'poster' }) => {
           <Card.Body style={styles.body}>
             <Card.Title style={styles.title}>{title}</Card.Title>
             <Card.Text style={styles.details}>{details}</Card.Text>
-            <div style={styles.buttons}>{buttons}</div>
+            <div style={styles.buttons}>
+              {buttons}
+              <Button variant="primary" onClick={onAddToCompleted}>Add to Completed</Button>
+              <Button variant="secondary" onClick={onAddToFutures}>Add to Futures</Button>
+              <Button variant="info" onClick={onReview}>Reviews</Button>
+            </div>
           </Card.Body>
         </div>
       </Card>
@@ -57,4 +62,5 @@ const DetailCard = ({ image, title, details, buttons, type = 'poster' }) => {
 };
 
 export default DetailCard;
+
 

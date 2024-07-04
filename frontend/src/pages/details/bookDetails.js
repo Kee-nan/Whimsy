@@ -23,14 +23,22 @@ const BookDetail = () => {
     fetchBookDetails();
   }, [id]);
 
-  const addToWatchlist = () => {
-    const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+  const addToList = (listName) => {
+    const list = JSON.parse(localStorage.getItem(listName)) || [];
     const bookItem = {
       url: `books/${id}`,
       title: book.volumeInfo.title,
       image: book.volumeInfo.imageLinks?.thumbnail || 'placeholder.jpg',
     };
-    localStorage.setItem('watchlist', JSON.stringify([...watchlist, bookItem]));
+    localStorage.setItem(listName, JSON.stringify([...list, bookItem]));
+  };
+
+  
+  const addToCompleted = () => addToList('completedList');
+  const addToFutures = () => addToList('futuresList');
+  const review = () => {
+    // Review functionality will be added later
+    alert('Review functionality not yet implemented');
   };
 
   const stripHtmlTags = (html) => {
@@ -55,7 +63,9 @@ const BookDetail = () => {
             <p><strong>Categories:</strong> {book.volumeInfo.categories?.join(', ')}</p>
           </>
         }
-        buttons={<Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>}
+        onAddToCompleted={addToCompleted}
+        onAddToFutures={addToFutures}
+        onReview={review}
       />
     </>
   );
