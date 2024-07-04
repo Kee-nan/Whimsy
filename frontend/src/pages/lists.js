@@ -1,6 +1,6 @@
 // src/pages/Lists.js
 import React, { useEffect, useState } from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 import ListCard from '../components/ListCard';
 
@@ -31,18 +31,12 @@ const Lists = () => {
     localStorage.setItem(listName, JSON.stringify(updatedList));
   };
 
-  const clearList = (listName) => {
-    localStorage.removeItem(listName);
-    listName === 'completedList' ? setCompletedList([]) : setFuturesList([]);
-  };
 
   return (
     <>
       <AppNavbar />
       <Container className="mt-5">
         <h2>Your Lists</h2>
-        <Button variant="danger" onClick={() => clearList('completedList')}>Clear Completed List</Button>
-        <Button variant="danger" onClick={() => clearList('futuresList')}>Clear Futures List</Button>
         <div>
           <h3>Completed</h3>
           <div className="d-flex flex-nowrap overflow-auto">
@@ -52,6 +46,7 @@ const Lists = () => {
                 item={item}
                 onNavigate={handleNavigate}
                 onDelete={(url) => handleDelete(url, 'completedList')}
+                type={item.type} // Pass type if needed, e.g., 'album' or 'poster'
               />
             ))}
           </div>
@@ -65,6 +60,7 @@ const Lists = () => {
                 item={item}
                 onNavigate={handleNavigate}
                 onDelete={(url) => handleDelete(url, 'futuresList')}
+                type={item.type} // Pass type if needed, e.g., 'album' or 'poster'
               />
             ))}
           </div>
@@ -75,6 +71,7 @@ const Lists = () => {
 };
 
 export default Lists;
+
 
 
 

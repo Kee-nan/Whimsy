@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-import { Button } from 'react-bootstrap';
+
 
 const BookDetail = () => {
   const { id } = useParams();
