@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
-import { Container, Card, Button } from 'react-bootstrap';
+import DetailCard from '../../components/DetailCard';
+import { Button } from 'react-bootstrap';
 
 const ShowDetail = () => {
   const { id } = useParams();
@@ -32,24 +33,35 @@ const ShowDetail = () => {
     localStorage.setItem('watchlist', JSON.stringify([...watchlist, showItem]));
   };
 
+  const stripHtmlTags = (html) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.innerText;
+  };
+
   if (!show) return <p>Loading...</p>;
 
   return (
     <>
       <AppNavbar />
-      <Container className="mt-5">
-        <Card>
-          <Card.Img src={show.image?.original || 'placeholder.jpg'} alt={show.name} />
-          <Card.Body>
-            <Card.Title>{show.name}</Card.Title>
-            <Card.Text dangerouslySetInnerHTML={{ __html: show.summary }} />
-            <Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>
-          </Card.Body>
-        </Card>
-      </Container>
+      <DetailCard
+        image={show.image?.original || 'placeholder.jpg'}
+        title={show.name}
+        details={
+          <>
+            <p><strong>URL:</strong> <a href={show.url} target="_blank" rel="noopener noreferrer">View on TVMaze</a></p>
+            <p><strong>Status:</strong> {show.status}</p>
+            <p><strong>Premiered - Ended:</strong> {show.premiered}    --{'>'}   {show.ended}</p>
+            <p><strong>Summary:</strong> {stripHtmlTags(show.summary)}</p>
+          </>
+        }
+        buttons={<Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>}
+      />
     </>
   );
 };
 
 export default ShowDetail;
+
+
 

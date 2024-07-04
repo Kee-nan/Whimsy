@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
-import { Container, Card, Button } from 'react-bootstrap';
+import DetailCard from '../../components/DetailCard';
+import { Button } from 'react-bootstrap';
 
 const AlbumDetail = () => {
   const { id } = useParams();
   const [album, setAlbum] = useState(null);
   const [artists, setArtists] = useState([]);
+  const [tracks, setTracks] = useState([]);
 
   useEffect(() => {
     const fetchAlbumDetails = async () => {
@@ -21,6 +23,7 @@ const AlbumDetail = () => {
         });
         setAlbum(response.data);
         setArtists(response.data.artists);
+        setTracks(response.data.tracks.items);
       } catch (error) {
         console.error("Error fetching album details:", error);
       }
@@ -44,23 +47,34 @@ const AlbumDetail = () => {
   return (
     <>
       <AppNavbar />
-      <Container className="mt-5">
-        <Card>
-          <Card.Img src={album.images[0]?.url || 'placeholder.jpg'} alt={album.name} />
-          <Card.Body>
-            <Card.Title>{album.name}</Card.Title>
-            <Card.Text><strong>Artists:</strong> {artists.map(artist => artist.name).join(', ')}</Card.Text>
-            <Card.Text><strong>Release Date:</strong> {album.release_date}</Card.Text>
-            <Card.Text><strong>Total Tracks:</strong> {album.total_tracks}</Card.Text>
-            <Card.Text><strong>Available Markets:</strong> {album.available_markets.join(', ')}</Card.Text>
-            <Card.Text><strong>Spotify URL:</strong> <a href={album.external_urls.spotify} target="_blank" rel="noopener noreferrer">View on Spotify</a></Card.Text>
-            <Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>
-          </Card.Body>
-        </Card>
-      </Container>
+      <DetailCard
+        image={album.images[0]?.url || 'placeholder.jpg'}
+        title={album.name}
+        details={
+          <>
+            <p><strong>Artist(s):</strong> {artists.map(artist => artist.name).join(', ')}</p>
+            <p><strong>Release Date:</strong> {album.release_date}</p>
+            <p><strong>Total Tracks:</strong> {album.total_tracks}</p>
+            <p><strong>Genres:</strong> {album.genres.join(', ')}</p>
+            <p><strong>Label:</strong> {album.label}</p>
+            <p><strong>Spotify URL:</strong> <a href={album.external_urls.spotify} target="_blank" rel="noopener noreferrer">View on Spotify</a></p>
+            <div>
+              <h4>Track List:</h4>
+              <ul>
+                {tracks.map((track, index) => (
+                  <li key={track.id}>
+                    {index + 1}. {track.name} - {track.artists.map(artist => artist.name).join(', ')}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        }
+        buttons={<Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>}
+        type="album"
+      />
     </>
   );
 };
 
 export default AlbumDetail;
-

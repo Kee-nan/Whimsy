@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
-import { Container, Card, Button } from 'react-bootstrap';
+import DetailCard from '../../components/DetailCard';
+import { Button } from 'react-bootstrap';
 
 const MovieDetail = () => {
   const { id } = useParams();
@@ -37,24 +38,24 @@ const MovieDetail = () => {
   return (
     <>
       <AppNavbar />
-      <Container className="mt-5">
-        <Card>
-          <Card.Img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
-          <Card.Body>
-            <Card.Title>{movie.title}</Card.Title>
-            <Card.Text>{movie.overview}</Card.Text>
-            <Card.Text>Release Date: {movie.release_date}</Card.Text>
-            <Card.Text>Genres: {movie.genres.map((genre) => genre.name).join(', ')}</Card.Text>
-            <Card.Text>Runtime: {movie.runtime} minutes</Card.Text>
-            <Card.Text>Average Vote: {movie.vote_average}</Card.Text>
-            <Card.Text>Vote Count: {movie.vote_count}</Card.Text>
-            <Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>
-          </Card.Body>
-        </Card>
-      </Container>
+      <DetailCard
+        image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+        title={movie.title}
+        details={
+          <>
+            <p><strong>Budget:</strong> ${movie.budget.toLocaleString()}</p>
+            <p><strong>Genres:</strong> {movie.genres.map(genre => genre.name).join(', ')}</p>
+            <p><strong>Runtime:</strong> {movie.runtime} minutes</p>
+            <p><strong>Overview:</strong> {movie.overview}</p>
+          </>
+        }
+        buttons={<Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>}
+      />
     </>
   );
 };
 
 export default MovieDetail;
+
+
 

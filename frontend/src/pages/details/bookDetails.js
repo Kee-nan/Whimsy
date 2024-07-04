@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
-import { Container, Card, Button } from 'react-bootstrap';
+import DetailCard from '../../components/DetailCard';
+import { Button } from 'react-bootstrap';
 
 const BookDetail = () => {
   const { id } = useParams();
@@ -32,21 +33,30 @@ const BookDetail = () => {
     localStorage.setItem('watchlist', JSON.stringify([...watchlist, bookItem]));
   };
 
+  const stripHtmlTags = (html) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.innerText;
+  };
+
   if (!book) return <p>Loading...</p>;
 
   return (
     <>
       <AppNavbar />
-      <Container className="mt-5">
-        <Card>
-          <Card.Img src={book.volumeInfo.imageLinks?.thumbnail} alt={book.volumeInfo.title} />
-          <Card.Body>
-            <Card.Title>{book.volumeInfo.title}</Card.Title>
-            <Card.Text>{book.volumeInfo.description}</Card.Text>
-            <Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>
-          </Card.Body>
-        </Card>
-      </Container>
+      <DetailCard
+        image={book.volumeInfo.imageLinks?.thumbnail || 'placeholder.jpg'}
+        title={book.volumeInfo.title}
+        details={
+          <>
+            <p><strong>Author:</strong> {book.volumeInfo.authors?.join(', ')}</p>
+            <p><strong>Published Date:</strong> {book.volumeInfo.publishedDate}</p>
+            <p><strong>Description:</strong> {stripHtmlTags(book.volumeInfo.description)}</p>
+            <p><strong>Categories:</strong> {book.volumeInfo.categories?.join(', ')}</p>
+          </>
+        }
+        buttons={<Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>}
+      />
     </>
   );
 };

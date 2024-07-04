@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
-import { Container, Card, Button } from 'react-bootstrap';
+import DetailCard from '../../components/DetailCard';
+import { Button } from 'react-bootstrap';
 
 const AnimeDetail = () => {
   const { id } = useParams();
@@ -37,19 +38,24 @@ const AnimeDetail = () => {
   return (
     <>
       <AppNavbar />
-      <Container className="mt-5">
-        <Card>
-          <Card.Img src={anime.images.jpg.image_url} alt={anime.title} />
-          <Card.Body>
-            <Card.Title>{anime.title}</Card.Title>
-            <Card.Text>{anime.synopsis}</Card.Text>
-            <Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>
-          </Card.Body>
-        </Card>
-      </Container>
+      <DetailCard
+        image={anime.images.jpg.image_url}
+        title={anime.title}
+        details={
+          <>
+          <p>Background: {anime.background}</p>
+          <p>Episodes: {anime.episodes} </p>  
+          <p>Status: {anime.status}</p>
+          <p>Year: {anime.year}</p>
+          <p>Plot: {anime.synopsis} </p>
+          </>
+        }
+        buttons={<Button variant="success" onClick={addToWatchlist}>Add to Watchlist</Button>}
+      />
     </>
   );
 };
 
 export default AnimeDetail;
+
 
