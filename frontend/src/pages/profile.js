@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Button, Card } from 'react-bootstrap';
+import { Container, Button, Card, Image } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 
 const Profile = () => {
@@ -38,6 +38,29 @@ const Profile = () => {
 
       <Container>
         <h1>Profile Page</h1>
+        
+        {/* Profile Info Card */}
+        <Card className="mb-4">
+          <Card.Body className="d-flex flex-column align-items-center">
+            <Image
+              src="https://via.placeholder.com/150" // Placeholder image URL
+              roundedCircle
+              width="150"
+              height="150"
+              className="mb-3"
+            />
+            <Card.Title className="display-4">Username</Card.Title>
+            <Card.Text className="text-center">
+              This is a short bio about the user. It can be a couple of sentences long, giving an overview of who the user is, their interests, or anything they want to share.
+            </Card.Text>
+            <div className="d-flex justify-content-center mt-3">
+              <Button variant="primary" className="me-2">Edit</Button>
+              <Button variant="secondary">Friends</Button>
+            </div>
+          </Card.Body>
+        </Card>
+
+        {/* Spotify Integration Card */}
         <Card>
           <Card.Body>
             <Card.Title>Spotify</Card.Title>
@@ -45,6 +68,7 @@ const Profile = () => {
             <p>Status: {spotifyConnected ? <span style={{ color: 'green' }}>Connected</span> : <span style={{ color: 'darkred' }}>Not Connected</span>}</p>
           </Card.Body>
         </Card>
+        
         {/* Other application cards */}
       </Container>
     </>
@@ -52,6 +76,7 @@ const Profile = () => {
 };
 
 export default Profile;
+
 
 
 

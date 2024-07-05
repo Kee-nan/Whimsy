@@ -1,16 +1,16 @@
 // src/pages/details/AlbumDetail.js
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-
+import UserReviewCard from '../../components/userReviewCard';
 
 const AlbumDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [album, setAlbum] = useState(null);
-  const [artists, setArtists] = useState([]);
-  const [tracks, setTracks] = useState([]);
+  const [review, setReview] = useState(null);
 
   useEffect(() => {
     const fetchAlbumDetails = async () => {
@@ -22,8 +22,10 @@ const AlbumDetail = () => {
           }
         });
         setAlbum(response.data);
-        setArtists(response.data.artists);
-        setTracks(response.data.tracks.items);
+        
+        const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+        const reviewData = reviews[`albums/${id}`];
+        setReview(reviewData);
       } catch (error) {
         console.error("Error fetching album details:", error);
       }
@@ -44,9 +46,13 @@ const AlbumDetail = () => {
 
   const addToCompleted = () => handleAddToList('completedList');
   const addToFutures = () => handleAddToList('futuresList');
-  const review = () => {
-    // Review functionality will be added later
-    alert('Review functionality not yet implemented');
+  const handleReview = () => navigate('/leaveReview', { state: { mediaDetails: { url: `albums/${id}`, title: album.name, image: album.images[0]?.url || 'placeholder.jpg' } } });
+
+  const handleDelete = (title) => {
+    const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+    delete reviews[`albums/${id}`];
+    localStorage.setItem('reviews', JSON.stringify(reviews));
+    setReview(null);
   };
 
   if (!album) return <p>Loading...</p>;
@@ -59,7 +65,7 @@ const AlbumDetail = () => {
         title={album.name}
         details={
           <>
-            <p><strong>Artist(s):</strong> {artists.map(artist => artist.name).join(', ')}</p>
+            <p><strong>Artist(s):</strong> {album.artists.map(artist => artist.name).join(', ')}</p>
             <p><strong>Release Date:</strong> {album.release_date}</p>
             <p><strong>Total Tracks:</strong> {album.total_tracks}</p>
             <p><strong>Genres:</strong> {album.genres.join(', ')}</p>
@@ -68,7 +74,7 @@ const AlbumDetail = () => {
             <div>
               <h4>Track List:</h4>
               <ul>
-                {tracks.map((track, index) => (
+                {album.tracks.items.map((track, index) => (
                   <li key={track.id}>
                     {index + 1}. {track.name} - {track.artists.map(artist => artist.name).join(', ')}
                   </li>
@@ -79,12 +85,14 @@ const AlbumDetail = () => {
         }
         onAddToCompleted={addToCompleted}
         onAddToFutures={addToFutures}
-        onReview={review}
+        onReview={handleReview}
         type="album"
       />
+      {review && <UserReviewCard review={review} onDelete={handleDelete} />}
     </>
   );
 };
 
 export default AlbumDetail;
+
 

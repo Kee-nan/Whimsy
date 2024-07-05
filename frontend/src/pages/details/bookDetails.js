@@ -1,20 +1,26 @@
-// src/pages/details/BookDetail.js
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-
+import UserReviewCard from '../../components/userReviewCard'; // Import the new component
 
 const BookDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [book, setBook] = useState(null);
+  const [review, setReview] = useState(null); // State for storing review
 
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
         const response = await axios.get(`/api/books/${id}`);
         setBook(response.data);
+        
+        // Retrieve the review data from local storage
+        const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+        const reviewData = reviews[`books/${id}`];
+        setReview(reviewData);
       } catch (error) {
         console.error("Error fetching book details:", error);
       }
@@ -23,7 +29,7 @@ const BookDetail = () => {
     fetchBookDetails();
   }, [id]);
 
-  const addToList = (listName) => {
+  const handleAddToList = (listName) => {
     const list = JSON.parse(localStorage.getItem(listName)) || [];
     const bookItem = {
       url: `books/${id}`,
@@ -33,12 +39,27 @@ const BookDetail = () => {
     localStorage.setItem(listName, JSON.stringify([...list, bookItem]));
   };
 
-  
-  const addToCompleted = () => addToList('completedList');
-  const addToFutures = () => addToList('futuresList');
-  const review = () => {
-    // Review functionality will be added later
-    alert('Review functionality not yet implemented');
+  const addToCompleted = () => handleAddToList('completedList');
+  const addToFutures = () => handleAddToList('futuresList');
+
+  const handleDelete = () => {
+    const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+    delete reviews[`books/${id}`];
+    localStorage.setItem('reviews', JSON.stringify(reviews));
+    setReview(null); // Update the state to reflect the deletion
+  };
+
+  const handleEdit = () => {
+    navigate('/leaveReview', {
+      state: {
+        mediaDetails: {
+          url: `books/${id}`,
+          title: book.volumeInfo.title,
+          image: book.volumeInfo.imageLinks?.thumbnail || 'placeholder.jpg',
+          review,
+        },
+      },
+    });
   };
 
   const stripHtmlTags = (html) => {
@@ -65,12 +86,13 @@ const BookDetail = () => {
         }
         onAddToCompleted={addToCompleted}
         onAddToFutures={addToFutures}
-        onReview={review}
       />
+      {review && <UserReviewCard review={review} onDelete={handleDelete} onEdit={handleEdit} />}
     </>
   );
 };
 
 export default BookDetail;
+
 
 

@@ -1,8 +1,14 @@
-// src/components/ListCard.js
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const ListCard = ({ item, onNavigate, onDelete, type = 'poster' }) => {
+  const navigate = useNavigate();
+
+  const handleReviewClick = () => {
+    navigate('/leaveReview', { state: { mediaDetails: item } });
+  };
+
   const styles = {
     card: {
       width: '320px', // Increased width
@@ -36,7 +42,7 @@ const ListCard = ({ item, onNavigate, onDelete, type = 'poster' }) => {
         <div style={styles.buttons}>
           <Button variant="primary" style={styles.button} onClick={() => onNavigate(item.url)}>Details</Button>
           <Button variant="danger" style={styles.button} onClick={() => onDelete(item.url)}>Delete</Button>
-          <Button variant="secondary" style={styles.button}>Review</Button>
+          <Button variant="secondary" style={styles.button} onClick={handleReviewClick}>Review</Button>
         </div>
       </Card.Body>
     </Card>
@@ -44,3 +50,4 @@ const ListCard = ({ item, onNavigate, onDelete, type = 'poster' }) => {
 };
 
 export default ListCard;
+

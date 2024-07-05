@@ -1,20 +1,26 @@
-// src/pages/details/AnimeDetail.js
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-
+import UserReviewCard from '../../components/userReviewCard'; // Import the new component
 
 const AnimeDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [anime, setAnime] = useState(null);
+  const [review, setReview] = useState(null); // State for storing review
 
   useEffect(() => {
     const fetchAnimeDetails = async () => {
       try {
         const response = await axios.get(`https://api.jikan.moe/v4/anime/${id}/full`);
         setAnime(response.data.data);
+        
+        // Retrieve the review data from local storage
+        const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+        const reviewData = reviews[`anime/${id}`];
+        setReview(reviewData);
       } catch (error) {
         console.error("Error fetching anime details:", error);
       }
@@ -35,9 +41,25 @@ const AnimeDetail = () => {
 
   const addToCompleted = () => handleAddToList('completedList');
   const addToFutures = () => handleAddToList('futuresList');
-  const review = () => {
-    // Review functionality will be added later
-    alert('Review functionality not yet implemented');
+
+  const handleDelete = (title) => {
+    const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+    delete reviews[`anime/${id}`];
+    localStorage.setItem('reviews', JSON.stringify(reviews));
+    setReview(null); // Update the state to reflect the deletion
+  };
+
+  const handleEdit = () => {
+    navigate('/leaveReview', {
+      state: {
+        mediaDetails: {
+          url: `anime/${id}`,
+          title: anime.title,
+          image: anime.images.jpg.image_url,
+          review,
+        },
+      },
+    });
   };
 
   if (!anime) return <p>Loading...</p>;
@@ -59,13 +81,16 @@ const AnimeDetail = () => {
         }
         onAddToCompleted={addToCompleted}
         onAddToFutures={addToFutures}
-        onReview={review}
       />
+      {review && <UserReviewCard review={review} onDelete={handleDelete} onEdit={handleEdit} />}
     </>
   );
 };
 
 export default AnimeDetail;
+
+
+
 
 
 

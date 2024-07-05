@@ -1,19 +1,26 @@
-// src/pages/details/MangaDetail.js
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
+import UserReviewCard from '../../components/userReviewCard'; // Import the new component
 
 const MangaDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [manga, setManga] = useState(null);
+  const [review, setReview] = useState(null); // State for storing review
 
   useEffect(() => {
     const fetchMangaDetails = async () => {
       try {
         const response = await axios.get(`https://api.jikan.moe/v4/manga/${id}/full`);
         setManga(response.data.data);
+        
+        // Retrieve the review data from local storage
+        const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+        const reviewData = reviews[`manga/${id}`];
+        setReview(reviewData);
       } catch (error) {
         console.error("Error fetching manga details:", error);
       }
@@ -22,7 +29,7 @@ const MangaDetail = () => {
     fetchMangaDetails();
   }, [id]);
 
-  const addToList = (listName) => {
+  const handleAddToList = (listName) => {
     const list = JSON.parse(localStorage.getItem(listName)) || [];
     const mangaItem = {
       url: `manga/${id}`,
@@ -32,12 +39,27 @@ const MangaDetail = () => {
     localStorage.setItem(listName, JSON.stringify([...list, mangaItem]));
   };
 
-  
-  const addToCompleted = () => addToList('completedList');
-  const addToFutures = () => addToList('futuresList');
-  const review = () => {
-    // Review functionality will be added later
-    alert('Review functionality not yet implemented');
+  const addToCompleted = () => handleAddToList('completedList');
+  const addToFutures = () => handleAddToList('futuresList');
+
+  const handleDelete = () => {
+    const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+    delete reviews[`manga/${id}`];
+    localStorage.setItem('reviews', JSON.stringify(reviews));
+    setReview(null); // Update the state to reflect the deletion
+  };
+
+  const handleEdit = () => {
+    navigate('/leaveReview', {
+      state: {
+        mediaDetails: {
+          url: `manga/${id}`,
+          title: manga.title,
+          image: manga.images.jpg.image_url,
+          review,
+        },
+      },
+    });
   };
 
   if (!manga) return <p>Loading...</p>;
@@ -60,8 +82,8 @@ const MangaDetail = () => {
         }
         onAddToCompleted={addToCompleted}
         onAddToFutures={addToFutures}
-        onReview={review}
       />
+      {review && <UserReviewCard review={review} onDelete={handleDelete} onEdit={handleEdit} />}
     </>
   );
 };

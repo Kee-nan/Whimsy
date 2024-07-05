@@ -1,20 +1,26 @@
-// src/pages/details/MovieDetail.js
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-
+import UserReviewCard from '../../components/userReviewCard'; // Import the new component
 
 const MovieDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
+  const [review, setReview] = useState(null); // State for storing review
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
         const response = await axios.get(`/api/movies/${id}`);
         setMovie(response.data);
+        
+        // Retrieve the review data from local storage
+        const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+        const reviewData = reviews[`movies/${id}`];
+        setReview(reviewData);
       } catch (error) {
         console.error("Error fetching movie details:", error);
       }
@@ -23,7 +29,7 @@ const MovieDetail = () => {
     fetchMovieDetails();
   }, [id]);
 
-  const addToList = (listName) => {
+  const handleAddToList = (listName) => {
     const list = JSON.parse(localStorage.getItem(listName)) || [];
     const movieItem = {
       url: `movies/${id}`,
@@ -33,13 +39,30 @@ const MovieDetail = () => {
     localStorage.setItem(listName, JSON.stringify([...list, movieItem]));
   };
 
-  
-  const addToCompleted = () => addToList('completedList');
-  const addToFutures = () => addToList('futuresList');
-  const review = () => {
-    // Review functionality will be added later
-    alert('Review functionality not yet implemented');
+  const addToCompleted = () => handleAddToList('completedList');
+  const addToFutures = () => handleAddToList('futuresList');
+
+  const handleDelete = () => {
+    const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+    delete reviews[`movies/${id}`];
+    localStorage.setItem('reviews', JSON.stringify(reviews));
+    setReview(null); // Update the state to reflect the deletion
   };
+
+  const handleEdit = () => {
+    navigate('/leaveReview', {
+      state: {
+        mediaDetails: {
+          url: `movies/${id}`,
+          title: movie.title,
+          image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+          review,
+        },
+      },
+    });
+  };
+
+  
 
   if (!movie) return <p>Loading...</p>;
 
@@ -51,21 +74,21 @@ const MovieDetail = () => {
         title={movie.title}
         details={
           <>
-            <p><strong>Budget:</strong> ${movie.budget.toLocaleString()}</p>
-            <p><strong>Genres:</strong> {movie.genres.map(genre => genre.name).join(', ')}</p>
-            <p><strong>Runtime:</strong> {movie.runtime} minutes</p>
+            <p><strong>Release Date:</strong> {movie.release_date}</p>
+            <p><strong>Genres:</strong> {movie.genres?.map(genre => genre.name).join(', ')}</p>
             <p><strong>Overview:</strong> {movie.overview}</p>
           </>
         }
         onAddToCompleted={addToCompleted}
         onAddToFutures={addToFutures}
-        onReview={review}
       />
+      {review && <UserReviewCard review={review} onDelete={handleDelete} onEdit={handleEdit} />}
     </>
   );
 };
 
 export default MovieDetail;
+
 
 
 

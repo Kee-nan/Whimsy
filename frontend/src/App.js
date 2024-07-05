@@ -22,6 +22,7 @@ import ShowDetail from './pages/details/showDetails';
 import AlbumDetail from './pages/details/albumDetails';
 import BookDetail from './pages/details/bookDetails';
 import MovieDetail from './pages/details/movieDetails';
+import LeaveReview from './pages/leaveReview';
 
 
 const App = () => {
@@ -45,6 +46,8 @@ const App = () => {
         <Route path="/albums/:id" element={<AlbumDetail />} />
         <Route path="/books/:id" element={<BookDetail />} />
         <Route path="/movies/:id" element={<MovieDetail />} />
+
+        <Route path="/leaveReview" element={<LeaveReview />} />
       </Routes>
     </Router>
   );

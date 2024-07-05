@@ -1,20 +1,26 @@
-// src/pages/details/ShowDetail.js
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-
+import UserReviewCard from '../../components/userReviewCard'; // Import the new component
 
 const ShowDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [show, setShow] = useState(null);
+  const [review, setReview] = useState(null); // State for storing review
 
   useEffect(() => {
     const fetchShowDetails = async () => {
       try {
         const response = await axios.get(`https://api.tvmaze.com/shows/${id}`);
         setShow(response.data);
+        
+        // Retrieve the review data from local storage
+        const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+        const reviewData = reviews[`shows/${id}`];
+        setReview(reviewData);
       } catch (error) {
         console.error("Error fetching show details:", error);
       }
@@ -23,7 +29,7 @@ const ShowDetail = () => {
     fetchShowDetails();
   }, [id]);
 
-  const addToList = (listName) => {
+  const handleAddToList = (listName) => {
     const list = JSON.parse(localStorage.getItem(listName)) || [];
     const showItem = {
       url: `shows/${id}`,
@@ -33,12 +39,27 @@ const ShowDetail = () => {
     localStorage.setItem(listName, JSON.stringify([...list, showItem]));
   };
 
-  
-  const addToCompleted = () => addToList('completedList');
-  const addToFutures = () => addToList('futuresList');
-  const review = () => {
-    // Review functionality will be added later
-    alert('Review functionality not yet implemented');
+  const addToCompleted = () => handleAddToList('completedList');
+  const addToFutures = () => handleAddToList('futuresList');
+
+  const handleDelete = () => {
+    const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
+    delete reviews[`shows/${id}`];
+    localStorage.setItem('reviews', JSON.stringify(reviews));
+    setReview(null); // Update the state to reflect the deletion
+  };
+
+  const handleEdit = () => {
+    navigate('/leaveReview', {
+      state: {
+        mediaDetails: {
+          url: `shows/${id}`,
+          title: show.name,
+          image: show.image?.original || 'placeholder.jpg',
+          review,
+        },
+      },
+    });
   };
 
   const stripHtmlTags = (html) => {
@@ -57,21 +78,23 @@ const ShowDetail = () => {
         title={show.name}
         details={
           <>
-            <p><strong>URL:</strong> <a href={show.url} target="_blank" rel="noopener noreferrer">View on TVMaze</a></p>
+            <p><strong>Language:</strong> {show.language}</p>
             <p><strong>Status:</strong> {show.status}</p>
-            <p><strong>Premiered - Ended:</strong> {show.premiered}    --{'>'}   {show.ended}</p>
+            <p><strong>Genres:</strong> {show.genres.join(', ')}</p>
             <p><strong>Summary:</strong> {stripHtmlTags(show.summary)}</p>
           </>
         }
         onAddToCompleted={addToCompleted}
         onAddToFutures={addToFutures}
-        onReview={review}
       />
+      {review && <UserReviewCard review={review} onDelete={handleDelete} onEdit={handleEdit} />}
     </>
   );
 };
 
 export default ShowDetail;
+
+
 
 
 
