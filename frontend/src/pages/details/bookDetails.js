@@ -94,5 +94,68 @@ const BookDetail = () => {
 
 export default BookDetail;
 
+// import React from 'react';
+// import { useParams, useNavigate } from 'react-router-dom';
+// import AppNavbar from '../../components/Navbar';
+// import DetailCard from '../../components/DetailCard';
+// import UserReviewCard from '../../components/userReviewCard';
+// import useMediaDetail from '../../hooks/useMediaDetail';
+
+// const transformBookData = (data) => data; // Adjust according to Google Books API response structure
+
+// const BookDetail = () => {
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+//   const { media: book, review, addToCompleted, addToFutures, handleReview, handleDelete } = useMediaDetail(
+//     id,
+//     `https://www.googleapis.com/books/v1/volumes/${id}`,
+//     'book',
+//     transformBookData
+//   );
+
+//   if (!book) return <p>Loading...</p>;
+
+//   const handleEdit = () => {
+//     navigate('/leaveReview', {
+//       state: {
+//         mediaDetails: {
+//           url: `books/${id}`,
+//           title: book.volumeInfo?.title,
+//           image: book.volumeInfo?.imageLinks?.thumbnail || 'placeholder.jpg',
+//           review,
+//         },
+//       },
+//     });
+//   };
+
+//   return (
+//     <>
+//       <AppNavbar />
+//       <DetailCard
+//         image={book.volumeInfo?.imageLinks?.thumbnail || 'placeholder.jpg'}
+//         title={book.volumeInfo?.title}
+//         details={
+//           <>
+//             <p><strong>Author:</strong> {book.volumeInfo?.authors?.join(', ') || 'N/A'}</p>
+//             <p><strong>Published Date:</strong> {book.volumeInfo?.publishedDate || 'N/A'}</p>
+//             <p><strong>Description:</strong> {book.volumeInfo?.description || 'N/A'}</p>
+//             <p><strong>Categories:</strong> {book.volumeInfo?.categories?.join(', ') || 'N/A'}</p>
+//           </>
+//         }
+//         onAddToCompleted={addToCompleted}
+//         onAddToFutures={addToFutures}
+//       />
+//       {review && <UserReviewCard review={review} onDelete={handleDelete} onEdit={handleEdit} />}
+//     </>
+//   );
+// };
+
+// export default BookDetail;
+
+
+
+
+
+
 
 

@@ -92,3 +92,62 @@ export default MangaDetail;
 
 
 
+// import React from 'react';
+// import { useParams, useNavigate } from 'react-router-dom';
+// import AppNavbar from '../../components/Navbar';
+// import DetailCard from '../../components/DetailCard';
+// import UserReviewCard from '../../components/userReviewCard';
+// import useMediaDetail from '../../hooks/useMediaDetail';
+
+// const transformMangaData = (data) => data.data; // Adjust according to Jikan API response structure
+
+// const MangaDetail = () => {
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+//   const { media: manga, review, addToCompleted, addToFutures, handleReview, handleDelete } = useMediaDetail(
+//     id,
+//     `https://api.jikan.moe/v4/manga/${id}/full`,
+//     'manga',
+//     transformMangaData
+//   );
+
+//   if (!manga) return <p>Loading...</p>;
+
+//   const handleEdit = () => {
+//     navigate('/leaveReview', {
+//       state: {
+//         mediaDetails: {
+//           url: `manga/${id}`,
+//           title: manga.title,
+//           image: manga.images?.jpg?.image_url || 'placeholder.jpg',
+//           review,
+//         },
+//       },
+//     });
+//   };
+
+//   return (
+//     <>
+//       <AppNavbar />
+//       <DetailCard
+//         image={manga.images?.jpg?.image_url || 'placeholder.jpg'}
+//         title={manga.title}
+//         details={
+//           <>
+//             <p><strong>Author:</strong> {manga.authors?.[0]?.name || 'N/A'}</p>
+//             <p><strong>Background:</strong> {manga.background || 'N/A'}</p>
+//             <p><strong>Demographic:</strong> {manga.demographics?.[0]?.name || 'N/A'}</p>
+//             <p><strong>Status:</strong> {manga.status || 'N/A'}</p>
+//             <p><strong>Genres:</strong> {manga.genres?.map(genre => genre.name).join(', ') || 'N/A'}</p>
+//             <p><strong>Plot:</strong> {manga.synopsis || 'N/A'}</p>
+//           </>
+//         }
+//         onAddToCompleted={addToCompleted}
+//         onAddToFutures={addToFutures}
+//       />
+//       {review && <UserReviewCard review={review} onDelete={handleDelete} onEdit={handleEdit} />}
+//     </>
+//   );
+// };
+
+// export default MangaDetail;

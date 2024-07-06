@@ -1,3 +1,4 @@
+
 // src/pages/details/AlbumDetail.js
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -95,4 +96,78 @@ const AlbumDetail = () => {
 
 export default AlbumDetail;
 
+// Hook Component
+// import React from 'react';
+// import { useParams, useNavigate } from 'react-router-dom';
+// import AppNavbar from '../../components/Navbar';
+// import DetailCard from '../../components/DetailCard';
+// import UserReviewCard from '../../components/userReviewCard';
+// import useMediaDetail from '../../hooks/useMediaDetail';
 
+// const transformAlbumData = (data) => data; // Adjust according to Spotify API response structure
+
+// const AlbumDetail = () => {
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+//   const token = localStorage.getItem('spotifyToken');
+
+//   const { media: album, review, addToCompleted, addToFutures, handleReview, handleDelete } = useMediaDetail(
+//     id,
+//     `https://api.spotify.com/v1/albums/${id}`,
+//     'album',
+//     transformAlbumData,
+//     token // Pass the token here
+//   );
+
+//   if (!album) return <p>Loading...</p>;
+
+//   const handleEdit = () => {
+//     navigate('/leaveReview', {
+//       state: {
+//         mediaDetails: {
+//           url: `albums/${id}`,
+//           title: album.name,
+//           image: album.images[0]?.url || 'placeholder.jpg',
+//           review,
+//         },
+//       },
+//     });
+//   };
+
+//   return (
+//     <>
+//       <AppNavbar />
+//       <DetailCard
+//         image={album.images[0]?.url || 'placeholder.jpg'}
+//         title={album.name}
+//         details={
+//           <>
+//             <p><strong>Artist(s):</strong> {album.artists.map(artist => artist.name).join(', ')}</p>
+//             <p><strong>Release Date:</strong> {album.release_date}</p>
+//             <p><strong>Total Tracks:</strong> {album.total_tracks}</p>
+//             <p><strong>Genres:</strong> {album.genres.join(', ')}</p>
+//             <p><strong>Label:</strong> {album.label}</p>
+//             <p><strong>Spotify URL:</strong> <a href={album.external_urls.spotify} target="_blank" rel="noopener noreferrer">View on Spotify</a></p>
+//             <div>
+//               <h4>Track List:</h4>
+//               <ul>
+//                 {album.tracks.items.map((track, index) => (
+//                   <li key={track.id}>
+//                     {index + 1}. {track.name} - {track.artists.map(artist => artist.name).join(', ')}
+//                   </li>
+//                 ))}
+//               </ul>
+//             </div>
+//           </>
+//         }
+//         onAddToCompleted={addToCompleted}
+//         onAddToFutures={addToFutures}
+//         onReview={handleReview}
+//         type="album"
+//       />
+//       {review && <UserReviewCard review={review} onDelete={handleDelete} onEdit={handleEdit} />}
+//     </>
+//   );
+// };
+
+// export default AlbumDetail;

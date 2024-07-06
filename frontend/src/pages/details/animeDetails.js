@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -90,7 +91,64 @@ const AnimeDetail = () => {
 export default AnimeDetail;
 
 
+// import React from 'react';
+// import { useParams, useNavigate } from 'react-router-dom';
+// import AppNavbar from '../../components/Navbar';
+// import DetailCard from '../../components/DetailCard';
+// import UserReviewCard from '../../components/userReviewCard'; // Import the new component
+// import useMediaDetail from '../../hooks/useMediaDetail';
 
+// const transformAnimeData = (data) => data.data; // Adjust according to Jikan API response structure
+
+// const AnimeDetail = () => {
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+//   const { media: anime, review, addToCompleted, addToFutures, handleReview, handleDelete } = useMediaDetail(
+//     id,
+//     `https://api.jikan.moe/v4/anime/${id}/full`,
+//     'anime',
+//     transformAnimeData
+//   );
+
+//   if (!anime) return <p>Loading...</p>;
+
+//   const handleEdit = () => {
+//     navigate('/leaveReview', {
+//       state: {
+//         mediaDetails: {
+//           url: `anime/${id}`,
+//           title: anime.title,
+//           image: anime.images.jpg.image_url,
+//           review,
+//         },
+//       },
+//     });
+//   };
+
+//   return (
+//     <>
+//       <AppNavbar />
+//       <DetailCard
+//         image={anime.images?.jpg?.image_url || 'placeholder.jpg'}
+//         title={anime.title}
+//         details={
+//           <>
+//             <p><strong>Background:</strong> {anime.background || 'N/A'}</p>
+//             <p><strong>Episodes:</strong> {anime.episodes || 'N/A'}</p>
+//             <p><strong>Status:</strong> {anime.status || 'N/A'}</p>
+//             <p><strong>Year:</strong> {anime.year || 'N/A'}</p>
+//             <p><strong>Plot:</strong> {anime.synopsis || 'N/A'}</p>
+//           </>
+//         }
+//         onAddToCompleted={addToCompleted}
+//         onAddToFutures={addToFutures}
+//       />
+//       {review && <UserReviewCard review={review} onDelete={handleDelete} onEdit={handleEdit} />}
+//     </>
+//   );
+// };
+
+// export default AnimeDetail;
 
 
 
