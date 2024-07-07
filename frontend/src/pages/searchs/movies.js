@@ -1,22 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
 import SearchBar from '../../components/SearchBar';
 import GridCard from '../../components/GridCard';
 import { Card } from 'react-bootstrap';
 
 const Movies = () => {
-  const [searchKey, setSearchKey] = useState("");
-  const [movies, setMovies] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchKey, setSearchKey] = useState(location.state?.searchKey || "");
+  const [movies, setMovies] = useState(location.state?.searchResults || []);
 
-  const searchMovies = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (location.state?.searchKey) {
+      searchMovies(location.state.searchKey);
+    }
+  }, [location.state]);
+
+  const searchMovies = async (key) => {
     try {
       const response = await axios.get('/api/movies/search', {
-        params: { q: searchKey }
+        params: { q: key }
       });
       setMovies(response.data.results || []);
     } catch (error) {
@@ -25,12 +31,22 @@ const Movies = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    searchMovies(searchKey);
+  };
+
   const clearMovies = () => {
     setMovies([]);
   };
 
   const handleCardClick = (id) => {
-    navigate(`/movies/${id}`);
+    navigate(`/movies/${id}`, {
+      state: {
+        searchKey,
+        searchResults: movies
+      }
+    });
   };
 
   const renderMovieCard = (movie) => (
@@ -47,7 +63,7 @@ const Movies = () => {
       <AppNavbar />
       <SearchBar
         placeholder="Search for Movies..."
-        searchFunction={searchMovies}
+        searchFunction={handleSearch}
         clearFunction={clearMovies}
         searchKey={searchKey}
         setSearchKey={setSearchKey}
@@ -62,5 +78,7 @@ const Movies = () => {
 };
 
 export default Movies;
+
+
 
 

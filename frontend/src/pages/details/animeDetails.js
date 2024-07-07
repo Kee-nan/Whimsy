@@ -1,6 +1,5 @@
-
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
@@ -9,6 +8,7 @@ import UserReviewCard from '../../components/userReviewCard'; // Import the new 
 const AnimeDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [anime, setAnime] = useState(null);
   const [review, setReview] = useState(null); // State for storing review
 
@@ -34,6 +34,7 @@ const AnimeDetail = () => {
     const list = JSON.parse(localStorage.getItem(listName)) || [];
     const animeItem = {
       url: `anime/${id}`,
+      media: 'Anime',
       title: anime.title,
       image: anime.images.jpg.image_url,
     };
@@ -63,11 +64,21 @@ const AnimeDetail = () => {
     });
   };
 
+  const handleBack = () => {
+    navigate('/anime', {
+      state: {
+        searchKey: location.state?.searchKey,
+        searchResults: location.state?.searchResults
+      }
+    });
+  };
+
   if (!anime) return <p>Loading...</p>;
 
   return (
     <>
       <AppNavbar />
+      <button onClick={handleBack}>Back</button>
       <DetailCard
         image={anime.images.jpg.image_url}
         title={anime.title}
@@ -89,6 +100,7 @@ const AnimeDetail = () => {
 };
 
 export default AnimeDetail;
+
 
 
 // import React from 'react';

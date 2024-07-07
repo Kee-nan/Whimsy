@@ -1,48 +1,53 @@
-// src/pages/searchs/manga.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
 import SearchBar from '../../components/SearchBar';
 import GridCard from '../../components/GridCard';
 import { Card } from 'react-bootstrap';
 
 const Manga = () => {
-  const [searchKey, setSearchKey] = useState("");
-  const [manga, setManga] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchKey, setSearchKey] = useState(location.state?.searchKey || "");
+  const [manga, setManga] = useState(location.state?.searchResults || []);
 
-  // Function to search Manga using the Jikan API
-  const searchManga = async (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
+  useEffect(() => {
+    if (location.state?.searchKey) {
+      searchManga(location.state.searchKey);
+    }
+  }, [location.state]);
+
+  const searchManga = async (key) => {
     try {
       const response = await axios.get('https://api.jikan.moe/v4/manga', {
-        params: { q: searchKey, sfw: true } // Use the search key as a query parameter
+        params: { q: key, sfw: true }
       });
-      const responseJson = response.data;
-
-      if (responseJson.data) {
-        setManga(responseJson.data); // Update the state with the search results
-      } else {
-        setManga([]); // Clear the Manga if no results are found
-      }
+      setManga(response.data.data || []);
     } catch (error) {
       console.error("Error fetching Manga:", error);
-      setManga([]); // Clear the Manga in case of an error
+      setManga([]);
     }
   };
 
-  // Function to clear the list of manga
+  const handleSearch = (e) => {
+    e.preventDefault();
+    searchManga(searchKey);
+  };
+
   const clearManga = () => {
     setManga([]);
   };
 
   const handleCardClick = (id) => {
-    navigate(`/manga/${id}`);
+    const currentState = {
+      searchKey,
+      searchResults: manga
+    };
+    navigate(`/manga/${id}`, { state: currentState });
   };
 
-  // Render function for each manga item
   const renderMangaCard = (item) => (
     <>
       <Card.Img src={item.images.jpg.image_url} alt={item.title} />
@@ -57,7 +62,7 @@ const Manga = () => {
       <AppNavbar />
       <SearchBar
         placeholder="Search for Manga..."
-        searchFunction={searchManga}
+        searchFunction={handleSearch}
         clearFunction={clearManga}
         searchKey={searchKey}
         setSearchKey={setSearchKey}
@@ -65,10 +70,12 @@ const Manga = () => {
       <GridCard
         items={manga.map(m => ({ ...m, id: m.mal_id }))}
         renderItem={renderMangaCard}
-        onCardClick={handleCardClick} // Pass handleCardClick function
+        onCardClick={handleCardClick}
       />
     </>
   );
 };
 
 export default Manga;
+
+

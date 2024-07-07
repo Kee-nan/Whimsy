@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
@@ -8,6 +8,7 @@ import UserReviewCard from '../../components/userReviewCard'; // Import the new 
 const MangaDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [manga, setManga] = useState(null);
   const [review, setReview] = useState(null); // State for storing review
 
@@ -33,6 +34,7 @@ const MangaDetail = () => {
     const list = JSON.parse(localStorage.getItem(listName)) || [];
     const mangaItem = {
       url: `manga/${id}`,
+      media: 'Manga',
       title: manga.title,
       image: manga.images.jpg.image_url,
     };
@@ -62,11 +64,21 @@ const MangaDetail = () => {
     });
   };
 
+  const handleBack = () => {
+    navigate('/manga', {
+      state: {
+        searchKey: location.state?.searchKey,
+        searchResults: location.state?.searchResults
+      }
+    });
+  };
+
   if (!manga) return <p>Loading...</p>;
 
   return (
     <>
       <AppNavbar />
+      <button onClick={handleBack}>Back</button>
       <DetailCard
         image={manga.images.jpg.image_url}
         title={manga.title}
@@ -89,6 +101,8 @@ const MangaDetail = () => {
 };
 
 export default MangaDetail;
+
+
 
 
 

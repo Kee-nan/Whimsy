@@ -1,7 +1,5 @@
-
-// src/pages/details/AlbumDetail.js
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
@@ -10,8 +8,10 @@ import UserReviewCard from '../../components/userReviewCard';
 const AlbumDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [album, setAlbum] = useState(null);
   const [review, setReview] = useState(null);
+  const { searchKey, searchResults } = location.state || { searchKey: "", searchResults: [] };
 
   useEffect(() => {
     const fetchAlbumDetails = async () => {
@@ -39,6 +39,7 @@ const AlbumDetail = () => {
     const list = JSON.parse(localStorage.getItem(listName)) || [];
     const albumItem = {
       url: `albums/${id}`,
+      media: 'Album',
       title: album.name,
       image: album.images[0]?.url || 'placeholder.jpg',
     };
@@ -49,11 +50,15 @@ const AlbumDetail = () => {
   const addToFutures = () => handleAddToList('futuresList');
   const handleReview = () => navigate('/leaveReview', { state: { mediaDetails: { url: `albums/${id}`, title: album.name, image: album.images[0]?.url || 'placeholder.jpg' } } });
 
-  const handleDelete = (title) => {
+  const handleDelete = () => {
     const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
     delete reviews[`albums/${id}`];
     localStorage.setItem('reviews', JSON.stringify(reviews));
     setReview(null);
+  };
+
+  const handleBack = () => {
+    navigate('/albums', { state: { searchKey, searchResults } }); // Pass searchKey and searchResults
   };
 
   if (!album) return <p>Loading...</p>;
@@ -61,6 +66,7 @@ const AlbumDetail = () => {
   return (
     <>
       <AppNavbar />
+      <button onClick={handleBack}>Back</button>
       <DetailCard
         image={album.images[0]?.url || 'placeholder.jpg'}
         title={album.name}
@@ -95,6 +101,9 @@ const AlbumDetail = () => {
 };
 
 export default AlbumDetail;
+
+
+
 
 // Hook Component
 // import React from 'react';

@@ -1,4 +1,3 @@
-// src/pages/searchs/albums.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,14 +5,14 @@ import AppNavbar from '../../components/Navbar';
 import SearchBar from '../../components/SearchBar';
 import GridCard from '../../components/GridCard';
 import { Card } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Albums = () => {
-  const [searchKey, setSearchKey] = useState("");
-  const [albums, setAlbums] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchKey, setSearchKey] = useState(location.state?.searchKey || "");
+  const [albums, setAlbums] = useState(location.state?.searchResults || []);
 
-  // Function to search albums using the Spotify API
   const searchAlbums = async (e) => {
     e.preventDefault();
     try {
@@ -34,17 +33,19 @@ const Albums = () => {
     }
   };
 
-  // Function to clear the list of albums
   const clearAlbums = () => {
     setAlbums([]);
   };
 
-  // Handle card click and navigate to album detail page
   const handleCardClick = (id) => {
-    navigate(`/albums/${id}`);
+    navigate(`/albums/${id}`, {
+      state: {
+        searchKey,
+        searchResults: albums
+      }
+    });
   };
 
-  // Render function for each album item
   const renderAlbumCard = (album) => (
     <>
       <Card.Img src={album.images[0]?.url || 'placeholder.jpg'} alt={album.name} />
@@ -68,12 +69,15 @@ const Albums = () => {
       <GridCard
         items={albums}
         renderItem={renderAlbumCard}
-        onCardClick={handleCardClick} // Pass handleCardClick function
+        onCardClick={handleCardClick}
       />
     </>
   );
 };
 
 export default Albums;
+
+
+
 
 

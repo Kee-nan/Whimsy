@@ -1,6 +1,5 @@
-
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
@@ -9,6 +8,7 @@ import UserReviewCard from '../../components/userReviewCard'; // Import the new 
 const MovieDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [movie, setMovie] = useState(null);
   const [review, setReview] = useState(null); // State for storing review
 
@@ -34,6 +34,7 @@ const MovieDetail = () => {
     const list = JSON.parse(localStorage.getItem(listName)) || [];
     const movieItem = {
       url: `movies/${id}`,
+      media: 'Movie',
       title: movie.title,
       image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
     };
@@ -63,13 +64,21 @@ const MovieDetail = () => {
     });
   };
 
-  
+  const handleBack = () => {
+    navigate('/movies', {
+      state: {
+        searchKey: location.state?.searchKey,
+        searchResults: location.state?.searchResults
+      }
+    });
+  };
 
   if (!movie) return <p>Loading...</p>;
 
   return (
     <>
       <AppNavbar />
+      <button onClick={handleBack}>Back to Results</button>
       <DetailCard
         image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
         title={movie.title}
@@ -89,6 +98,8 @@ const MovieDetail = () => {
 };
 
 export default MovieDetail;
+
+
 
 
 

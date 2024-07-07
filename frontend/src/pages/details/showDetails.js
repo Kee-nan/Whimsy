@@ -1,6 +1,6 @@
-
+// src/pages/searchs/showDetail.js
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
@@ -9,6 +9,7 @@ import UserReviewCard from '../../components/userReviewCard'; // Import the new 
 const ShowDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [show, setShow] = useState(null);
   const [review, setReview] = useState(null); // State for storing review
 
@@ -34,6 +35,7 @@ const ShowDetail = () => {
     const list = JSON.parse(localStorage.getItem(listName)) || [];
     const showItem = {
       url: `shows/${id}`,
+      media: 'Show',
       title: show.name,
       image: show.image?.original || 'placeholder.jpg',
     };
@@ -55,11 +57,21 @@ const ShowDetail = () => {
       state: {
         mediaDetails: {
           url: `shows/${id}`,
+          media: 'Show',
           title: show.name,
           image: show.image?.original || 'placeholder.jpg',
           review,
         },
       },
+    });
+  };
+
+  const handleBack = () => {
+    navigate('/shows', {
+      state: {
+        searchKey: location.state?.searchKey,
+        searchResults: location.state?.searchResults
+      }
     });
   };
 
@@ -74,6 +86,7 @@ const ShowDetail = () => {
   return (
     <>
       <AppNavbar />
+      <button onClick={handleBack}>Back</button>
       <DetailCard
         image={show.image?.original || 'placeholder.jpg'}
         title={show.name}
@@ -94,6 +107,8 @@ const ShowDetail = () => {
 };
 
 export default ShowDetail;
+
+
 
 // import React from 'react';
 // import { useParams, useNavigate } from 'react-router-dom';
