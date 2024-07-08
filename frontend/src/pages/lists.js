@@ -15,8 +15,13 @@ const Lists = () => {
   useEffect(() => {
     const savedCompletedList = JSON.parse(localStorage.getItem('completedList')) || [];
     const savedFuturesList = JSON.parse(localStorage.getItem('futuresList')) || [];
-    setCompletedList(savedCompletedList);
-    setFuturesList(savedFuturesList);
+    
+    // Ensure all items have a title property
+    const validCompletedList = savedCompletedList.filter(item => item.title);
+    const validFuturesList = savedFuturesList.filter(item => item.title);
+    
+    setCompletedList(validCompletedList);
+    setFuturesList(validFuturesList);
   }, []);
 
   const handleNavigate = (url) => {
@@ -55,7 +60,7 @@ const Lists = () => {
   const filterList = (list) => {
     return list.filter(item => {
       const matchesMedia = currentMedia === 'All' || item.media === currentMedia;
-      const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesMedia && matchesSearch;
     });
   };
@@ -90,12 +95,12 @@ const Lists = () => {
           <Col xs="auto">
             <DropdownButton id="media-dropdown" title={currentMedia} className="mr-2">
               <Dropdown.Item onClick={() => handleSelectMedia('All')}>All</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('Anime')}>Anime</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('Album')}>Album</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('Show')}>Show</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('Book')}>Book</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('Movie')}>Movie</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('Manga')}>Manga</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSelectMedia('anime')}>Anime</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSelectMedia('album')}>Album</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSelectMedia('show')}>Show</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSelectMedia('book')}>Book</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSelectMedia('movie')}>Movie</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSelectMedia('manga')}>Manga</Dropdown.Item>
             </DropdownButton>
           </Col>
           <Col>
@@ -122,6 +127,7 @@ export default Lists;
 // import { Container, DropdownButton, Dropdown, FormControl, InputGroup, Row, Col } from 'react-bootstrap';
 // import AppNavbar from '../components/Navbar';
 // import ListCard from '../components/ListCard';
+// import { useNavigate } from 'react-router-dom';
 
 // const Lists = () => {
 //   const [completedList, setCompletedList] = useState([]);
@@ -129,6 +135,7 @@ export default Lists;
 //   const [currentList, setCurrentList] = useState('completed');
 //   const [currentMedia, setCurrentMedia] = useState('All');
 //   const [searchTerm, setSearchTerm] = useState('');
+//   const navigate = useNavigate();
 
 //   useEffect(() => {
 //     const savedCompletedList = JSON.parse(localStorage.getItem('completedList')) || [];
@@ -138,7 +145,12 @@ export default Lists;
 //   }, []);
 
 //   const handleNavigate = (url) => {
-//     window.location.href = `/${url}`;
+//     const currentState = {
+//       currentList,
+//       currentMedia,
+//       searchTerm
+//     };
+//     navigate(`/${url}`, { state: currentState });
 //   };
 
 //   const handleDelete = (url, listName) => {
@@ -230,6 +242,7 @@ export default Lists;
 // };
 
 // export default Lists;
+
 
 
 

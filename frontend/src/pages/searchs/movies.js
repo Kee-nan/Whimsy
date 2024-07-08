@@ -41,7 +41,7 @@ const Movies = () => {
   };
 
   const handleCardClick = (id) => {
-    navigate(`/movies/${id}`, {
+    navigate(`/movie/${id}`, {
       state: {
         searchKey,
         searchResults: movies

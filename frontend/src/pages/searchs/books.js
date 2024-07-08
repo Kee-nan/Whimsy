@@ -45,7 +45,7 @@ const Books = () => {
       searchKey,
       searchResults: books
     };
-    navigate(`/books/${id}`, { state: currentState });
+    navigate(`/book/${id}`, { state: currentState });
   };
 
   const renderBookCard = (item) => (

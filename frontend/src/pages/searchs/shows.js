@@ -46,7 +46,7 @@ const Shows = () => {
       searchKey,
       searchResults: shows
     };
-    navigate(`/shows/${id}`, { state: currentState });
+    navigate(`/show/${id}`, { state: currentState });
   };
 
   const renderShowCard = (item) => (

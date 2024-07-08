@@ -33,19 +33,19 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/lists" element={<Lists />} />
       
-        <Route path="/movies" element={<Movies />} />
+        <Route path="/movie" element={<Movies />} />
         <Route path="/anime" element={<Anime />} />
         <Route path="/manga" element={<Manga />} />
-        <Route path="/albums" element={<Albums />} />
-        <Route path="/shows" element={<Shows />} />
-        <Route path="/books" element={<Books />} />
+        <Route path="/album" element={<Albums />} />
+        <Route path="/show" element={<Shows />} />
+        <Route path="/book" element={<Books />} />
 
         <Route path="/anime/:id" element={<AnimeDetail />} />  {/* Add route for anime detail */}
         <Route path="/manga/:id" element={<MangaDetail />} /> {/* Add the MangaDetail route */}
-        <Route path="/shows/:id" element={<ShowDetail />} />
-        <Route path="/albums/:id" element={<AlbumDetail />} />
-        <Route path="/books/:id" element={<BookDetail />} />
-        <Route path="/movies/:id" element={<MovieDetail />} />
+        <Route path="/show/:id" element={<ShowDetail />} />
+        <Route path="/album/:id" element={<AlbumDetail />} />
+        <Route path="/book/:id" element={<BookDetail />} />
+        <Route path="/movie/:id" element={<MovieDetail />} />
 
         <Route path="/leaveReview" element={<LeaveReview />} />
       </Routes>

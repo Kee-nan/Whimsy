@@ -38,7 +38,7 @@ const Albums = () => {
   };
 
   const handleCardClick = (id) => {
-    navigate(`/albums/${id}`, {
+    navigate(`/album/${id}`, {
       state: {
         searchKey,
         searchResults: albums
