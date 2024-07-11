@@ -5,10 +5,10 @@ const mongoose = require('mongoose');
 
 // Import route files 
 const spotifyRoutes = require('./routes/spotifyRoutes');
-const booksRoutes = require('./routes/booksRoutes'); // Import books route
-const moviesRoutes = require('./routes/moviesRoutes'); // Import movies route
-const accountRoutes = require('./routes/accountRoutes'); // Import accounts route
-
+const booksRoutes = require('./routes/booksRoutes');
+const moviesRoutes = require('./routes/moviesRoutes');
+const accountRoutes = require('./routes/accountRoutes');
+const listRoutes = require('./routes/listRoutes');
 
 // Environment config
 dotenv.config();
@@ -16,8 +16,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-//Mongo Connection
-const mongoUri = process.env.MONGO_URI
+// Mongo Connection
+const mongoUri = process.env.MONGO_URI;
 
 mongoose.connect(mongoUri, {
   useNewUrlParser: true,
@@ -35,11 +35,13 @@ app.use(express.json());
 
 // Use route files
 app.use('/auth/spotify', spotifyRoutes);
-app.use('/api/books', booksRoutes); // Use books route
-app.use('/api/movies', moviesRoutes); // Use movies route
-app.use('/api/accounts', accountRoutes); // Use accounts route
+app.use('/api/books', booksRoutes);
+app.use('/api/movies', moviesRoutes);
+app.use('/api/accounts', accountRoutes);
+app.use('/api/list', listRoutes);
 
 // Start server
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
-});
+}); 
+

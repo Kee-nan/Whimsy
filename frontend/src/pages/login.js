@@ -24,6 +24,8 @@ const LoginPage = () => {
 
       if (response.ok) {
         // If login is successful, navigate to the homepage
+        const data = await response.json();
+        localStorage.setItem('user_token', data.user_token); // Store the token in localStorage
         navigate('/');
       } else {
         // If login fails, set error message

@@ -1,10 +1,10 @@
-
 // src/pages/searchs/DetailPage.js
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
 import UserReviewCard from '../../components/userReviewCard';
+import axios from 'axios';
 
 const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) => {
   const { id } = useParams();
@@ -17,7 +17,6 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   useEffect(() => {
     const fetchMediaDetails = async () => {
       try {
-        // Conditionally include the token if required
         const token = tokenRequired ? localStorage.getItem('spotifyToken') : null;
         const response = await fetchDetails(id, token);
         setDetails(extractDetails(response.data));
@@ -33,19 +32,32 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     fetchMediaDetails();
   }, [id, fetchDetails, extractDetails, mediaType, tokenRequired]);
 
-  const handleAddToList = (listName) => {
-    const list = JSON.parse(localStorage.getItem(listName)) || [];
-    const item = {
-      url: `${mediaType}/${id}`,
+  const handleAddToList = async (listName) => {
+    const media = {
+      id: `${mediaType}/${id}`,
       media: mediaType,
       title: details.title,
       image: details.image,
     };
-    localStorage.setItem(listName, JSON.stringify([...list, item]));
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/list/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+        },
+        body: JSON.stringify({ listName, media })
+    });
+      console.log(response.data.message);
+    } catch (error) {
+      console.error(`Error adding to ${listName}:`, error);
+    }
   };
+  
 
-  const addToCompleted = () => handleAddToList('completedList');
-  const addToFutures = () => handleAddToList('futuresList');
+  const addToCompleted = () => handleAddToList('completed');
+  const addToFutures = () => handleAddToList('futures');
 
   const handleReview = () => navigate('/leaveReview', {
     state: {
@@ -90,5 +102,6 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
 };
 
 export default DetailPage;
+
 
 
