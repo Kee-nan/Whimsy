@@ -35,7 +35,7 @@ const CreateAccountPage = () => {
 
       if (response.ok) {
         // If the account creation is successful, navigate to the login page or home page
-        navigate('/');
+        navigate('/login');
       } else {
         // Handle error if the account creation fails
         console.error('Account creation failed');

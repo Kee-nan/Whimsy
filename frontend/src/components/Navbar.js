@@ -6,7 +6,7 @@ const AppNavbar = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
-        <Navbar.Brand as={Link} to="/">Whimsy</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/homepage">Whimsy</Navbar.Brand>
         <Nav className="me-auto">
           <Nav.Link as={Link} to="/album">Albums</Nav.Link>
           <Nav.Link as={Link} to="/anime">Anime</Nav.Link>

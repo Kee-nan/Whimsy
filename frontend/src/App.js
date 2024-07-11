@@ -1,6 +1,5 @@
-// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 // General Pages
 import MainPage from './pages/main';
@@ -26,38 +25,43 @@ import BookDetail from './pages/details/bookDetails';
 import MovieDetail from './pages/details/movieDetails';
 import LeaveReview from './pages/leaveReview';
 
+import PrivateRoute from './components/PrivateRoute';
+
 const App = () => {
   return (
     <Router>
       <Routes>
+        <Route path="*" element={<Navigate to="/login" />} />
+
         <Route path="/login" element={<LoginPage />} />
         <Route path="/accountcreation" element={<CreateAccountPage />} />
 
-        <Route path="/" element={<MainPage />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/lists" element={<Lists />} />
-   
-        <Route path="/movie" element={<Movies />} />
-        <Route path="/anime" element={<Anime />} />
-        <Route path="/manga" element={<Manga />} />
-        <Route path="/album" element={<Albums />} />
-        <Route path="/show" element={<Shows />} />
-        <Route path="/book" element={<Books />} />
+        <Route path="/homepage" element={<PrivateRoute element={<MainPage />} />} />
+        <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
+        <Route path="/lists" element={<PrivateRoute element={<Lists />} />} />
 
-        <Route path="/anime/:id" element={<AnimeDetail />} />
-        <Route path="/manga/:id" element={<MangaDetail />} />
-        <Route path="/show/:id" element={<ShowDetail />} />
-        <Route path="/album/:id" element={<AlbumDetail />} />
-        <Route path="/book/:id" element={<BookDetail />} />
-        <Route path="/movie/:id" element={<MovieDetail />} />
+        <Route path="/movie" element={<PrivateRoute element={<Movies />} />} />
+        <Route path="/anime" element={<PrivateRoute element={<Anime />} />} />
+        <Route path="/manga" element={<PrivateRoute element={<Manga />} />} />
+        <Route path="/album" element={<PrivateRoute element={<Albums />} />} />
+        <Route path="/show" element={<PrivateRoute element={<Shows />} />} />
+        <Route path="/book" element={<PrivateRoute element={<Books />} />} />
 
-        <Route path="/leaveReview" element={<LeaveReview />} />
+        <Route path="/anime/:id" element={<PrivateRoute element={<AnimeDetail />} />} />
+        <Route path="/manga/:id" element={<PrivateRoute element={<MangaDetail />} />} />
+        <Route path="/show/:id" element={<PrivateRoute element={<ShowDetail />} />} />
+        <Route path="/album/:id" element={<PrivateRoute element={<AlbumDetail />} />} />
+        <Route path="/book/:id" element={<PrivateRoute element={<BookDetail />} />} />
+        <Route path="/movie/:id" element={<PrivateRoute element={<MovieDetail />} />} />
+        
+        <Route path="/leaveReview" element={<PrivateRoute element={<LeaveReview />} />} />
       </Routes>
     </Router>
   );
 };
 
 export default App;
+
 
 
 
