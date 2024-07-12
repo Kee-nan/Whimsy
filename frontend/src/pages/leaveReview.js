@@ -20,17 +20,42 @@ const LeaveReview = () => {
     }
   }, [location.state]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const reviewData = { rating, review, title: mediaDetails.title, image: mediaDetails.image };
-
-    const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
-    reviews[mediaDetails.url] = reviewData;
-    localStorage.setItem('reviews', JSON.stringify(reviews));
-
-    navigate(`/${mediaDetails.url}`);
+  
+    const reviewData = { 
+      id: mediaDetails.id, 
+      image: mediaDetails.image, 
+      rating, 
+      review, 
+      title: mediaDetails.title 
+    };
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/review/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+        },
+        body: JSON.stringify({ reviewData })
+      });
+  
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log(responseData.message);
+        navigate(`/${mediaDetails.id}`);
+      } else {
+        const errorData = await response.json();
+        console.error('Error:', errorData.message);
+        alert(`Error: ${errorData.message}`);  // Display error message to the user
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An unexpected error occurred. Please try again later.');  // Handle unexpected errors
+    }
   };
-
+  
   const isPoster = mediaDetails.type === 'poster';
 
   const styles = {

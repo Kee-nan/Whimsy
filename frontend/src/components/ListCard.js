@@ -6,6 +6,7 @@ const ListCard = ({ item, onNavigate, onDelete, type = 'poster' }) => {
   const navigate = useNavigate();
 
   const handleReviewClick = () => {
+    console.log('Navigating with:', item);
     navigate('/leaveReview', { state: { mediaDetails: item } });
   };
 

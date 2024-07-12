@@ -4,7 +4,6 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
 import UserReviewCard from '../../components/userReviewCard';
-import axios from 'axios';
 
 const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) => {
   const { id } = useParams();
@@ -14,23 +13,49 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   const [review, setReview] = useState(null);
   const { searchKey, searchResults } = location.state || { searchKey: "", searchResults: [] };
 
+  // Use Effect hook to go fetch assocaited media details with the object they clicked on
   useEffect(() => {
+
     const fetchMediaDetails = async () => {
+      // Block to Fetch the Details of the media object
       try {
         const token = tokenRequired ? localStorage.getItem('spotifyToken') : null;
         const response = await fetchDetails(id, token);
         setDetails(extractDetails(response.data));
-
-        const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
-        const reviewData = reviews[`${mediaType}/${id}`];
-        setReview(reviewData);
       } catch (error) {
         console.error(`Error fetching ${mediaType} details:`, error);
       }
+
+      // Block to fetch review from backend
+      try {
+        const userToken = localStorage.getItem('user_token');
+        const reviewResponse = await fetch(`http://localhost:5000/api/review/get?mediaType=${mediaType}&id=${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${userToken}`
+          }
+        });
+  
+        if (reviewResponse.ok) {
+          const data = await reviewResponse.json();
+          setReview(data.review);
+        } else {
+          console.error(`Error fetching ${mediaType} review:`, await reviewResponse.text());
+        }
+      } catch (error) {
+        console.error(`Error fetching ${mediaType} review:`, error);
+      }
     };
 
+    // Call the funciton in the hook
     fetchMediaDetails();
   }, [id, fetchDetails, extractDetails, mediaType, tokenRequired]);
+
+
+  // Function to Add the media object on the page to the database in the User's List
+  const addToCompleted = () => handleAddToList('completed');
+  const addToFutures = () => handleAddToList('futures');
 
   const handleAddToList = async (listName) => {
     const media = {
@@ -54,11 +79,9 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
       console.error(`Error adding to ${listName}:`, error);
     }
   };
-  
 
-  const addToCompleted = () => handleAddToList('completed');
-  const addToFutures = () => handleAddToList('futures');
 
+  // Navigate to the Leave Review Page if the Review button is hit with associated Details
   const handleReview = () => navigate('/leaveReview', {
     state: {
       mediaDetails: {
@@ -70,6 +93,8 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     },
   });
 
+
+  // Function to handle deleting a review if the button o
   const handleDelete = () => {
     const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
     delete reviews[`${mediaType}/${id}`];
@@ -77,10 +102,14 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     setReview(null);
   };
 
+
+  // Back button to navigate back to the search page with the same query results
   const handleBack = () => {
     navigate(`/${mediaType}`, { state: { searchKey, searchResults } });
   };
 
+
+  // Loading bar while we wait for details to be fetched
   if (!details) return <p>Loading...</p>;
 
   return (

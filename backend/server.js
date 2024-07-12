@@ -9,6 +9,7 @@ const booksRoutes = require('./routes/booksRoutes');
 const moviesRoutes = require('./routes/moviesRoutes');
 const accountRoutes = require('./routes/accountRoutes');
 const listRoutes = require('./routes/listRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 // Environment config
 dotenv.config();
@@ -39,6 +40,7 @@ app.use('/api/books', booksRoutes);
 app.use('/api/movies', moviesRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/list', listRoutes);
+app.use('/api/review', reviewRoutes);
 
 // Start server
 app.listen(PORT, () => {
