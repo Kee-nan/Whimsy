@@ -46,25 +46,54 @@ const Lists = () => {
     fetchData();
   }, []);
 
-  const handleNavigate = (url) => {
+  const handleNavigate = (id) => {
     const currentState = {
       currentList,
       currentMedia,
       searchTerm
     };
-    navigate(`/${url}`, { state: currentState });
+    navigate(`/${id}`, { state: currentState });
   };
 
-  const handleDelete = (url, listName) => {
-    const updatedList = listName === 'completedList' 
-      ? completedList.filter(item => item.url !== url) 
-      : futuresList.filter(item => item.url !== url);
-    
-    listName === 'completedList'
-      ? setCompletedList(updatedList)
-      : setFuturesList(updatedList);
-      
-    localStorage.setItem(listName, JSON.stringify(updatedList));
+  const handleDelete = async (id, listType) => {
+    const user_token = localStorage.getItem('user_token');
+    if (!user_token) {
+      console.error('No user token found');
+      return;
+    }
+
+    console.log(`Deleting item with id: ${id} from list: ${listType}`);
+  
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${user_token}`,
+    };
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/list/delete', {
+        method: 'DELETE',
+        headers,
+        body: JSON.stringify({ listType, id }),
+      });
+  
+      if (response.ok) {
+        const updatedList = listType === 'completedList' 
+          ? completedList.filter(item => item.id !== id) 
+          : futuresList.filter(item => item.id !== id);
+        
+        if (listType === 'completedList') {
+          setCompletedList(updatedList);
+        } else {
+          setFuturesList(updatedList);
+        }
+  
+        localStorage.setItem(listType, JSON.stringify(updatedList));
+      } else {
+        console.error('Failed to delete item from list');
+      }
+    } catch (error) {
+      console.error('Error deleting item from list:', error);
+    }
   };
 
   const handleSelectList = (listName) => {
@@ -87,15 +116,16 @@ const Lists = () => {
     });
   };
 
-  const renderList = (list) => (
+  const renderList = (list, listType) => (
     <div className="row">
       {filterList(list).map((item, index) => (
         <div className="col-md-3 mb-4" key={index}>
           <ListCard
             item={item}
             onNavigate={handleNavigate}
-            onDelete={(url) => handleDelete(url, currentList === 'completed' ? 'completedList' : 'futuresList')}
+            onDelete={(id) => handleDelete(id, listType)}
             type={item.type}
+            listType={listType}
           />
         </div>
       ))}
@@ -137,13 +167,14 @@ const Lists = () => {
             </InputGroup>
           </Col>
         </Row>
-        {currentList === 'completed' ? renderList(completedList) : renderList(futuresList)}
+        {currentList === 'completed' ? renderList(completedList, 'completedList') : renderList(futuresList, 'futuresList')}
       </Container>
     </>
   );
 };
 
 export default Lists;
+
 
 
 

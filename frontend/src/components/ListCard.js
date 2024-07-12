@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-const ListCard = ({ item, onNavigate, onDelete, type = 'poster' }) => {
+const ListCard = ({ item, onNavigate, onDelete, type = 'poster', listType }) => {
   const navigate = useNavigate();
 
   const handleReviewClick = () => {
@@ -12,12 +12,12 @@ const ListCard = ({ item, onNavigate, onDelete, type = 'poster' }) => {
 
   const styles = {
     card: {
-      width: '320px', // Increased width
+      width: '320px',
       margin: '5px',
     },
     image: {
-      width: '100%', // Full width of the card
-      height: type === 'album' ? '300px' : '450px', // Adjust height for better fit
+      width: '100%',
+      height: type === 'album' ? '300px' : '450px',
       objectFit: 'cover',
     },
     title: {
@@ -30,8 +30,8 @@ const ListCard = ({ item, onNavigate, onDelete, type = 'poster' }) => {
       gap: '2px',
     },
     button: {
-      flex: 1, // Make buttons stretch to fill the space
-      margin: '0 5px', // Margin between buttons
+      flex: 1,
+      margin: '0 5px',
     },
   };
 
@@ -42,7 +42,7 @@ const ListCard = ({ item, onNavigate, onDelete, type = 'poster' }) => {
         <Card.Title style={styles.title}>{item.title}</Card.Title>
         <div style={styles.buttons}>
           <Button variant="primary" style={styles.button} onClick={() => onNavigate(item.id)}>Details</Button>
-          <Button variant="danger" style={styles.button} onClick={() => onDelete(item.url)}>Delete</Button>
+          <Button variant="danger" style={styles.button} onClick={() => onDelete(item.id, listType)}>Delete</Button>
           <Button variant="secondary" style={styles.button} onClick={handleReviewClick}>Review</Button>
         </div>
       </Card.Body>
@@ -51,4 +51,7 @@ const ListCard = ({ item, onNavigate, onDelete, type = 'poster' }) => {
 };
 
 export default ListCard;
+
+
+
 
