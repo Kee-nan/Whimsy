@@ -41,7 +41,7 @@ const ListCard = ({ item, onNavigate, onDelete, type = 'poster' }) => {
       <Card.Body>
         <Card.Title style={styles.title}>{item.title}</Card.Title>
         <div style={styles.buttons}>
-          <Button variant="primary" style={styles.button} onClick={() => onNavigate(item.url)}>Details</Button>
+          <Button variant="primary" style={styles.button} onClick={() => onNavigate(item.id)}>Details</Button>
           <Button variant="danger" style={styles.button} onClick={() => onDelete(item.url)}>Delete</Button>
           <Button variant="secondary" style={styles.button} onClick={handleReviewClick}>Review</Button>
         </div>

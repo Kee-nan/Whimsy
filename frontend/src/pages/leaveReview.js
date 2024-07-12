@@ -1,3 +1,4 @@
+// src/pages/leaveReview.js
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Form, Button } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -22,7 +23,7 @@ const LeaveReview = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const reviewData = { 
       id: mediaDetails.id, 
       image: mediaDetails.image, 
@@ -30,7 +31,7 @@ const LeaveReview = () => {
       review, 
       title: mediaDetails.title 
     };
-  
+
     try {
       const response = await fetch('http://localhost:5000/api/review/add', {
         method: 'POST',
@@ -40,7 +41,7 @@ const LeaveReview = () => {
         },
         body: JSON.stringify({ reviewData })
       });
-  
+
       if (response.ok) {
         const responseData = await response.json();
         console.log(responseData.message);
@@ -48,14 +49,14 @@ const LeaveReview = () => {
       } else {
         const errorData = await response.json();
         console.error('Error:', errorData.message);
-        alert(`Error: ${errorData.message}`);  // Display error message to the user
+        alert(`Error: ${errorData.message}`);
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An unexpected error occurred. Please try again later.');  // Handle unexpected errors
+      alert('An unexpected error occurred. Please try again later.');
     }
   };
-  
+
   const isPoster = mediaDetails.type === 'poster';
 
   const styles = {
@@ -124,5 +125,6 @@ const LeaveReview = () => {
 };
 
 export default LeaveReview;
+
 
 

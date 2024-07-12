@@ -85,7 +85,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   const handleReview = () => navigate('/leaveReview', {
     state: {
       mediaDetails: {
-        url: `${mediaType}/${id}`,
+        id: `${mediaType}/${id}`,
         title: details.title,
         image: details.image,
         review,
@@ -95,11 +95,31 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
 
 
   // Function to handle deleting a review if the button o
-  const handleDelete = () => {
-    const reviews = JSON.parse(localStorage.getItem('reviews')) || {};
-    delete reviews[`${mediaType}/${id}`];
-    localStorage.setItem('reviews', JSON.stringify(reviews));
-    setReview(null);
+  const handleDelete = async () => {
+    try {
+      const userToken = localStorage.getItem('user_token');
+      console.log(`Deleting review for mediaType: ${mediaType}, id: ${id}`);
+      const deleteResponse = await fetch(`http://localhost:5000/api/review/delete?mediaType=${mediaType}&id=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`
+        }
+      });
+
+      console.log('Delete response status:', deleteResponse.status);
+      const responseText = await deleteResponse.text();
+      console.log('Delete response text:', responseText);
+
+      if (deleteResponse.ok) {
+        console.log('Review deleted successfully');
+        setReview(null);
+      } else {
+        console.error(`Error deleting ${mediaType} review:`, responseText);
+      }
+    } catch (error) {
+      console.error(`Error deleting ${mediaType} review:`, error);
+    }
   };
 
 
@@ -125,7 +145,13 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
         onReview={handleReview}
         type={mediaType}
       />
-      {review && <UserReviewCard review={review} onDelete={handleDelete} />}
+      {review && (
+        <UserReviewCard
+          review={review}
+          onDelete={handleDelete}
+          onEdit={handleReview} // Pass handleReview as onEdit
+        />
+      )}
     </>
   );
 };

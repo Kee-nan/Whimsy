@@ -24,7 +24,7 @@ const UserReviewCard = ({ review, onDelete, onEdit }) => {
     },
     buttonContainer: {
       display: 'flex',
-      justifyContent: 'space-between', // Adjusted to space between buttons
+      justifyContent: 'space-between',
     },
   };
 
@@ -35,7 +35,7 @@ const UserReviewCard = ({ review, onDelete, onEdit }) => {
         <div style={styles.reviewBox}>{review.review}</div>
         <div style={styles.buttonContainer}>
           <Button variant="primary" onClick={onEdit}>Edit Review</Button>
-          <Button variant="danger" onClick={() => onDelete(review.title)}>Delete Review</Button>
+          <Button variant="danger" onClick={onDelete}>Delete Review</Button>
         </div>
       </Card.Body>
     </Card>
@@ -43,5 +43,6 @@ const UserReviewCard = ({ review, onDelete, onEdit }) => {
 };
 
 export default UserReviewCard;
+
 
 
