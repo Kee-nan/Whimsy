@@ -5,11 +5,10 @@ const mongoose = require('mongoose');
 
 // Import route files 
 const spotifyRoutes = require('./routes/spotifyRoutes');
-const booksRoutes = require('./routes/booksRoutes');
-const moviesRoutes = require('./routes/moviesRoutes');
 const accountRoutes = require('./routes/accountRoutes');
 const listRoutes = require('./routes/listRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const searchRoutes = require('./routes/searchRoutes');
 
 // Environment config
 dotenv.config();
@@ -36,11 +35,10 @@ app.use(express.json());
 
 // Use route files
 app.use('/auth/spotify', spotifyRoutes);
-app.use('/api/books', booksRoutes);
-app.use('/api/movies', moviesRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/list', listRoutes);
 app.use('/api/review', reviewRoutes);
+app.use('/api/search', searchRoutes);
 
 // Start server
 app.listen(PORT, () => {
