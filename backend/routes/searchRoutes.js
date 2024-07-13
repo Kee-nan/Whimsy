@@ -31,5 +31,22 @@ router.get('/movies', async (req, res) => {
   }
 });
 
+// GET /api/movies/:id
+router.get('/movie/:id', async (req, res) => {
+  const movieId = req.params.id;
+  const apiKey = process.env.TMDB_API_KEY;
 
- module.exports = router;
+  try {
+    const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}`, {
+      params: { api_key: apiKey }
+    });
+
+    res.send(response);
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    res.status(500).json({ error: 'An error occurred while fetching movie details' });
+  }
+});
+
+module.exports = router;
+

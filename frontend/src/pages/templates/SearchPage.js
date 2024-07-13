@@ -38,7 +38,6 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
   };
 
   const handleCardClick = (id) => {
-    //const id = extractId(item);
     const currentState = {
       searchKey,
       searchResults: results
