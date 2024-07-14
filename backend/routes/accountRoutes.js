@@ -41,7 +41,8 @@ router.post('/create', async (req, res) => {
       current: [],
       futures: [],
       favorites: [],
-      reviews: []
+      reviews: [],
+      bio: 'Default Bio',
     });
 
     await newUser.save();
@@ -92,9 +93,10 @@ router.get('/user', authenticateToken, async (req, res) => {
 });
 
 // Update user details endpoint
+// Update user details endpoint
 router.put('/user', authenticateToken, async (req, res) => {
   try {
-    const { firstName, lastName, username, email, password } = req.body;
+    const { firstName, lastName, username, email, bio } = req.body;
 
     // Check if username or email already exists for another user
     const existingUser = await User.findOne({ 
@@ -116,6 +118,7 @@ router.put('/user', authenticateToken, async (req, res) => {
       lastName,
       username,
       email,
+      bio, // Include bio in the update data
     };
 
     const updatedUser = await User.findByIdAndUpdate(req.user._id, updateData, { new: true });
@@ -126,6 +129,40 @@ router.put('/user', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Error updating user details' });
   }
 });
+// router.put('/user', authenticateToken, async (req, res) => {
+//   try {
+//     const { firstName, lastName, username, email, password } = req.body;
+
+//     // Check if username or email already exists for another user
+//     const existingUser = await User.findOne({ 
+//       $or: [{ username }, { email }],
+//       _id: { $ne: req.user._id } // Exclude the current user from the check
+//     });
+
+//     if (existingUser) {
+//       if (existingUser.username === username) {
+//         return res.status(400).json({ message: 'Username already exists' });
+//       }
+//       if (existingUser.email === email) {
+//         return res.status(400).json({ message: 'Email already exists' });
+//       }
+//     }
+
+//     const updateData = {
+//       firstName,
+//       lastName,
+//       username,
+//       email,
+//     };
+
+//     const updatedUser = await User.findByIdAndUpdate(req.user._id, updateData, { new: true });
+
+//     res.json(updatedUser);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Error updating user details' });
+//   }
+// });
 
 
 module.exports = router;

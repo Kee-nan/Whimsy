@@ -1,8 +1,15 @@
 import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AppNavbar = () => {
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    localStorage.removeItem('user_token');
+    navigate('/login');
+  };
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
@@ -23,6 +30,9 @@ const AppNavbar = () => {
           <Nav.Link as={Link} to="/lists" className="btn btn-outline-grey me-2">
             Lists
           </Nav.Link>
+          <Nav.Link onClick={handleSignOut} className="btn btn-outline-grey me-2">
+            Sign Out
+          </Nav.Link>
         </Nav>
       </Container>
     </Navbar>
@@ -30,3 +40,4 @@ const AppNavbar = () => {
 };
 
 export default AppNavbar;
+
