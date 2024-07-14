@@ -1,8 +1,6 @@
 // src/components/AccountDetailsCard.js
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
-import axios from 'axios';
 
 const AccountDetailsCard = ({ user }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -10,7 +8,16 @@ const AccountDetailsCard = ({ user }) => {
   const [lastName, setLastName] = useState(user.lastName);
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
-  const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    // Prefill the form fields when entering edit mode
+    if (isEditing) {
+      setFirstName(user.firstName);
+      setLastName(user.lastName);
+      setUsername(user.username);
+      setEmail(user.email);
+    }
+  }, [isEditing, user]);
 
   const handleEditToggle = () => setIsEditing(!isEditing);
 
@@ -22,7 +29,6 @@ const AccountDetailsCard = ({ user }) => {
         lastName,
         username,
         email,
-        password,
       };
       const user_token = localStorage.getItem('user_token');
       const headers = {
@@ -30,9 +36,19 @@ const AccountDetailsCard = ({ user }) => {
         'Authorization': `Bearer ${user_token}`,
       };
 
-      await axios.put('http://localhost:5000/api/user', updatedUser, { headers });
+      const response = await fetch('http://localhost:5000/api/accounts/user', {
+        method: 'PUT',
+        headers: headers,
+        body: JSON.stringify(updatedUser),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
 
       setIsEditing(false);
+      window.location.reload();
     } catch (error) {
       console.error('Error updating user details:', error);
     }
@@ -80,25 +96,17 @@ const AccountDetailsCard = ({ user }) => {
                 required
               />
             </Form.Group>
-            <Form.Group controlId="formPassword" className="mb-3">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
             <Button variant="primary" type="submit">Save</Button>
             <Button variant="secondary" onClick={handleEditToggle} className="ms-2">Cancel</Button>
           </Form>
         ) : (
-          <>
-            <p><strong>First Name:</strong> {firstName}</p>
-            <p><strong>Last Name:</strong> {lastName}</p>
-            <p><strong>Username:</strong> {username}</p>
-            <p><strong>Email:</strong> {email}</p>
+          <div>
+            <p>First Name: {user.firstName}</p>
+            <p>Last Name: {user.lastName}</p>
+            <p>Username: {user.username}</p>
+            <p>Email: {user.email}</p>
             <Button variant="primary" onClick={handleEditToggle}>Edit</Button>
-          </>
+          </div>
         )}
       </Card.Body>
     </Card>
