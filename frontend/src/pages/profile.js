@@ -39,6 +39,7 @@ const Profile = () => {
       }
     };
 
+    //Get User Details from Database to use to Load on page
     const fetchUserDetails = async () => {
       try {
         const user_token = localStorage.getItem('user_token');
@@ -66,13 +67,12 @@ const Profile = () => {
   return (
     <>
       <AppNavbar />
+      
       <Container>
-        <h1>Profile Page</h1>
-
 
         <UserProfileCard user={user} setUser={setUser} />
-        <AccountDetailsCard user={user} />
 
+        <AccountDetailsCard user={user} />
 
         <Card>
           <Card.Body>
@@ -81,6 +81,7 @@ const Profile = () => {
             <p>Status: {spotifyConnected ? <span style={{ color: 'green' }}>Connected</span> : <span style={{ color: 'darkred' }}>Not Connected</span>}</p>
           </Card.Body>
         </Card>
+
       </Container>
     </>
   );

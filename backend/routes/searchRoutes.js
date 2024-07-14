@@ -5,8 +5,7 @@ const router = express.Router();
 // Load environment variables
 require('dotenv').config();
 
-
-// Movies search route
+// Movies search route 
 router.get('/movies', async (req, res) => {
   const searchKey = req.query.q;
   const apiKey = process.env.TMDB_API_KEY;

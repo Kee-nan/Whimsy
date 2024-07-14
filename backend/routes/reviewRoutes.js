@@ -3,10 +3,10 @@ const router = express.Router();
 const User = require('../models/user');
 const authenticateToken = require('../middleware/authenticateToken');
 
-// Add a new review
+// Add a new review to the Database
 router.post('/add', authenticateToken, async (req, res) => {
   const { reviewData } = req.body;
-  const userId = req.user._id; // Assuming you attach user object in authenticateToken
+  const userId = req.user._id; 
 
   try {
     const user = await User.findById(userId);
@@ -35,11 +35,9 @@ router.post('/add', authenticateToken, async (req, res) => {
 
 // Get reviews for a specific media item (using GET with query parameters)
 router.get('/get', authenticateToken, async (req, res) => {
-  console.log('Received GET request for review with query:', req.query);
   const { mediaType, id } = req.query;
   const mediaId = `${mediaType}/${id}`;
   const userId = req.user._id; // Assuming you attach user object in authenticateToken
-  console.log(mediaId)
 
   try {
     const user = await User.findById(userId);
@@ -61,13 +59,11 @@ router.get('/get', authenticateToken, async (req, res) => {
   }
 });
 
-// In your routes/review.js
+// Route to delete a review
 router.delete('/delete', authenticateToken, async (req, res) => {
   const userId = req.user._id; // Assuming you attach user object in authenticateToken
   const { mediaType, id } = req.query;
   const mediaId = `${mediaType}/${id}`;
-
-  console.log('Deleting review for mediaId:', mediaId);
 
   try {
     const user = await User.findById(userId);
@@ -92,9 +88,5 @@ router.delete('/delete', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Error deleting review', error });
   }
 });
-
-
-
-    
 
 module.exports = router;

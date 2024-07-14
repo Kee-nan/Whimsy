@@ -36,23 +36,23 @@ const CreateAccountPage = () => {
       if (response.ok) {
         // If the account creation is successful, navigate to the login page or home page
         navigate('/login');
+        alert('Account Created. Please login.')
       } else {
         // Handle error if the account creation fails
         console.error('Account creation failed');
       }
     } catch (error) {
       console.error('Error:', error);
+      alert(`Error Occured: ${error.message}, username or email may already be used.`)
     }
   };
 
   return (
 
-
-
-
     <Container className="d-flex justify-content-center align-items-center vh-100">
       <Form className="w-100" onSubmit={handleSubmit}>
         <h1 className="text-center mb-4">Create Account</h1>
+
         <Form.Group controlId="formFirstName">
           <Form.Label>First Name</Form.Label>
           <Form.Control
@@ -63,6 +63,7 @@ const CreateAccountPage = () => {
             required
           />
         </Form.Group>
+
         <Form.Group controlId="formLastName" className="mt-3">
           <Form.Label>Last Name</Form.Label>
           <Form.Control
@@ -73,6 +74,7 @@ const CreateAccountPage = () => {
             required
           />
         </Form.Group>
+
         <Form.Group controlId="formUsername" className="mt-3">
           <Form.Label>Username</Form.Label>
           <Form.Control
@@ -83,6 +85,7 @@ const CreateAccountPage = () => {
             required
           />
         </Form.Group>
+
         <Form.Group controlId="formEmail" className="mt-3">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -93,6 +96,7 @@ const CreateAccountPage = () => {
             required
           />
         </Form.Group>
+
         <Form.Group controlId="formPassword" className="mt-3">
           <Form.Label>Password</Form.Label>
           <Form.Control
@@ -103,9 +107,11 @@ const CreateAccountPage = () => {
             required
           />
         </Form.Group>
+
         <Button variant="primary" type="submit" className="mt-4 w-100">
           Create Account
         </Button>
+        
       </Form>
     </Container>
   );

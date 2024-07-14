@@ -50,7 +50,7 @@ router.post('/add', authenticateToken, async (req, res) => {
   }
 });
 
-// In your routes file (e.g., api.js or lists.js)
+// Delete item from a list
 router.delete('/delete', authenticateToken, async (req, res) => {
   const { listType, id } = req.body;
   const userId = req.user._id;

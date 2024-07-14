@@ -11,6 +11,7 @@ const LeaveReview = () => {
   const [rating, setRating] = useState('');
   const [review, setReview] = useState('');
 
+  // This hook is used when editing existing media reviews, if a review exists, it will prepopulate the forms
   useEffect(() => {
     if (location.state && location.state.mediaDetails) {
       setMediaDetails(location.state.mediaDetails);
@@ -21,9 +22,11 @@ const LeaveReview = () => {
     }
   }, [location.state]);
 
+  // Function to handle adding a review to the user's review array
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // All data to be stored in the review objext
     const reviewData = { 
       id: mediaDetails.id, 
       image: mediaDetails.image, 
@@ -32,6 +35,7 @@ const LeaveReview = () => {
       title: mediaDetails.title 
     };
 
+    // API call to add review
     try {
       const response = await fetch('http://localhost:5000/api/review/add', {
         method: 'POST',
@@ -42,10 +46,12 @@ const LeaveReview = () => {
         body: JSON.stringify({ reviewData })
       });
 
+      //Navigate to details page if successful, otherwise post an error
       if (response.ok) {
         const responseData = await response.json();
         console.log(responseData.message);
         navigate(`/${mediaDetails.id}`);
+        alert('Review Successfully Added');
       } else {
         const errorData = await response.json();
         console.error('Error:', errorData.message);
@@ -57,6 +63,7 @@ const LeaveReview = () => {
     }
   };
 
+  // Styles
   const isPoster = mediaDetails.type === 'poster';
 
   const styles = {
@@ -88,12 +95,16 @@ const LeaveReview = () => {
   return (
     <>
       <AppNavbar />
+
       <Container>
+
         <Card style={styles.card}>
           {mediaDetails.image && <Card.Img style={styles.image} src={mediaDetails.image} alt={mediaDetails.title} />}
+
           <Card.Body>
             <Card.Title style={styles.title}>{mediaDetails.title}</Card.Title>
             <Form style={styles.form} onSubmit={handleSubmit}>
+
               <Form.Group controlId="rating">
                 <Form.Label>Rating (1-100)</Form.Label>
                 <Form.Control
@@ -105,6 +116,7 @@ const LeaveReview = () => {
                   required
                 />
               </Form.Group>
+
               <Form.Group controlId="review">
                 <Form.Label>Review</Form.Label>
                 <Form.Control
@@ -115,8 +127,11 @@ const LeaveReview = () => {
                   required
                 />
               </Form.Group>
+
               <Button variant="primary" type="submit">Submit Review</Button>
+
             </Form>
+
           </Card.Body>
         </Card>
       </Container>

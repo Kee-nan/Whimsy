@@ -10,9 +10,11 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  //Function to handle logging in
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Try calling backend api to get details about
     try {
       const response = await fetch('http://localhost:5000/api/accounts/login', {
         method: 'POST',
@@ -37,15 +39,18 @@ const LoginPage = () => {
     }
   };
 
+  // Button to navigate to account creation page if button is clicked
   const handleCreateAccount = () => {
     navigate('/accountcreation');
   };
 
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
+      
       <Form className="w-100" onSubmit={handleSubmit}>
         <h1 className="text-center mb-4">Whimsy</h1>
         {error && <Alert variant="danger">{error}</Alert>}
+
         <Form.Group controlId="formUsername">
           <Form.Label>Username</Form.Label>
           <Form.Control
@@ -56,6 +61,7 @@ const LoginPage = () => {
             required
           />
         </Form.Group>
+
         <Form.Group controlId="formPassword" className="mt-3">
           <Form.Label>Password</Form.Label>
           <Form.Control
@@ -66,9 +72,11 @@ const LoginPage = () => {
             required
           />
         </Form.Group>
+
         <Button variant="primary" type="submit" className="mt-4 w-100">
           Submit
         </Button>
+
         <Button
           variant="secondary"
           type="button"
@@ -77,6 +85,7 @@ const LoginPage = () => {
         >
           Create Account
         </Button>
+
       </Form>
     </Container>
   );

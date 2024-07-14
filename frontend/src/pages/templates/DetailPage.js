@@ -94,7 +94,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   });
 
 
-  // Function to handle deleting a review if the button o
+  // Function to handle deleting a review if the button is clicked
   const handleDelete = async () => {
     try {
       const userToken = localStorage.getItem('user_token');
@@ -135,7 +135,9 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   return (
     <>
       <AppNavbar />
+
       <button onClick={handleBack}>Back</button>
+
       <DetailCard
         image={details.image}
         title={details.title}
@@ -145,6 +147,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
         onReview={handleReview}
         type={mediaType}
       />
+
       {review && (
         <UserReviewCard
           review={review}
@@ -152,6 +155,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
           onEdit={handleReview} // Pass handleReview as onEdit
         />
       )}
+      
     </>
   );
 };

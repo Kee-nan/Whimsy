@@ -13,6 +13,7 @@ const Lists = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Fetches all the list data from the backend whenever this page is loaded
     const fetchData = async () => {
       const user_token = localStorage.getItem('user_token');
       if (!user_token) {
@@ -46,6 +47,7 @@ const Lists = () => {
     fetchData();
   }, []);
 
+  // Function to handle navigating to a detail page for a media object when the detail button is pressed
   const handleNavigate = (id) => {
     const currentState = {
       currentList,
@@ -55,6 +57,7 @@ const Lists = () => {
     navigate(`/${id}`, { state: currentState });
   };
 
+  // Function to Delete a given card/Media Object from the list it is in.
   const handleDelete = async (id, listType) => {
     const user_token = localStorage.getItem('user_token');
     if (!user_token) {
@@ -93,9 +96,11 @@ const Lists = () => {
       }
     } catch (error) {
       console.error('Error deleting item from list:', error);
+      alert(`Error deleting item from list: ${error.message}`)
     }
   };
 
+  // Functions to handle search filters, including list, meditatype, and name search
   const handleSelectList = (listName) => {
     setCurrentList(listName);
   };
@@ -108,6 +113,7 @@ const Lists = () => {
     setSearchTerm(event.target.value);
   };
 
+  // Function to filter list 
   const filterList = (list) => {
     return list.filter(item => {
       const matchesMedia = currentMedia === 'All' || item.media === currentMedia;
@@ -116,6 +122,7 @@ const Lists = () => {
     });
   };
 
+  // Renders all the list card objects based on list type
   const renderList = (list, listType) => (
     <div className="row">
       {filterList(list).map((item, index) => (
@@ -135,15 +142,19 @@ const Lists = () => {
   return (
     <>
       <AppNavbar />
+
       <Container className="mt-5">
         <h2>Your Lists</h2>
+
         <Row className="align-items-center mb-4" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+
           <Col xs="auto">
             <DropdownButton id="list-dropdown" title={currentList === 'completed' ? 'Completed' : 'Futures'} className="mr-2">
               <Dropdown.Item onClick={() => handleSelectList('completed')}>Completed</Dropdown.Item>
               <Dropdown.Item onClick={() => handleSelectList('futures')}>Futures</Dropdown.Item>
             </DropdownButton>
           </Col>
+
           <Col xs="auto">
             <DropdownButton id="media-dropdown" title={currentMedia} className="mr-2">
               <Dropdown.Item onClick={() => handleSelectMedia('All')}>All</Dropdown.Item>
@@ -155,6 +166,7 @@ const Lists = () => {
               <Dropdown.Item onClick={() => handleSelectMedia('manga')}>Manga</Dropdown.Item>
             </DropdownButton>
           </Col>
+
           <Col>
             <InputGroup>
               <FormControl
@@ -166,7 +178,10 @@ const Lists = () => {
               />
             </InputGroup>
           </Col>
+
         </Row>
+
+
         {currentList === 'completed' ? renderList(completedList, 'completedList') : renderList(futuresList, 'futuresList')}
       </Container>
     </>

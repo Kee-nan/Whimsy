@@ -11,6 +11,12 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
   const [searchKey, setSearchKey] = useState(location.state?.searchKey || "");
   const [results, setResults] = useState([]);
 
+  // Performs a search
+  const handleSearch = (e) => {
+    e.preventDefault();
+    performSearch(searchKey);
+  };
+
   const performSearch = useCallback(async (key) => {
     try {
       const response = await searchFunction(key);
@@ -22,21 +28,19 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
     }
   }, [searchFunction, placeholder]);
 
+  // This hook is used to preload a query if we are getting to this page from the back button of a detail page
   useEffect(() => {
     if (location.state?.searchKey) {
       performSearch(location.state.searchKey);
     }
   }, [location.state, performSearch]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    performSearch(searchKey);
-  };
-
+  // Clears the grid cards from the query
   const clearResults = () => {
     setResults([]);
   };
 
+  //Navigates to the detail page of the card we click on
   const handleCardClick = (id) => {
     const currentState = {
       searchKey,
@@ -48,6 +52,7 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
   return (
     <>
       <AppNavbar />
+      
       <SearchBar
         placeholder={`Search for ${placeholder}...`}
         searchFunction={handleSearch}
@@ -55,6 +60,7 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
         searchKey={searchKey}
         setSearchKey={setSearchKey}
       />
+
       <GridCard
         items={Array.isArray(results) ? results.map(item => ({ ...item, id: extractId(item) })) : []}
         renderItem={renderCard}
