@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Button, Navbar, Nav, Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Container, Button, Card } from 'react-bootstrap';
+import AppNavbar from '../components/Navbar';
+import AccountDetailsCard from '../components/AccountDetailsCard';
+import UserProfileCard from '../components/ProfileCard';
 
 const Profile = () => {
   const [spotifyToken, setSpotifyToken] = useState('');
   const [spotifyConnected, setSpotifyConnected] = useState(false);
+  const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
+    bio: '',
+    profilePicture: '',
+  });
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -15,8 +25,8 @@ const Profile = () => {
           const { data } = await axios.post('http://localhost:5000/auth/spotify/callback', { code });
           localStorage.setItem('spotifyToken', data.access_token);
           setSpotifyToken(data.access_token);
-          setSpotifyConnected(true); // Set connected state to true
-          window.history.replaceState({}, document.title, '/profile'); // Remove the code from the URL
+          setSpotifyConnected(true);
+          window.history.replaceState({}, document.title, '/profile');
         } catch (error) {
           console.error(error);
         }
@@ -24,30 +34,46 @@ const Profile = () => {
         const token = localStorage.getItem('spotifyToken');
         if (token) {
           setSpotifyToken(token);
-          setSpotifyConnected(true); // Set connected state to true if token exists
+          setSpotifyConnected(true);
         }
       }
     };
 
+    //Get User Details from Database to use to Load on page
+    const fetchUserDetails = async () => {
+      try {
+        const user_token = localStorage.getItem('user_token');
+        const headers = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user_token}`,
+        };
+
+        const response = await axios.get('http://localhost:5000/api/accounts/user', { headers });
+
+        if (response.status !== 200) {
+          throw new Error('Error fetching user details');
+        }
+
+        setUser(response.data);
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    };
+
     fetchToken();
+    fetchUserDetails();
   }, []);
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" expand="lg">
-        <Container>
-          <Navbar.Brand as={Link} to="/">Whimsy</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-
+      <AppNavbar />
+      
       <Container>
-        <h1>Profile Page</h1>
+
+        <UserProfileCard user={user} setUser={setUser} />
+
+        <AccountDetailsCard user={user} />
+
         <Card>
           <Card.Body>
             <Card.Title>Spotify</Card.Title>
@@ -55,17 +81,13 @@ const Profile = () => {
             <p>Status: {spotifyConnected ? <span style={{ color: 'green' }}>Connected</span> : <span style={{ color: 'darkred' }}>Not Connected</span>}</p>
           </Card.Body>
         </Card>
-        {/* Other application cards */}
+
       </Container>
     </>
   );
 };
 
 export default Profile;
-
-
-
-
 
 
 
