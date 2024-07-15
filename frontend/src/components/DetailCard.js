@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, Container, Button } from 'react-bootstrap';
 
-const DetailCard = ({ image, title, details, buttons, type = 'poster', onAddToCompleted, onAddToFutures, onReview }) => {
+const DetailCard = ({ image, title, details, buttons, type = 'poster', onAddToCompleted, onAddToFutures, onAddToCurrent, onReview }) => {
   const styles = {
     card: {
       width: '100%',
@@ -51,6 +51,7 @@ const DetailCard = ({ image, title, details, buttons, type = 'poster', onAddToCo
             <div style={styles.buttons}>
               {buttons}
               <Button variant="primary" onClick={onAddToCompleted}>Add to Completed</Button>
+              <Button variant="success" onClick={onAddToCurrent}> Add to Current</Button>
               <Button variant="secondary" onClick={onAddToFutures}>Add to Futures</Button>
               <Button variant="info" onClick={onReview}>Reviews</Button>
             </div>

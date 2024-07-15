@@ -56,6 +56,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   // Function to Add the media object on the page to the database in the User's List
   const addToCompleted = () => handleAddToList('completed');
   const addToFutures = () => handleAddToList('futures');
+  const addToCurrent = () => handleAddToList('current');
 
   const handleAddToList = async (listName) => {
     const media = {
@@ -144,6 +145,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
         title={details.title}
         details={details.details}
         onAddToCompleted={addToCompleted}
+        onAddToCurrent={addToCurrent}
         onAddToFutures={addToFutures}
         onReview={handleReview}
         type={mediaType}
