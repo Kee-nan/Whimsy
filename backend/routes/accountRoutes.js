@@ -86,6 +86,7 @@ router.get('/user', authenticateToken, async (req, res) => {
       lastName: user.lastName,
       username: user.username,
       email: user.email,
+      bio: user.bio
     });
   } catch (error) {
     console.error(error);

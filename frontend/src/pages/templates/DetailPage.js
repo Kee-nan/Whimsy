@@ -75,6 +75,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
         body: JSON.stringify({ listName, media })
     });
       console.log(response.data.message);
+      alert("Item Successfully added to list")
     } catch (error) {
       console.error(`Error adding to ${listName}:`, error);
     }

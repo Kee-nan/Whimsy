@@ -6,10 +6,14 @@ const UserProfileCard = ({ user, setUser }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [bio, setBio] = useState(user.bio);
 
-  const handleEdit = () => setIsEditing(true);
+  const handleEdit = () => {
+    setIsEditing(true);
+    setBio(user.bio); // Ensure the form initializes with the current bio
+  };
+
   const handleCancel = () => {
     setIsEditing(false);
-    setBio(user.bio);
+    setBio(user.bio); // Reset the form value to the current bio
   };
 
   const handleSave = async () => {
@@ -30,6 +34,7 @@ const UserProfileCard = ({ user, setUser }) => {
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating bio:', error);
+      alert('Error updating bio: ' + error.message);
     }
   };
 
@@ -80,3 +85,4 @@ const UserProfileCard = ({ user, setUser }) => {
 };
 
 export default UserProfileCard;
+
