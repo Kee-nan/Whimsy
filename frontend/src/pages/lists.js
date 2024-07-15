@@ -7,7 +7,9 @@ import { useNavigate } from 'react-router-dom';
 const Lists = () => {
   const [completedList, setCompletedList] = useState([]);
   const [futuresList, setFuturesList] = useState([]);
-  const [currentList, setCurrentList] = useState('completed');
+  const [currentListData, setCurrentListData] = useState([]);
+
+  const [currentList, setCurrentList] = useState('current');
   const [currentMedia, setCurrentMedia] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
@@ -29,13 +31,16 @@ const Lists = () => {
       try {
         const completedResponse = await fetch('http://localhost:5000/api/list/completed', { headers });
         const futuresResponse = await fetch('http://localhost:5000/api/list/futures', { headers });
+        const currentResponse = await fetch('http://localhost:5000/api/list/current', { headers });
 
-        if (completedResponse.ok && futuresResponse.ok) {
+        if (currentResponse.ok && completedResponse.ok && futuresResponse.ok) {
           const completedData = await completedResponse.json();
           const futuresData = await futuresResponse.json();
+          const currentData = await currentResponse.json();
           
           setCompletedList(completedData);
           setFuturesList(futuresData);
+          setCurrentListData(currentData)
         } else {
           console.error('Failed to fetch lists');
         }
@@ -82,13 +87,17 @@ const Lists = () => {
       if (response.ok) {
         const updatedList = listType === 'completedList' 
           ? completedList.filter(item => item.id !== id) 
-          : futuresList.filter(item => item.id !== id);
-        
-        if (listType === 'completedList') {
-          setCompletedList(updatedList);
-        } else {
-          setFuturesList(updatedList);
-        }
+          : listType === 'futuresList'
+          ? futuresList.filter(item => item.id !== id)
+          : currentList.filter(item => item.id !== id);
+          
+          if (listType === 'completedList') {
+            setCompletedList(updatedList);
+          } else if (listType === 'futuresList') {
+            setFuturesList(updatedList);
+          } else if (listType === 'currentList') {
+            setCurrentListData(updatedList);
+          }
   
         localStorage.setItem(listType, JSON.stringify(updatedList));
       } else {
@@ -139,6 +148,11 @@ const Lists = () => {
     </div>
   );
 
+  // Function to capitalize the first letter of a string
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
     <>
       <AppNavbar />
@@ -149,14 +163,15 @@ const Lists = () => {
         <Row className="align-items-center mb-4" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap' }}>
 
           <Col xs="auto">
-            <DropdownButton id="list-dropdown" title={currentList === 'completed' ? 'Completed' : 'Futures'} className="mr-2">
+            <DropdownButton id="list-dropdown" title={currentList === 'completed' ? 'Completed' : currentList === 'futures' ? 'Futures' : 'Current'} className="mr-2">
               <Dropdown.Item onClick={() => handleSelectList('completed')}>Completed</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSelectList('current')}>Current</Dropdown.Item>
               <Dropdown.Item onClick={() => handleSelectList('futures')}>Futures</Dropdown.Item>
             </DropdownButton>
           </Col>
 
           <Col xs="auto">
-            <DropdownButton id="media-dropdown" title={currentMedia} className="mr-2">
+            <DropdownButton id="media-dropdown" title={capitalizeFirstLetter(currentMedia)} className="mr-2">
               <Dropdown.Item onClick={() => handleSelectMedia('All')}>All</Dropdown.Item>
               <Dropdown.Item onClick={() => handleSelectMedia('anime')}>Anime</Dropdown.Item>
               <Dropdown.Item onClick={() => handleSelectMedia('album')}>Album</Dropdown.Item>
@@ -182,7 +197,12 @@ const Lists = () => {
         </Row>
 
 
-        {currentList === 'completed' ? renderList(completedList, 'completedList') : renderList(futuresList, 'futuresList')}
+        {
+          currentList === 'completed' ? renderList(completedList, 'completedList') : 
+          currentList === 'futures' ? renderList(futuresList, 'futuresList') :
+          renderList(currentListData, 'currentList')
+        }
+
       </Container>
     </>
   );

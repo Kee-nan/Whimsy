@@ -30,6 +30,20 @@ router.get('/futures', authenticateToken, async (req, res) => {
   }
 });
 
+// Get current list
+router.get('/current', authenticateToken, async (req, res) => {
+  const userId = req.user._id;
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.sendStatus(404);
+    res.json(user.current);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching current list');
+  }
+});
+
+
 // Add media to user's list (completed, futures, current)
 router.post('/add', authenticateToken, async (req, res) => {
   const { listName, media } = req.body;
@@ -70,8 +84,11 @@ router.delete('/delete', authenticateToken, async (req, res) => {
     } else if (listType === 'futuresList') {
       updatedList = user.futures.filter(item => item.id !== id);
       user.futures = updatedList;
+    } else if (listType == 'currentList') {
+      updatedList = user.current.filter(item => item.id !== id);
+      user.current = updatedList;
     } else {
-      return res.status(400).send('Invalid list type');
+      console.error('Invalid list name')
     }
 
     await user.save();
