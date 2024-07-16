@@ -1,0 +1,227 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap');
+
+/* Define custom properties */
+:root {
+  --one-purple: #a348ad;
+  --two-purple: #9569af;
+  --three-purple: #b740e6;
+  --base-gray: #343a40;
+  --highlight-color: #ffc107;
+  --white: #ffffff;
+  --font-family: 'Arial', sans-serif;
+}
+
+/* Navbar Styles */
+/* ############################################################################################### */
+.navbar-custom {
+  background-color: var(--base-gray); /* Dark grey background */
+  /*height: 75px;*/
+}
+
+.navbar-custom .navbar-brand {
+    color: var(--one-purple); /* Light text color for the brand */
+    font-weight: bold; /* Make the brand text bold */
+    font-family: 'Pacifico', cursive;
+    font-size: 2rem; /* Increase the font size */
+    font-weight: 400;
+    text-shadow: 2px 2px 4px #fff; /* Add white shadow */
+    letter-spacing: 0.1em; /* Increase letter spacing */
+}
+  
+.navbar-custom .nav-link-button {
+  background-color: var(--one-purple);
+  border: 0 solid #E5E7EB;
+  box-sizing: border-box;
+  color: var(--white);
+  display: flex;
+  font-family: 'Kanit', cursive;
+  font-size: 1rem;
+  font-weight: 500;
+  justify-content: center;
+  line-height: 1.2rem;
+  padding: .75rem 1.65rem;
+  position: relative;
+  text-align: center;
+  text-decoration: none var(--white) solid;
+  text-decoration-thickness: auto;
+  width: auto; /* Adjusted to fit nav-link */
+  cursor: pointer;
+  transform: rotate(-2deg);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin: 5px;
+}
+
+.navbar-custom .nav-link:hover {
+  color: #d1b4d4f1; /* Change color on hover */
+}
+
+.navbar-custom .nav-link-button:focus {
+  outline: 0;
+}
+
+.navbar-custom .nav-link-button:after {
+  content: '';
+  position: absolute;
+  border: 1px solid var(--white);
+  bottom: 4px;
+  left: 4px;
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+}
+
+.navbar-custom .nav-link-button:hover:after {
+  bottom: 2px;
+  left: 2px;
+}
+
+@media (min-width: 768px) {
+  .navbar-custom .nav-link-button {
+    padding: .75rem 3rem;
+    font-size: 1.25rem;
+  }
+}
+
+
+
+
+
+
+
+/* Searchbar Styles */
+/* ############################################################################################### */
+.search-bar {
+  background-color: #515963; /* Change this to your preferred background color */
+  padding: 1rem 0;
+}
+
+.search-bar .search-bar-form {
+  display: flex;
+}
+
+.search-bar .form-control {
+  background-color: #fff; /* Change this to your preferred form background color */
+  font-family: 'Roboto', sans-serif; /* Change this to your preferred font */
+  font-size: 1rem; /* Adjust font size */
+  color: #000; /* Change this to your preferred text color */
+}
+
+.search-bar .button-search {
+  align-items: center;
+  appearance: none;
+  background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "JetBrains Mono", monospace;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s, transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 18px;
+}
+
+.search-bar .button-search:focus {
+  box-shadow: #3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+}
+
+.search-bar .button-search:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.search-bar .button-search:active {
+  box-shadow: #3c4fe0 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* Clear button specific styles */
+.search-bar .button-clear {
+  align-items: center;
+  appearance: none;
+  background-image: radial-gradient(100% 100% at 100% 0, #f6b7b1 0, #e96c6c 100%);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "JetBrains Mono", monospace;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s, transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 18px;
+}
+
+.search-bar .button-clear:focus {
+  box-shadow: #e94f4f 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #e94f4f 0 -3px 0 inset;
+}
+
+.search-bar .button-clear:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #e94f4f 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.search-bar .button-clear:active {
+  box-shadow: #e94f4f 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+@media (min-width: 768px) {
+  .search-bar .form-control {
+    font-size: 1.25rem; /* Adjust font size for larger screens */
+  }
+}
+
+
+
+
+
+
+/* Navbar Styles */
+/* ############################################################################################### */
+
+
+
+
+
+
+
+
+
+/* Navbar Styles */
+/* ############################################################################################### */

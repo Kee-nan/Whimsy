@@ -3,9 +3,9 @@ import { Form, FormControl, Button, Container } from 'react-bootstrap';
 
 const SearchBar = ({ placeholder, searchFunction, clearFunction, searchKey, setSearchKey }) => {
   return (
-    <div className="search-bar-container bg-light py-3">
+    <div className="search-bar py-3">
       <Container>
-        <Form className="d-flex" onSubmit={searchFunction}>
+        <Form className="search-bar-form" onSubmit={searchFunction}>
           <FormControl
             type="search"
             placeholder={placeholder}
@@ -14,12 +14,12 @@ const SearchBar = ({ placeholder, searchFunction, clearFunction, searchKey, setS
             value={searchKey}
             onChange={(e) => setSearchKey(e.target.value)}
           />
-          <Button variant="outline-success" type="submit" className="ms-2">
+          <button type="submit" className="button-search ms-2">
             Search
-          </Button>
-          <Button variant="outline-danger" onClick={clearFunction} className="ms-2">
+          </button>
+          <button type="button" onClick={clearFunction} className="button-clear ms-2">
             Clear
-          </Button>
+          </button>
         </Form>
       </Container>
     </div>
