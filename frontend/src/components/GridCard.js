@@ -1,15 +1,16 @@
-
 import React from 'react';
-import { Container, Row, Card } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 
 const GridCard = ({ items, renderItem, onCardClick }) => {
   return (
     <Container className="mt-5">
-      <Row className="mx-2 row row-cols-4">
+      <Row className="mx-2">
         {items.map((item) => (
-          <Card key={item.id} onClick={() => onCardClick(item.id)}>
-            {renderItem(item)}
-          </Card>
+          <Col key={item.id} xs={12} sm={6} md={4} lg={3} className="card-container">
+            <Card className="grid-card-body" onClick={() => onCardClick(item.id)}>
+              {renderItem(item)}
+            </Card>
+          </Col>
         ))}
       </Row>
     </Container>
@@ -17,6 +18,9 @@ const GridCard = ({ items, renderItem, onCardClick }) => {
 };
 
 export default GridCard;
+
+
+
 
 
 

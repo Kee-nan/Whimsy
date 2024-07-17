@@ -1,8 +1,8 @@
 // src/pages/LoginPage.js
+// src/pages/LoginPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -45,51 +45,56 @@ const LoginPage = () => {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100">
-      
-      <Form className="w-100" onSubmit={handleSubmit}>
-        <h1 className="text-center mb-4">Whimsy</h1>
-        {error && <Alert variant="danger">{error}</Alert>}
+    <div className="login-page">
+      <Container className="d-flex flex-column justify-content-center align-items-center vh-100">
+        <h1 className="header-title">Whimsy</h1>
+        <Form className="w-100" onSubmit={handleSubmit}>
+          {error && <Alert variant="danger">{error}</Alert>}
 
-        <Form.Group controlId="formUsername">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="formUsername">
+            <Form.Label className="form-label">Username</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="form-control"
+            />
+          </Form.Group>
 
-        <Form.Group controlId="formPassword" className="mt-3">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="formPassword" className="mt-3">
+            <Form.Label className="form-label">Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="form-control"
+            />
+          </Form.Group>
 
-        <Button variant="primary" type="submit" className="mt-4 w-100">
-          Submit
-        </Button>
+          <Button
+            className="button-login"
+            type="submit"
+          >
+            Login
+          </Button>
 
-        <Button
-          variant="secondary"
-          type="button"
-          className="mt-4 w-100"
-          onClick={handleCreateAccount}
-        >
-          Create Account
-        </Button>
-
-      </Form>
-    </Container>
+          <Button
+            className="button-create-account"
+            type="button"
+            onClick={handleCreateAccount}
+          >
+            Create Account
+          </Button>
+        </Form>
+      </Container>
+    </div>
   );
 };
 
 export default LoginPage;
+
 

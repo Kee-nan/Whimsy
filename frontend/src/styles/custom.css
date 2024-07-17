@@ -6,13 +6,123 @@
 /* Define custom properties */
 :root {
   --one-purple: #a348ad;
-  --two-purple: #9569af;
-  --three-purple: #b740e6;
+  --two-purple: #322a36;
+  --three-purple: #dfacf3;
+  ---four-purple: #4d494e;
   --base-gray: #343a40;
   --highlight-color: #ffc107;
   --white: #ffffff;
   --font-family: 'Arial', sans-serif;
 }
+
+/*Common Properties*/
+/*#############################################################################################
+
+\/* Primary Button */
+body {
+  background-color: #1e11cc; /* Default background color */
+}
+
+.primaryButton {
+  align-items: center;
+  appearance: none;
+  background-image: radial-gradient(100% 100% at 100% 0, var(--three-purple) 0, var(--one-purple) 100%);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "JetBrains Mono", monospace;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s, transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 18px;
+  margin:5px
+}
+
+.primaryButton:focus {
+  box-shadow: var(--two-purple) 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
+}
+
+.primaryButton:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.primaryButton:active {
+  box-shadow: var(--two-purple) 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* Secondary Button */
+.secondaryButton {
+  align-items: center;
+  appearance: none;
+  background-image: radial-gradient(100% 100% at 100% 0, var(--three-purple) 0, var(---four-purple) 100%);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "JetBrains Mono", monospace;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s, transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 18px;
+  margin:5px
+}
+
+.secondaryButton:focus {
+  box-shadow: var(--two-purple) 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
+}
+
+.secondaryButton:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.secondaryButton:active {
+  box-shadow: var(--two-purple) 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* Responsive form control */
+@media (min-width: 768px) {
+  .form-control {
+    font-size: 1.25rem; /* Adjust font size for larger screens */
+  }
+}
+
 
 /* Navbar Styles */
 /* ############################################################################################### */
@@ -37,7 +147,7 @@
   box-sizing: border-box;
   color: var(--white);
   display: flex;
-  font-family: 'Kanit', cursive;
+  font-family: "JetBrains Mono", monospace;
   font-size: 1rem;
   font-weight: 500;
   justify-content: center;
@@ -113,7 +223,7 @@
 .search-bar .button-search {
   align-items: center;
   appearance: none;
-  background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
+  background-image: radial-gradient(100% 100% at 100% 0, var(--three-purple) 0, var(--one-purple) 100%);
   border: 0;
   border-radius: 6px;
   box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
@@ -142,16 +252,16 @@
 }
 
 .search-bar .button-search:focus {
-  box-shadow: #3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  box-shadow: var(--two-purple) 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
 }
 
 .search-bar .button-search:hover {
-  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
   transform: translateY(-2px);
 }
 
 .search-bar .button-search:active {
-  box-shadow: #3c4fe0 0 3px 7px inset;
+  box-shadow: var(--two-purple) 0 3px 7px inset;
   transform: translateY(2px);
 }
 
@@ -159,7 +269,7 @@
 .search-bar .button-clear {
   align-items: center;
   appearance: none;
-  background-image: radial-gradient(100% 100% at 100% 0, #f6b7b1 0, #e96c6c 100%);
+  background-image: radial-gradient(100% 100% at 100% 0, var(--three-purple) 0, var(---four-purple) 100%);
   border: 0;
   border-radius: 6px;
   box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
@@ -188,16 +298,16 @@
 }
 
 .search-bar .button-clear:focus {
-  box-shadow: #e94f4f 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #e94f4f 0 -3px 0 inset;
+  box-shadow: var(--two-purple) 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
 }
 
 .search-bar .button-clear:hover {
-  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #e94f4f 0 -3px 0 inset;
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
   transform: translateY(-2px);
 }
 
 .search-bar .button-clear:active {
-  box-shadow: #e94f4f 0 3px 7px inset;
+  box-shadow: var(--two-purple) 0 3px 7px inset;
   transform: translateY(2px);
 }
 
@@ -212,16 +322,181 @@
 
 
 
-/* Navbar Styles */
+/* Grid Card Component */
 /* ############################################################################################### */
+/* Grid Card Body */
+/* Grid Card Body */
+.grid-card-body {
+  border: 10px solid #f50c0c; /* Darker border for the card */
+  border-radius: 10px;
+  overflow: hidden; /* Ensure content doesn't overflow */
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 500px; /* Fixed total height for the card */
+  display: flex;
+  flex-direction: column;
+  transform-origin: center; /* Scale from center */
+}
+
+/* Hover Effect */
+.grid-card-body:hover {
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+  transform: scale(1.02); /* Slightly larger on hover */
+  border: 2px solid black;
+}
+
+/* Padding for Cards */
+.card-container {
+  padding: 5px; /* Space between cards */
+}
+
+/* Card Image: Poster */
+.grid-card-image.poster {
+  border-radius: 8px 8px 0 0; /* Rounded corners on the top */
+  width: 100%;
+  height: 450px; /* Fixed height for poster images */
+}
+
+/* Card Image: Album */
+.grid-card-image.album {
+  border-radius: 8px; /* Rounded corners for square images */
+  width: 100%;
+  height: 275px; /* Fixed height for square images */
+}
+
+/* Card Content */
+.grid-card-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Allow content to grow to fill available space */
+}
+
+/* Title Style */
+.grid-card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 0; /* Remove default margins */
+  line-height: 1.3; /* Adjust line height if necessary */
+  height: 60px; /* Adjusted height for title */
+  overflow: hidden; /* Hide text that overflows */
+  text-overflow: ellipsis; /* Add ellipsis if text overflows */
+  white-space: normal; /* Allow text to wrap onto multiple lines */
+  display: flex;
+  align-items: center; /* Center text vertically */
+  justify-content: center; /* Center text horizontally */
+}
+
+.grid-card-creator {
+  font-size: 1.00rem;
+  text-align: center;
+  align-items: center; /* Center text vertically */
+  justify-content: center; /* Center text horizontally */
+}
 
 
 
 
 
 
-
-
-
-/* Navbar Styles */
+/* Login page */
 /* ############################################################################################### */
+/* Page Background */
+.login-page {
+  background: linear-gradient(to right, #6a11cb, var(--two-purple)); /* Example gradient background */
+  height: 100vh; /* Full viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Header Style */
+.login-page .header-title {
+  font-family: 'Pacifico', cursive;
+  font-size: 3rem;
+  font-weight: 400;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Form Styles */
+.login-page .form-control {
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+}
+
+.login-page .form-control:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.25);
+}
+
+/* Login Button Style */
+.login-page .button-login {
+  background-image: radial-gradient(100% 100% at 100% 0, var(--three-purple) 0, var(--one-purple) 100%);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  color: #fff;
+  cursor: pointer;
+  height: 48px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 18px;
+  text-align: center;
+  line-height: 1;
+  padding: 0 16px;
+  transition: box-shadow .15s, transform .15s;
+}
+
+.login-page .button-login:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.login-page .button-login:active {
+  box-shadow: var(--two-purple) 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* Create Account Button Style */
+.login-page .button-create-account {
+  background-image: radial-gradient(100% 100% at 100% 0, var(--three-purple) 0, var(--four-purple) 100%);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  color: #fff;
+  cursor: pointer;
+  height: 48px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 18px;
+  text-align: center;
+  line-height: 1;
+  padding: 0 16px;
+  transition: box-shadow .15s, transform .15s;
+}
+
+.login-page .button-create-account:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.login-page .button-create-account:active {
+  box-shadow: var(--two-purple) 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* Apply unique styles to the login page */
+.login-page .btn {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.login-page .form-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  color: #fff;
+}

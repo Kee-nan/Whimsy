@@ -14,10 +14,10 @@ const SearchBar = ({ placeholder, searchFunction, clearFunction, searchKey, setS
             value={searchKey}
             onChange={(e) => setSearchKey(e.target.value)}
           />
-          <button type="submit" className="button-search ms-2">
+          <button type="submit" className="primaryButton">
             Search
           </button>
-          <button type="button" onClick={clearFunction} className="button-clear ms-2">
+          <button type="button" onClick={clearFunction} className="secondaryButton">
             Clear
           </button>
         </Form>

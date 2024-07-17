@@ -20,9 +20,9 @@ const searchBooks = async (key) => {
 
 const renderBookCard = (item) => (
   <>
-    <Card.Img src={item.volumeInfo.imageLinks?.thumbnail || 'placeholder.jpg'} alt={item.volumeInfo.title} />
+    <Card.Img src={item.volumeInfo.imageLinks?.thumbnail || 'placeholder.jpg'} alt={item.volumeInfo.title} className="grid-card-image poster"/>
     <Card.Body>
-      <Card.Title>{item.volumeInfo.title}</Card.Title>
+      <Card.Title className="grid-card-title">{item.volumeInfo.title}</Card.Title>
     </Card.Body>
   </>
 );

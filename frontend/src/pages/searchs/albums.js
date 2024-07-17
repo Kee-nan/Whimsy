@@ -21,10 +21,10 @@ const searchAlbums = async (key) => {
 
 const renderAlbumCard = (album) => (
   <>
-    <Card.Img src={album.images[0]?.url || 'placeholder.jpg'} alt={album.name} />
+    <Card.Img src={album.images[0]?.url || 'placeholder.jpg'} alt={album.name} className="grid-card-image album"/>
     <Card.Body>
-      <Card.Title>{album.name}</Card.Title>
-      <Card.Text>{album.artists.map(artist => artist.name).join(', ')}</Card.Text>
+      <Card.Title  className="grid-card-title">{album.name}</Card.Title>
+      <Card.Text className="grid-card-creator">{album.artists.map(artist => artist.name).join(', ')}</Card.Text>
     </Card.Body>
   </>
 );

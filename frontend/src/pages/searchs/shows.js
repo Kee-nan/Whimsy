@@ -19,9 +19,9 @@ const searchShows = async (key) => {
 
 const renderShowCard = (item) => (
   <>
-    <Card.Img src={item.image?.medium || 'placeholder.jpg'} alt={item.name} />
+    <Card.Img src={item.image?.medium || 'placeholder.jpg'} alt={item.name} className="grid-card-image poster"/>
     <Card.Body>
-      <Card.Title>{item.name}</Card.Title>
+      <Card.Title className="grid-card-title">{item.name}</Card.Title>
     </Card.Body>
   </>
 );

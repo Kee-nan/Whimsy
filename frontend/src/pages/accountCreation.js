@@ -49,71 +49,77 @@ const CreateAccountPage = () => {
 
   return (
 
-    <Container className="d-flex justify-content-center align-items-center vh-100">
-      <Form className="w-100" onSubmit={handleSubmit}>
-        <h1 className="text-center mb-4">Create Account</h1>
+    <div className="login-page">
+      <Container className="d-flex justify-content-center align-items-center vh-100">
+        <Form className="w-100" onSubmit={handleSubmit}>
+          <h1 className="text-center mb-4 header-title">Create Account</h1>
 
-        <Form.Group controlId="formFirstName">
-          <Form.Label>First Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter your first name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="formFirstName">
+            <Form.Label className="form-label">First Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter your first name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+              className="form-control"
+            />
+          </Form.Group>
 
-        <Form.Group controlId="formLastName" className="mt-3">
-          <Form.Label>Last Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter your last name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="formLastName" className="mt-3">
+            <Form.Label className="form-label">Last Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter your last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+              className="form-control"
+            />
+          </Form.Group>
 
-        <Form.Group controlId="formUsername" className="mt-3">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="formUsername" className="mt-3">
+            <Form.Label className="form-label">Username</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="form-control"
+            />
+          </Form.Group>
 
-        <Form.Group controlId="formEmail" className="mt-3">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="formEmail" className="mt-3">
+            <Form.Label className="form-label">Email address</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="form-control"
+            />
+          </Form.Group>
 
-        <Form.Group controlId="formPassword" className="mt-3">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="formPassword" className="mt-3">
+            <Form.Label className="form-label">Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="form-control"
+            />
+          </Form.Group>
 
-        <Button variant="primary" type="submit" className="mt-4 w-100">
-          Create Account
-        </Button>
-        
-      </Form>
-    </Container>
+          <Button type="submit" className="button-create-account">
+            Create Account
+          </Button>
+        </Form>
+      </Container>
+    </div>
   );
 };
 

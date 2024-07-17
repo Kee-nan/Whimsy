@@ -138,7 +138,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     <>
       <AppNavbar />
 
-      <button onClick={handleBack}>Back</button>
+      <button onClick={handleBack} className="secondaryButton">Back</button>
 
       <DetailCard
         image={details.image}

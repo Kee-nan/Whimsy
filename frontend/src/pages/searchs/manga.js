@@ -20,9 +20,9 @@ const searchManga = async (key) => {
 
 const renderMangaCard = (item) => (
   <>
-    <Card.Img src={item.images.jpg.image_url} alt={item.title} />
+    <Card.Img src={item.images.jpg.image_url} alt={item.title} className="grid-card-image poster"/>
     <Card.Body>
-      <Card.Title>{item.title}</Card.Title>
+      <Card.Title className="grid-card-title">{item.title}</Card.Title>
     </Card.Body>
   </>
 );
