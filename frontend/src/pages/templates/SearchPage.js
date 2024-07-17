@@ -60,7 +60,7 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
         searchKey={searchKey}
         setSearchKey={setSearchKey}
       />
-
+      
       <GridCard
         items={Array.isArray(results) ? results.map(item => ({ ...item, id: extractId(item) })) : []}
         renderItem={renderCard}

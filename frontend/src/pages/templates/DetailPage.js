@@ -136,29 +136,29 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
 
   return (
     <>
-      <AppNavbar />
+        <AppNavbar />
 
-      <button onClick={handleBack} className="secondaryButton">Back</button>
+        <button onClick={handleBack} className="secondaryButton">Back</button>
 
-      <DetailCard
-        image={details.image}
-        title={details.title}
-        details={details.details}
-        onAddToCompleted={addToCompleted}
-        onAddToCurrent={addToCurrent}
-        onAddToFutures={addToFutures}
-        onReview={handleReview}
-        type={mediaType}
-      />
-
-      {review && (
-        <UserReviewCard
-          review={review}
-          onDelete={handleDelete}
-          onEdit={handleReview} // Pass handleReview as onEdit
+        <DetailCard
+          image={details.image}
+          title={details.title}
+          details={details.details}
+          onAddToCompleted={addToCompleted}
+          onAddToCurrent={addToCurrent}
+          onAddToFutures={addToFutures}
+          onReview={handleReview}
+          type={mediaType}
         />
-      )}
-      
+
+        {review && (
+          <UserReviewCard
+            review={review}
+            onDelete={handleDelete}
+            onEdit={handleReview} // Pass handleReview as onEdit
+          />
+        )}
+
     </>
   );
 };
