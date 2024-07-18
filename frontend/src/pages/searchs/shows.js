@@ -21,7 +21,7 @@ const renderShowCard = (item) => (
   <>
     <Card.Img src={item.image?.medium || 'placeholder.jpg'} alt={item.name} className="grid-card-image poster"/>
     <Card.Body>
-      <Card.Title className="grid-card-title">{item.name}</Card.Title>
+      <Card.Title className="grid-card-title" style={{ color: 'white' }}>{item.name}</Card.Title>
     </Card.Body>
   </>
 );

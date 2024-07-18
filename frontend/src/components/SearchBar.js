@@ -6,10 +6,10 @@ const SearchBar = ({ placeholder, searchFunction, clearFunction, searchKey, setS
     <div className="search-bar py-3">
       <Container>
         <Form className="search-bar-form" onSubmit={searchFunction}>
-          <FormControl
+          <FormControl 
+            className="oval-form-control"
             type="search"
             placeholder={placeholder}
-            className="form-control-lg"
             aria-label="Search"
             value={searchKey}
             onChange={(e) => setSearchKey(e.target.value)}

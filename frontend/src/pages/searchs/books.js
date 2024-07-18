@@ -22,7 +22,7 @@ const renderBookCard = (item) => (
   <>
     <Card.Img src={item.volumeInfo.imageLinks?.thumbnail || 'placeholder.jpg'} alt={item.volumeInfo.title} className="grid-card-image poster"/>
     <Card.Body>
-      <Card.Title className="grid-card-title">{item.volumeInfo.title}</Card.Title>
+      <Card.Title className="grid-card-title" style={{ color: 'white' }}>{item.volumeInfo.title}</Card.Title>
     </Card.Body>
   </>
 );

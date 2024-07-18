@@ -2,6 +2,13 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import './styles/custom.css';
+import './styles/navbar.css';
+import './styles/searchbar.css';
+import './styles/mediacard.css';
+import './styles/login.css';
+import './styles/detailpage.css';
+import './styles/list.css';
+import './styles/homepage.css';
 import App from './App'; // Adjust the path accordingly
 import reportWebVitals from './reportWebVitals';
 

@@ -1,0 +1,81 @@
+/* styles.css */
+
+/* Card container */
+.features-section {
+  padding-bottom: 150px; /* Adjust as needed */
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Individual card styles */
+.welcome-section {
+  background-color: var(--component-background-color, #343a40); /* Default background color with optional CSS variable */
+  color: white; /* White text color */
+  padding: 5rem 0; /* Adjust padding as needed */
+}
+
+.welcome-section h1 {
+  font-family: 'Pacifico', cursive;
+  font-size: 3rem;
+}
+
+.welcome-section p {
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+
+
+.homepage-card {
+  color: white; /* White text */
+  font-family: 'Arial', sans-serif; /* Customizable font */
+  background-color: #3498db; /* Background color */
+  border: 1px solid #2980b9; /* Border */
+  border-radius: 8px;
+  width: 100%; /* Adjust width as needed */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+  overflow: hidden; /* Prevent content overflow */
+  transition: transform 0.3s ease-in-out; /* Smooth transform animation */
+
+  /* Animation for loading */
+  animation: fade-in 0.5s ease-out;
+  background: linear-gradient(to right, #1e1a29, #381e42);
+}
+
+.homepage-card:hover {
+  transform: scale(1.03); /* Scale up on hover */
+}
+
+.homepage-card-body {
+  padding: 20px;
+}
+
+.homepage-card-title {
+  font-size: 1.5rem !important;
+  font-weight: bold !important;
+  margin-bottom: 10px !important;
+  color: white !important;
+}
+
+.homepage-card-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: white;
+}
+
+/* Keyframe animation for fade-in */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

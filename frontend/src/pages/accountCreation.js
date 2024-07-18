@@ -114,7 +114,7 @@ const CreateAccountPage = () => {
             />
           </Form.Group>
 
-          <Button type="submit" className="button-create-account">
+          <Button type="submit" className="button-login">
             Create Account
           </Button>
         </Form>

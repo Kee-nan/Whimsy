@@ -83,8 +83,7 @@ const LoginPage = () => {
           </Button>
 
           <Button
-            className="button-create-account"
-            type="button"
+            className="button-login"
             onClick={handleCreateAccount}
           >
             Create Account

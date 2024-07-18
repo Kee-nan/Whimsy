@@ -1,0 +1,30 @@
+/* styles.css */
+
+/* Default styles */
+.custom-dropdown .dropdown-toggle {
+  font-family: Arial, sans-serif !important;
+  color: white !important;
+  border: none !important;
+}
+
+.custom-dropdown .dropdown-toggle:hover {
+  background-color: rgb(201, 180, 156) !important;
+}
+
+/* Specific styles based on currentList */
+.custom-dropdown .dropdown-toggle.completed {
+  background-color: green !important;
+}
+
+.custom-dropdown .dropdown-toggle.futures {
+  background-color: purple !important;
+}
+
+.custom-dropdown .dropdown-toggle.current {
+  background-color: blue !important;
+}
+
+
+
+
+

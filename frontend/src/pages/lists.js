@@ -185,6 +185,7 @@ const Lists = () => {
           <Col>
             <InputGroup>
               <FormControl
+                className="oval-form-control"
                 placeholder="Search by title"
                 aria-label="Search by title"
                 aria-describedby="basic-addon2"
