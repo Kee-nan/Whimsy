@@ -1,4 +1,3 @@
-// src/components/AccountDetailsCard.js
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 
@@ -10,7 +9,6 @@ const AccountDetailsCard = ({ user }) => {
   const [email, setEmail] = useState(user.email);
 
   useEffect(() => {
-    // Prefill the form fields when entering edit mode
     if (isEditing) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
@@ -55,9 +53,9 @@ const AccountDetailsCard = ({ user }) => {
   };
 
   return (
-    <Card className="mb-4">
-      <Card.Body>
-        <Card.Title>Account Details</Card.Title>
+    <Card className="profile-card account-details-card mb-4">
+      <Card.Body className="profile-card-body">
+        <Card.Title className="profile-card-title">Account Details</Card.Title>
         {isEditing ? (
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="formFirstName" className="mb-3">
@@ -96,16 +94,16 @@ const AccountDetailsCard = ({ user }) => {
                 required
               />
             </Form.Group>
-            <Button variant="primary" type="submit">Save</Button>
-            <Button variant="secondary" onClick={handleEditToggle} className="ms-2">Cancel</Button>
+            <button className="primaryButton" type="submit">Save</button>
+            <button className="secondaryButton" onClick={handleEditToggle}>Cancel</button>
           </Form>
         ) : (
-          <div>
-            <p>First Name: {user.firstName}</p>
-            <p>Last Name: {user.lastName}</p>
-            <p>Username: {user.username}</p>
-            <p>Email: {user.email}</p>
-            <Button variant="primary" onClick={handleEditToggle}>Edit</Button>
+          <div className='profile-card-text'>
+            <p> <strong>First Name:</strong> {user.firstName}</p>
+            <p> <strong>Last Name:</strong> {user.lastName}</p>
+            <p> <strong>Username:</strong> {user.username}</p>
+            <p> <strong>Email:</strong> {user.email}</p>
+            <button className="primaryButton" onClick={handleEditToggle}>Edit</button>
           </div>
         )}
       </Card.Body>
@@ -114,3 +112,4 @@ const AccountDetailsCard = ({ user }) => {
 };
 
 export default AccountDetailsCard;
+

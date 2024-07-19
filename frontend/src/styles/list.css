@@ -1,30 +1,67 @@
-/* styles.css */
+/* customStyles.css */
 
-/* Default styles */
-.custom-dropdown .dropdown-toggle {
-  font-family: Arial, sans-serif !important;
-  color: white !important;
-  border: none !important;
+/* Styles for the list dropdown button */
+.custom-dropdown.completed .dropdown-toggle {
+  background-image: radial-gradient(100% 100% at 100% 0, #bfbdc0 0, rgb(13, 71, 13) 100%);
+  color: white;
+  font-family: "JetBrains Mono", monospace;
+  height: 48px;
+  margin:5px
 }
 
-.custom-dropdown .dropdown-toggle:hover {
-  background-color: rgb(201, 180, 156) !important;
+.custom-dropdown.current .dropdown-toggle {
+  background-image: radial-gradient(100% 100% at 100% 0, #bfbdc0 0, blue 100%);
+  color: white;
+  font-family: "JetBrains Mono", monospace;
+  height: 48px;
+  margin:5px
 }
 
-/* Specific styles based on currentList */
-.custom-dropdown .dropdown-toggle.completed {
-  background-color: green !important;
+.custom-dropdown.futures .dropdown-toggle {
+  background-image: radial-gradient(100% 100% at 100% 0, #bfbdc0 0, #cc890d 100%); 
+  color: white;
+  font-family: "JetBrains Mono", monospace;
+  height: 48px;
+  margin:5px
 }
 
-.custom-dropdown .dropdown-toggle.futures {
-  background-color: purple !important;
+/* Styles for the media dropdown button */
+.media-dropdown .dropdown-toggle {
+  background-image: radial-gradient(100% 100% at 100% 0, #bfbdc0 0, var(--one-purple) 100%);
+  color: white;
+  font-family: "JetBrains Mono", monospace;
+  height: 48px;
+  margin:5px
 }
 
-.custom-dropdown .dropdown-toggle.current {
-  background-color: blue !important;
+
+/* General styles for other dropdown buttons if needed */
+.custom-dropdown .dropdown-toggle,
+.media-dropdown .dropdown-toggle {
+  border: none;
 }
 
+/* Focus state */
+.custom-dropdown .dropdown-toggle:focus,
+.media-dropdown .dropdown-toggle:focus {
+  box-shadow: var(--two-purple) 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
+}
 
+/* Hover state */
+.custom-dropdown .dropdown-toggle:hover,
+.media-dropdown .dropdown-toggle:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+/* Active state */
+.custom-dropdown .dropdown-toggle:active,
+.media-dropdown .dropdown-toggle:active,
+.custom-dropdown .dropdown-toggle.show,
+.media-dropdown .dropdown-toggle.show {
+  box-shadow: var(--two-purple) 0 3px 7px inset;
+  transform: translateY(2px);
+}
 
 
 

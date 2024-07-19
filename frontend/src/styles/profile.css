@@ -1,0 +1,41 @@
+/* General Styles for Cards */
+.profile-card {
+  background: linear-gradient(to right, #1e1a29, #381e42);
+  color: #ffffff; /* White Text */
+  border: none; /* Remove default border */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.profile-card-body {
+  padding: 1.5rem; /* Add some padding */
+}
+
+.profile-card-title {
+  color: #ffffff !important; /* White text for title */
+  text-align: center; /* Center align title */
+  font-size: 1.5rem; /* Larger font size */
+}
+
+.profile-card-text {
+  text-align: center; /* Center align text */
+  color: #ffffff !important; /* White text */
+}
+
+.profile-card img {
+  border: 2px solid #ffffff; /* White border for image */
+}
+
+/* Styles for specific profile-cards */
+.user-profile-card .profile-card-title {
+  font-size: 2rem; /* Larger title size */
+}
+
+.account-details-card .profile-card-title {
+  font-size: 1.5rem; /* Adjust title size */
+}
+
+.account-details-card .form-control {
+  background-color: #ffffff; /* Background color for form controls */
+  color: #000000; /* Text color for form controls */
+}
+

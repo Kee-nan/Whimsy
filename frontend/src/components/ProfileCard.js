@@ -8,12 +8,12 @@ const UserProfileCard = ({ user, setUser }) => {
 
   const handleEdit = () => {
     setIsEditing(true);
-    setBio(user.bio); // Ensure the form initializes with the current bio
+    setBio(user.bio);
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setBio(user.bio); // Reset the form value to the current bio
+    setBio(user.bio);
   };
 
   const handleSave = async () => {
@@ -39,8 +39,8 @@ const UserProfileCard = ({ user, setUser }) => {
   };
 
   return (
-    <Card className="mb-4">
-      <Card.Body className="d-flex flex-column align-items-center">
+    <Card className="profile-card user-profile-card mb-4">
+      <Card.Body className="profile-card-body d-flex flex-column align-items-center">
         <Image
           src={user.profilePicture || 'https://via.placeholder.com/150'}
           roundedCircle
@@ -48,34 +48,28 @@ const UserProfileCard = ({ user, setUser }) => {
           height="150"
           className="mb-3"
         />
-        <Card.Title className="display-4">{user.username}'s Profile</Card.Title>
+        <Card.Title className="profile-card-title">{user.username}'s Profile</Card.Title>
         {isEditing ? (
           <Form.Control
             as="textarea"
             rows={3}
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            className="mb-3"
+            className="mb-3 profile-card-text"
           />
         ) : (
-          <Card.Text className="text-center">{user.bio}</Card.Text>
+          <Card.Text className="profile-card-text">{user.bio}</Card.Text>
         )}
         <div className="d-flex justify-content-center mt-3">
           {isEditing ? (
             <>
-              <Button variant="primary" className="me-2" onClick={handleSave}>
-                Save
-              </Button>
-              <Button variant="secondary" onClick={handleCancel}>
-                Cancel
-              </Button>
+              <button className="primaryButton" onClick={handleSave}>Save</button>
+              <button className="secondaryButton" onClick={handleCancel}>Cancel</button>
             </>
           ) : (
             <>
-              <Button variant="primary" className="me-2" onClick={handleEdit}>
-                Edit Bio
-              </Button>
-              <Button variant="secondary">Friends</Button>
+              <button className="primaryButton" onClick={handleEdit}>Edit Bio</button>
+              <button className="secondaryButton">Friends</button>
             </>
           )}
         </div>
@@ -85,4 +79,5 @@ const UserProfileCard = ({ user, setUser }) => {
 };
 
 export default UserProfileCard;
+
 

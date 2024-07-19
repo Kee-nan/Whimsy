@@ -9,6 +9,8 @@ import './styles/login.css';
 import './styles/detailpage.css';
 import './styles/list.css';
 import './styles/homepage.css';
+import './styles/review.css';
+import './styles/profile.css';
 import App from './App'; // Adjust the path accordingly
 import reportWebVitals from './reportWebVitals';
 

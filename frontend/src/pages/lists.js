@@ -3,6 +3,7 @@ import { Container, DropdownButton, Dropdown, FormControl, InputGroup, Row, Col 
 import AppNavbar from '../components/Navbar';
 import ListCard from '../components/ListCard';
 import { useNavigate } from 'react-router-dom';
+import SearchAndDropdowns from '../components/ListFilter';
 
 const Lists = () => {
   const [completedList, setCompletedList] = useState([]);
@@ -15,7 +16,6 @@ const Lists = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetches all the list data from the backend whenever this page is loaded
     const fetchData = async () => {
       const user_token = localStorage.getItem('user_token');
       if (!user_token) {
@@ -52,7 +52,6 @@ const Lists = () => {
     fetchData();
   }, []);
 
-  // Function to handle navigating to a detail page for a media object when the detail button is pressed
   const handleNavigate = (id) => {
     const currentState = {
       currentList,
@@ -62,7 +61,6 @@ const Lists = () => {
     navigate(`/${id}`, { state: currentState });
   };
 
-  // Function to Delete a given card/Media Object from the list it is in.
   const handleDelete = async (id, listType) => {
     const user_token = localStorage.getItem('user_token');
     if (!user_token) {
@@ -109,7 +107,6 @@ const Lists = () => {
     }
   };
 
-  // Functions to handle search filters, including list, meditatype, and name search
   const handleSelectList = (listName) => {
     setCurrentList(listName);
   };
@@ -122,7 +119,6 @@ const Lists = () => {
     setSearchTerm(event.target.value);
   };
 
-  // Function to filter list 
   const filterList = (list) => {
     return list.filter(item => {
       const matchesMedia = currentMedia === 'All' || item.media === currentMedia;
@@ -131,7 +127,6 @@ const Lists = () => {
     });
   };
 
-  // Renders all the list card objects based on list type
   const renderList = (list, listType) => (
     <div className="row">
       {filterList(list).map((item, index) => (
@@ -148,7 +143,6 @@ const Lists = () => {
     </div>
   );
 
-  // Function to capitalize the first letter of a string
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
@@ -157,46 +151,17 @@ const Lists = () => {
     <>
       <AppNavbar />
 
+      <SearchAndDropdowns
+          currentList={currentList}
+          currentMedia={currentMedia}
+          searchTerm={searchTerm}
+          onListChange={handleSelectList}
+          onMediaChange={handleSelectMedia}
+          onSearchChange={handleSearchChange}
+          capitalizeFirstLetter={capitalizeFirstLetter}
+        />
+
       <Container className="mt-5">
-        <h2>Your Lists</h2>
-
-        <Row className="align-items-center mb-4" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap' }}>
-
-          <Col xs="auto">
-            <DropdownButton id="list-dropdown" title={currentList === 'completed' ? 'Completed' : currentList === 'futures' ? 'Futures' : 'Current'} className="mr-2">
-              <Dropdown.Item onClick={() => handleSelectList('completed')}>Completed</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectList('current')}>Current</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectList('futures')}>Futures</Dropdown.Item>
-            </DropdownButton>
-          </Col>
-
-          <Col xs="auto">
-            <DropdownButton id="media-dropdown" title={capitalizeFirstLetter(currentMedia)} className="mr-2">
-              <Dropdown.Item onClick={() => handleSelectMedia('All')}>All</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('anime')}>Anime</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('album')}>Album</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('show')}>Show</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('book')}>Book</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('movie')}>Movie</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleSelectMedia('manga')}>Manga</Dropdown.Item>
-            </DropdownButton>
-          </Col>
-
-          <Col>
-            <InputGroup>
-              <FormControl
-                className="oval-form-control"
-                placeholder="Search by title"
-                aria-label="Search by title"
-                aria-describedby="basic-addon2"
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-            </InputGroup>
-          </Col>
-
-        </Row>
-
 
         {
           currentList === 'completed' ? renderList(completedList, 'completedList') : 
@@ -210,6 +175,7 @@ const Lists = () => {
 };
 
 export default Lists;
+
 
 
 

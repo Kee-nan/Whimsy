@@ -15,6 +15,7 @@
   font-family: 'Roboto', sans-serif; /* Change this to your preferred font */
   font-size: 1rem; /* Adjust font size */
   color: #000; /* Change this to your preferred text color */
+  margin:5px
 }
 
 .search-bar .button-search {

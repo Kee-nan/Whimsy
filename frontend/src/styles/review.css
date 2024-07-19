@@ -1,0 +1,31 @@
+.review-card {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background: linear-gradient(to right, #1e1a29, #381e42);
+  border: 2px solid white; /* White border around the image */
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.5);
+}
+
+.review-card-rating {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: white;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.review-card-box {
+  height: 150px;
+  overflow-y: auto;
+  padding: 10px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.review-button-container {
+  display: flex;
+  justify-content: space-between;
+}
