@@ -55,7 +55,7 @@ const UserProfileCard = ({ user, setUser }) => {
             rows={3}
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            className="mb-3 profile-card-text"
+            className="mb3 profile-card-text-edit"
           />
         ) : (
           <Card.Text className="profile-card-text">{user.bio}</Card.Text>

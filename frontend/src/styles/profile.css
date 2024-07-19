@@ -21,6 +21,12 @@
   color: #ffffff !important; /* White text */
 }
 
+.profile-card-text-edit {
+  text-align: center; /* Center align text */
+  color: #ffffff !important; /* White text */
+  background-color: Black !important;
+}
+
 .profile-card img {
   border: 2px solid #ffffff; /* White border for image */
 }
