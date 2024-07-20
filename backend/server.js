@@ -9,6 +9,7 @@ const accountRoutes = require('./routes/accountRoutes');
 const listRoutes = require('./routes/listRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const searchRoutes = require('./routes/searchRoutes');
+const igdbAuthRoutes = require('./routes/igdbRoutes');
 
 // Environment config
 dotenv.config();
@@ -39,6 +40,7 @@ app.use('/api/accounts', accountRoutes);
 app.use('/api/list', listRoutes);
 app.use('/api/review', reviewRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/auth/igdb', igdbAuthRoutes);
 
 // Start server
 app.listen(PORT, () => {

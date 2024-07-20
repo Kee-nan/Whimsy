@@ -8,6 +8,8 @@ import UserProfileCard from '../components/ProfileCard';
 const Profile = () => {
   const [spotifyToken, setSpotifyToken] = useState('');
   const [spotifyConnected, setSpotifyConnected] = useState(false);
+  const [igdbToken, setIgdbToken] = useState('');
+  const [igdbConnected, setIgdbConnected] = useState(false);
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
@@ -64,6 +66,17 @@ const Profile = () => {
     fetchUserDetails();
   }, []);
 
+  const connectToIgdb = async () => {
+    try {
+      const { data } = await axios.post('http://localhost:5000/auth/igdb/token');
+      localStorage.setItem('igdbToken', data.access_token);
+      setIgdbToken(data.access_token);
+      setIgdbConnected(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <AppNavbar />
@@ -79,6 +92,14 @@ const Profile = () => {
             <Card.Title>Spotify</Card.Title>
             <Button href="http://localhost:5000/auth/spotify">Connect to Spotify</Button>
             <p>Status: {spotifyConnected ? <span style={{ color: 'green' }}>Connected</span> : <span style={{ color: 'darkred' }}>Not Connected</span>}</p>
+          </Card.Body>
+        </Card>
+
+        <Card>
+          <Card.Body>
+            <Card.Title>IGDB</Card.Title>
+            <Button onClick={connectToIgdb}>Connect to IGDB</Button>
+            <p>Status: {igdbConnected ? <span style={{ color: 'green' }}>Connected</span> : <span style={{ color: 'darkred' }}>Not Connected</span>}</p>
           </Card.Body>
         </Card>
 

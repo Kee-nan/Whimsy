@@ -2,18 +2,19 @@
 import React from 'react';
 import { Card, Container, Button } from 'react-bootstrap';
 
-const DetailCard = ({ image, title, details, buttons, type = 'poster', onAddToCompleted, onAddToFutures, onAddToCurrent, onReview }) => {
-  
+const DetailCard = ({ image, title, details, buttons, type, onAddToCompleted, onAddToFutures, onAddToCurrent, onReview }) => {
+  // Determine the class based on the media type
+  const imageClass = `detail-image ${type ? `detail-image-${type}` : ''}`;
 
   return (
     <Container className="detail-container">
       <Card className="detail-card">
         <div className="detail-card-container">
-          <Card.Img className={`detail-image`} src={image} alt={title} />
+          <Card.Img className={imageClass} src={image} alt={title} />
           <Card.Body className="detail-body">
-            <Card.Title className="detail-title" style={{ color: 'white' }}>{title}</Card.Title>
+            <Card.Title className="detail-title">{title}</Card.Title>
             <Card.Text className="detail-text">{details}</Card.Text>
-            <div>
+            <div className="detail-buttons">
               {buttons}
               <button className="completedButton" onClick={onAddToCompleted}>Completed</button>
               <button className="currentButton" onClick={onAddToCurrent}>Current</button>

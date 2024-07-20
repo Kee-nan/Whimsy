@@ -15,6 +15,7 @@ import Manga from './pages/searchs/manga';
 import Albums from './pages/searchs/albums';
 import Shows from './pages/searchs/shows';
 import Books from './pages/searchs/books';
+import Games from './pages/searchs/games';
 
 // Detail Pages
 import AnimeDetail from './pages/details/animeDetails';
@@ -23,6 +24,9 @@ import ShowDetail from './pages/details/showDetails';
 import AlbumDetail from './pages/details/albumDetails';
 import BookDetail from './pages/details/bookDetails';
 import MovieDetail from './pages/details/movieDetails';
+import GameDetail from './pages/details/gameDetails';
+
+
 import LeaveReview from './pages/leaveReview';
 
 import PrivateRoute from './components/PrivateRoute';
@@ -46,6 +50,7 @@ const App = () => {
         <Route path="/album" element={<PrivateRoute element={<Albums />} />} />
         <Route path="/show" element={<PrivateRoute element={<Shows />} />} />
         <Route path="/book" element={<PrivateRoute element={<Books />} />} />
+        <Route path="/game" element={<PrivateRoute element={<Games />} />} />
 
         <Route path="/anime/:id" element={<PrivateRoute element={<AnimeDetail />} />} />
         <Route path="/manga/:id" element={<PrivateRoute element={<MangaDetail />} />} />
@@ -53,6 +58,7 @@ const App = () => {
         <Route path="/album/:id" element={<PrivateRoute element={<AlbumDetail />} />} />
         <Route path="/book/:id" element={<PrivateRoute element={<BookDetail />} />} />
         <Route path="/movie/:id" element={<PrivateRoute element={<MovieDetail />} />} />
+        <Route path="/game/:id" element={<PrivateRoute element={<GameDetail />} />} />
         
         <Route path="/leaveReview" element={<PrivateRoute element={<LeaveReview />} />} />
       </Routes>
