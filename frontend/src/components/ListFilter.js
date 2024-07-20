@@ -36,6 +36,7 @@ const SearchAndDropdowns = ({
             <Dropdown.Item onClick={() => onMediaChange('book')}>Book</Dropdown.Item>
             <Dropdown.Item onClick={() => onMediaChange('movie')}>Movie</Dropdown.Item>
             <Dropdown.Item onClick={() => onMediaChange('manga')}>Manga</Dropdown.Item>
+            <Dropdown.Item onClick={() => onMediaChange('game')}>Game</Dropdown.Item>
           </DropdownButton>
 
           <FormControl
