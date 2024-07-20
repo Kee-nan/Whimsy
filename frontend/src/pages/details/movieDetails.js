@@ -4,16 +4,12 @@ import React from 'react';
 import DetailPage from '../templates/DetailPage';
 import axios from 'axios';
 
-
-
-
 // Function to fetch movie details (no token needed)
 const fetchMovieDetails = async (id) => {
   return await axios.get(`https://api.themoviedb.org/3/movie/${id}`, {
     params: { api_key: '670e04ce75f540ad139cadd217bad472' }
   });
 };
-
 
 
 // Function to extract movie details
