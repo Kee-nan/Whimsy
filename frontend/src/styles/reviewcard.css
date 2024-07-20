@@ -1,0 +1,53 @@
+/* Review-modalModal.css */
+
+.review-modal-container .modal-dialog {
+  max-width: 115vh; /* Make the modal wider */
+}
+
+.review-modal-container .modal-content {
+  height: 82vh; /* Make the modal taller */
+}
+
+.review-modal-header{
+  color: white !important;
+  background-color: #353436 !important;
+}
+
+.review-modal-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%; /* Make the card wider */
+  background-image: linear-gradient(to right, #1e1a29, #381e42);
+}
+
+.review-modal-card-img {
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+  border: 2px solid white; /* White border around the image */
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.5);
+}
+
+.review-modal-card-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: white !important;
+  margin-bottom: 16px;
+}
+
+.review-modal-label {
+  font-weight: bold;
+  color: white;
+}
+
+.review-modal-input {
+  background-color: #3e3547 !important;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: white !important;
+  max-height: 425px;
+}
+
+

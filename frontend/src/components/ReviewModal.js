@@ -1,6 +1,6 @@
-// src/components/ReviewModal.js
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Card } from 'react-bootstrap';
+import { Modal, Button, Form, Card, Row, Col } from 'react-bootstrap';
+
 
 const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
   const [rating, setRating] = useState('');
@@ -54,40 +54,48 @@ const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
   };
 
   return (
-    <Modal show={show} onHide={onClose} centered>
-      <Modal.Header closeButton>
+    <Modal show={show} onHide={onClose} centered className='review-modal-container'>
+      <Modal.Header closeButton className='review-modal-header'>
         <Modal.Title>Leave a Review</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <Card>
-          {mediaDetails.image && <Card.Img src={mediaDetails.image} alt={mediaDetails.title} />}
-          <Card.Body>
-            <Card.Title>{mediaDetails.title}</Card.Title>
-            <Form onSubmit={handleSubmit}>
-              <Form.Group controlId="rating">
-                <Form.Label>Rating (1-100)</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={rating}
-                  onChange={(e) => setRating(e.target.value)}
-                  min="1"
-                  max="100"
-                  required
-                />
-              </Form.Group>
-              <Form.Group controlId="review">
-                <Form.Label>Review</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={5}
-                  value={review}
-                  onChange={(e) => setReview(e.target.value)}
-                  required
-                />
-              </Form.Group>
-              <Button variant="primary" type="submit">Submit Review</Button>
-            </Form>
-          </Card.Body>
+      <Modal.Body closeButton className='review-modal-header'>
+        <Card className="review-modal-card">
+          <Row>
+            <Col md={5}>
+              {mediaDetails.image && <Card.Img src={mediaDetails.image} alt={mediaDetails.title} className="review-modal-card-img" />}
+            </Col>
+            <Col md={7}>
+              <Card.Body>
+                <Card.Title className="review-modal-card-title">{mediaDetails.title}</Card.Title>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group controlId="rating">
+                    <Form.Label className="review-modal-label">Rating (1-100)</Form.Label>
+                    <Form.Control
+                      type="number"
+                      value={rating}
+                      onChange={(e) => setRating(e.target.value)}
+                      min="1"
+                      max="100"
+                      required
+                      className="review-modal-input"
+                    />
+                  </Form.Group>
+                  <Form.Group controlId="review">
+                    <Form.Label className="review-modal-label">Review</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={5}
+                      value={review}
+                      onChange={(e) => setReview(e.target.value)}
+                      required
+                      className="review-modal-input"
+                    />
+                  </Form.Group>
+                  <button type="submit" className="primaryButton">Submit Review</button>
+                </Form>
+              </Card.Body>
+            </Col>
+          </Row>
         </Card>
       </Modal.Body>
     </Modal>
@@ -95,3 +103,5 @@ const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
 };
 
 export default ReviewModal;
+
+
