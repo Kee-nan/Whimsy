@@ -9,6 +9,7 @@ const Lists = () => {
   const [completedList, setCompletedList] = useState([]);
   const [futuresList, setFuturesList] = useState([]);
   const [currentListData, setCurrentListData] = useState([]);
+  const [ReviewData, setReviewData] = useState([]); // Initialized as an empty array
 
   const [currentList, setCurrentList] = useState('current');
   const [currentMedia, setCurrentMedia] = useState('All');
@@ -32,15 +33,18 @@ const Lists = () => {
         const completedResponse = await fetch('http://localhost:5000/api/list/completed', { headers });
         const futuresResponse = await fetch('http://localhost:5000/api/list/futures', { headers });
         const currentResponse = await fetch('http://localhost:5000/api/list/current', { headers });
+        const reviewsResponse = await fetch('http://localhost:5000/api/list/reviews', { headers });
 
-        if (currentResponse.ok && completedResponse.ok && futuresResponse.ok) {
+        if (currentResponse.ok && completedResponse.ok && futuresResponse.ok && reviewsResponse.ok) {
           const completedData = await completedResponse.json();
           const futuresData = await futuresResponse.json();
           const currentData = await currentResponse.json();
+          const reviewsData = await reviewsResponse.json();
           
           setCompletedList(completedData);
           setFuturesList(futuresData);
-          setCurrentListData(currentData)
+          setCurrentListData(currentData);
+          setReviewData(reviewsData);
         } else {
           console.error('Failed to fetch lists');
         }
@@ -137,11 +141,13 @@ const Lists = () => {
             onDelete={(id) => handleDelete(id, listType)}
             type={item.type}
             listType={listType}
+            reviewData={ReviewData} // Ensure correct prop name
           />
         </div>
       ))}
     </div>
   );
+  
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);

@@ -43,6 +43,19 @@ router.get('/current', authenticateToken, async (req, res) => {
   }
 });
 
+// Get current list
+router.get('/reviews', authenticateToken, async (req, res) => {
+  const userId = req.user._id;
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.sendStatus(404);
+    res.json(user.reviews);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching current list');
+  }
+});
+
 
 // Add media to user's list (completed, futures, current)
 router.post('/add', authenticateToken, async (req, res) => {
