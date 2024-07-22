@@ -44,10 +44,12 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
   const handleCardClick = (id) => {
     const currentState = {
       searchKey,
-      searchResults: results
+      searchResults: results,
+      origin: 'search' // Add origin to state
     };
     navigate(`/${placeholder.toLowerCase()}/${id}`, { state: currentState });
   };
+
 
   return (
     <>

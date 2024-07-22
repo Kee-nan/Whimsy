@@ -14,6 +14,10 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
   const { searchKey, searchResults } = location.state || { searchKey: "", searchResults: [] };
 
+  const [currentList, setCurrentList] = useState('Completed');
+  const [currentMedia, setCurrentMedia] = useState('anime');
+  const [searchTerm, setSearchTerm] = useState('');
+
   const fetchMediaDetails = useCallback(async () => {
     try {
       const token = tokenRequired ? localStorage.getItem('spotifyToken') : null;
@@ -114,7 +118,13 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   };
 
   const handleBack = () => {
-    navigate(`/${mediaType}`, { state: { searchKey, searchResults } });
+    if (location.state?.origin === 'search') {
+      navigate(`/${mediaType}`, { state: { searchKey, searchResults } });
+    } else if (location.state?.origin === 'list') {
+      navigate('/lists', { state: { currentList, currentMedia, searchTerm } });
+    } else {
+      navigate(-1); // Fallback to browser history
+    }
   };
 
   if (!details) return <p>Loading...</p>;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, DropdownButton, Dropdown, FormControl, InputGroup, Row, Col } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 import ListCard from '../components/ListCard';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import SearchAndDropdowns from '../components/ListFilter';
 
 const Lists = () => {
@@ -14,7 +14,9 @@ const Lists = () => {
   const [currentList, setCurrentList] = useState('current');
   const [currentMedia, setCurrentMedia] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,11 +58,20 @@ const Lists = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (location.state) {
+      setCurrentList(location.state.currentList);
+      setCurrentMedia(location.state.currentMedia);
+      setSearchTerm(location.state.searchTerm);
+    }
+  }, [location.state]);
+
   const handleNavigate = (id) => {
     const currentState = {
       currentList,
       currentMedia,
-      searchTerm
+      searchTerm,
+      origin: 'list' // Add origin to state
     };
     navigate(`/${id}`, { state: currentState });
   };
