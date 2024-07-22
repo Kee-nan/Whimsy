@@ -12,10 +12,10 @@ const DetailCard = ({ image, title, details, buttons, type, onAddToCompleted, on
         <div className="detail-card-container">
           <Card.Img className={imageClass} src={image} alt={title} />
           <Card.Body className="detail-body">
-            <Card.Title className="detail-title">{title}</Card.Title>
+            <Card.Title className="detail-title" style = {{color: 'white'}}>{title}</Card.Title>
             <Card.Text className="detail-text">{details}</Card.Text>
             <div className="detail-buttons">
-              {buttons}
+              {buttons} 
               <button className="completedButton" onClick={onAddToCompleted}>Completed</button>
               <button className="currentButton" onClick={onAddToCurrent}>Current</button>
               <button className="futuresButton" onClick={onAddToFutures}>Futures</button>
