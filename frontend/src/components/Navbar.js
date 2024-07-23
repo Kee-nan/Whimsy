@@ -35,6 +35,7 @@ const AppNavbar = () => {
           <Nav>
             <Nav.Link as={Link} to="/profile" className="nav-link-button">Profile</Nav.Link>
             <Nav.Link as={Link} to="/lists" className="nav-link-button">Lists</Nav.Link>
+            <Nav.Link as={Link} to="/friend" className="nav-link-button">Friend</Nav.Link>
             <Nav.Link onClick={handleShow} className="nav-link-button">Sign Out</Nav.Link>
           </Nav>
         </Container>

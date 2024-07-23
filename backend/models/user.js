@@ -35,7 +35,9 @@ const userSchema = new mongoose.Schema({
   futures: [mediaSchema],    // Array of media objects
   favorites: [mediaSchema],  // Array of media objects
   reviews: [reviewSchema],   // Array of review objects
-  bio: { type: String }
+  bio: { type: String },
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  friendRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 }, { collection: 'User-test' }); // Specify the collection name
 
 // Create unique indexes for username and email fields
