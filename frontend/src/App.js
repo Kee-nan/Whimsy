@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import MainPage from './pages/main';
 import Profile from './pages/profile';
 import Lists from './pages/lists';
+import ViewFriendLists from './pages/viewFriendLists';
 import Friend from './pages/friend';
 
 import LoginPage from './pages/login';
@@ -44,8 +45,10 @@ const App = () => {
 
         <Route path="/homepage" element={<PrivateRoute element={<MainPage />} />} />
         <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
+
         <Route path="/lists" element={<PrivateRoute element={<Lists />} />} />
         <Route path="/friend" element={<PrivateRoute element={<Friend />} />} />
+        <Route path="/lists/:username/:id" element={<ViewFriendLists />} />
 
         <Route path="/movie" element={<PrivateRoute element={<Movies />} />} />
         <Route path="/anime" element={<PrivateRoute element={<Anime />} />} />

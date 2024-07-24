@@ -94,5 +94,41 @@ router.get('/friends', authenticateToken, async (req, res) => {
   }
 });
 
+// Route to get a friend's lists
+router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user._id; // Authenticated user's ID from the token
+    const friendId = req.params.friendId;
+    console.log('Ids:', friendId, userId); // Debugging line
+
+    // Find the authenticated user
+    const user = await User.findById(userId);
+    console.log('User:', user); // Debugging line
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the friendId is in the user's friends list
+    if (!user.friends || !user.friends.includes(friendId)) {
+      return res.status(403).json({ message: 'You are not friends with this user' });
+    }
+
+    // Find the friend's user document
+    const friend = await User.findById(friendId);
+    if (!friend) {
+      return res.status(404).json({ message: 'Friend not found' });
+    }
+
+    // Fetch the friend's lists (assuming they are stored on the user document)
+    const { current, futures, completed, reviews } = friend;
+
+    // Send the lists back to the client
+    res.json({ current, futures, completed, reviews });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 module.exports = router;

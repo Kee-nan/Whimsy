@@ -1,9 +1,11 @@
-//frontend\src\components\friends\SendRequest.js
 // frontend\src\components\friends\FriendsList.js
+// frontend/src/components/friends/FriendsList.js
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const FriendsList = () => {
   const [friends, setFriends] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -12,14 +14,14 @@ const FriendsList = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('user_token')}` // Adjust as needed
+            'Authorization': `Bearer ${localStorage.getItem('user_token')}`
           }
         });
-        
+
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        
+
         const data = await response.json();
         setFriends(data);
       } catch (error) {
@@ -30,6 +32,10 @@ const FriendsList = () => {
     fetchFriends();
   }, []);
 
+  const handleViewList = (username, id) => {
+    navigate(`/lists/${username}/${id}`);
+  };
+
   return (
     <div className="card">
       <h2>Friends</h2>
@@ -37,7 +43,7 @@ const FriendsList = () => {
         {friends.map((friend) => (
           <div key={friend.id} className="friend">
             <span>{friend.username}</span>
-            <button>View List</button>
+            <button onClick={() => handleViewList(friend.username, friend.id)}>View List</button>
           </div>
         ))}
       </div>
@@ -46,4 +52,6 @@ const FriendsList = () => {
 };
 
 export default FriendsList;
+
+
 
