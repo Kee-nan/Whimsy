@@ -7,12 +7,16 @@ import { Container, Row, Col, Modal, Button } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 import FriendListCard from '../components/friends/FriendListCard';
 import SearchAndDropdowns from '../components/ListFilter';
+import FriendProfileCard from '../components/friends/FriendProfileCard';
 
 const ViewFriendLists = () => {
   const [completedList, setCompletedList] = useState([]);
   const [futuresList, setFuturesList] = useState([]);
   const [currentListData, setCurrentListData] = useState([]);
   const [reviews, setReviews] = useState([]);
+
+  const[bio, setBio] = useState('')
+  const[username, setUsername] = useState('')
 
   const [currentList, setCurrentList] = useState('current');
   const [currentMedia, setCurrentMedia] = useState('All');
@@ -50,6 +54,9 @@ const ViewFriendLists = () => {
         setFuturesList(data.futures || []);
         setCurrentListData(data.current || []);
         setReviews(data.reviews || []);
+        setBio(data.bio || []);
+        setUsername(data.username || []);
+
       } catch (error) {
         console.error('Error fetching friend data:', error);
       }
@@ -104,6 +111,11 @@ const ViewFriendLists = () => {
   return (
     <>
       <AppNavbar />
+
+      <FriendProfileCard
+        friendBio={bio}
+        friendUsername={username}
+      />
 
       <SearchAndDropdowns
         currentList={currentList}
