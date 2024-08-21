@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Form } from 'react-bootstrap';
+import { Card, Form } from 'react-bootstrap';
 
 const AccountDetailsCard = ({ user }) => {
   const [isEditing, setIsEditing] = useState(false);

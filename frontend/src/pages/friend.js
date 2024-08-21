@@ -11,7 +11,7 @@ const FriendPage = () => {
       <AppNavbar />
 
       <div>
-        <h1>Friends</h1>
+        <h1>Friends Page</h1>
         <FriendRequestForm />
         <PendingFriendRequests />
         <FriendsList />

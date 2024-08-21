@@ -106,12 +106,12 @@ const UserProfileCard = ({ user, setUser }) => {
           Are you sure you would like to sign out?
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <button className='secondaryButton' onClick={handleClose}>
             Cancel
-          </Button>
-          <Button variant="primary" onClick={handleConfirmSignOut}>
+          </button>
+          <button className='primaryButton' onClick={handleConfirmSignOut}>
             Confirm
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     
