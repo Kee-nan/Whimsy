@@ -142,10 +142,11 @@ const Lists = () => {
     });
   };
 
+  // 
   const renderList = (list, listType) => (
     <div className="row">
       {filterList(list).map((item, index) => (
-        <div className="col-md-3 mb-4" key={index}>
+        <div className="col-md-4 mb-4" key={index}>
           <ListCard
             item={item}
             onNavigate={handleNavigate}
