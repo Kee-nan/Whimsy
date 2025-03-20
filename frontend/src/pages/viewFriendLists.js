@@ -78,7 +78,7 @@ const ViewFriendLists = () => {
   const renderList = (list, key) => (
     <Row key={key}>
       {filterList(list).map((item, index) => (
-        <Col md={3} className="mb-4" key={index}>
+        <Col md={4} className="mb-4" key={index}>
           <FriendListCard item={item} reviewData={reviews} onCardClick={() => handleCardClick(item)} />
         </Col>
       ))}
