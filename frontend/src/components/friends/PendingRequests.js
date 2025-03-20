@@ -84,21 +84,39 @@ const PendingFriendRequests = () => {
   };
 
   return (
-    <div className="card">
-      <h2>Pending Friend Requests</h2>
+    <div className="friend-card">
+      <h2 className="friend-card-text">Pending Friend Requests:</h2>
       {message && <p>{message}</p>}
-      <div>
-        {friendRequests.map((request) => (
-          <div key={request.id} className="friend-request">
-            <span>{request.username}</span>
-            <button onClick={() => handleAccept(request.id)}>Accept</button>
-            <button onClick={() => handleDeny(request.id)}>Deny</button>
-          </div>
-        ))}
+      <div style={{ 
+        maxHeight: '400px', 
+        overflowY: 'auto', 
+        border: '1px solid #ccc', 
+        padding: '10px', 
+        borderRadius: '8px' 
+      }}>
+        {friendRequests.length > 0 ? (
+          friendRequests.map((request) => (
+            <div key={request.id} className="friend" style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              marginBottom: '10px',
+              fontSize: '1.5rem',
+            }}>
+              <span>{request.username}</span>
+              <div>
+                <button onClick={() => handleAccept(request.id)} className="primaryButton" style={{ marginRight: '10px' }}>Accept</button>
+                <button onClick={() => handleDeny(request.id)} className="secondaryButton">Deny</button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No pending friend requests.</p>
+        )}
       </div>
     </div>
   );
 };
 
 export default PendingFriendRequests;
+
 

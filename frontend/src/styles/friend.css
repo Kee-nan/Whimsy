@@ -1,0 +1,55 @@
+/*freind.css */
+
+.friend-card {
+  background: linear-gradient(to right, #1e1a29, #381e42);
+  color: #ffffff; /* White Text */
+  border: none; /* Remove default border */
+  border-radius: 10px; /* Rounded corners */
+  width: 100%;
+  
+}
+
+.friend-card-body {
+  padding: 1.5rem; /* Add some padding */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.friend-card-input {
+  height: 50px;
+  font-size: 1.2rem;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid white;
+  background-color: #1e1a29;
+  color: white;
+}
+
+.friend-card-title {
+  color: #ffffff !important; /* White text for title */
+  text-align: center; /* Center align title */
+  font-size: 1.5rem; /* Larger font size */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.friend-card-text {
+  text-align: center; /* Center align text */
+  color: #ffffff !important; /* White text */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.friend-card-text-edit {
+  text-align: center; /* Center align text */
+  color: #ffffff !important; /* White text */
+  background-color: Black !important;
+  justify-content: center;
+}
+
+.friend-card img {
+  border: 2px solid #ffffff; /* White border for image */
+}

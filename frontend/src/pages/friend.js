@@ -4,19 +4,19 @@ import FriendRequestForm from '../components/friends/SendRequest';
 import PendingFriendRequests from '../components/friends/PendingRequests';
 import FriendsList from '../components/friends/FriendList';
 import AppNavbar from '../components/Navbar';
+import { Container } from 'react-bootstrap';
 
 const FriendPage = () => {
   return (
     <>
       <AppNavbar />
 
-      <div>
-        <h1>Friends Page</h1>
-        <FriendRequestForm />
-        <PendingFriendRequests />
+      <Container>
         <FriendsList />
-      </div>
-
+        <PendingFriendRequests />
+        <FriendRequestForm />
+      </Container>
+        
     </>
     
   );

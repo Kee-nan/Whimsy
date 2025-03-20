@@ -1,5 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+
+// Every style sheet must be imported here to be implemented across the pages
 import './index.css';
 import './styles/custom.css';
 import './styles/navbar.css';
@@ -12,6 +14,9 @@ import './styles/homepage.css';
 import './styles/review.css';
 import './styles/profile.css';
 import './styles/reviewcard.css';
+import './styles/friend.css';
+
+
 import App from './App'; // Adjust the path accordingly
 import reportWebVitals from './reportWebVitals';
 

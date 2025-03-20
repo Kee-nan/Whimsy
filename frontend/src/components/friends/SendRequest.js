@@ -39,16 +39,26 @@ const FriendRequestForm = () => {
   };
 
   return (
-    <div className="card">
-      <h2>Send Friend Request</h2>
+    <div className="friend-card">
+      <h2 className="friend-card-text">Send Friend Request</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Enter username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          style={{
+            width: '80%', // Makes it wider
+            height: '50px', // Makes it taller
+            borderRadius: '25px', // Rounded edges
+            backgroundColor: '#333', // Dark interior background
+            color: '#fff', // White text color
+            border: '1px solid #555', // Optional border for visibility
+            padding: '0 15px', // Padding for comfortable typing
+            fontSize: '1rem' // Adjust text size if needed
+          }}
         />
-        <button type="submit">Send</button>
+        <button type="submit" className='primaryButton'>Send</button>
       </form>
       {message && <p>{message}</p>}
     </div>
