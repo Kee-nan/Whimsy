@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Container, DropdownButton, Dropdown, FormControl, InputGroup, Row, Col } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 import ListCard from '../components/ListCard';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SearchAndDropdowns from '../components/ListFilter';
 
 const Lists = () => {
+  //Variables that will be loaded from the user account that will be filtered
   const [completedList, setCompletedList] = useState([]);
   const [futuresList, setFuturesList] = useState([]);
   const [currentListData, setCurrentListData] = useState([]);
   const [ReviewData, setReviewData] = useState([]); // Initialized as an empty array
 
+  //Variables for filter searching through lists
   const [currentList, setCurrentList] = useState('current');
   const [currentMedia, setCurrentMedia] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,6 +21,8 @@ const Lists = () => {
   const location = useLocation();
 
   useEffect(() => {
+
+    //Get Lists and Reviews from backend API
     const fetchData = async () => {
       const user_token = localStorage.getItem('user_token');
       if (!user_token) {
@@ -58,6 +62,26 @@ const Lists = () => {
     fetchData();
   }, []);
 
+  //Take the lists we got from the backend and then display them
+  //We use list cards and display in rows of 3
+  const renderList = (list, listType) => (
+    <div className="row">
+      {filterList(list).map((item, index) => (
+        <div className="col-md-4 mb-4" key={index}>
+          <ListCard
+            item={item}
+            onNavigate={handleNavigate}
+            onDelete={(id) => handleDelete(id, listType)}
+            type={item.type}
+            listType={listType}
+            reviewData={ReviewData} // Ensure correct prop name
+          />
+        </div>
+      ))}
+    </div>
+  );
+
+  //Default the filters on the page
   useEffect(() => {
     if (location.state) {
       setCurrentList(location.state.currentList);
@@ -65,7 +89,28 @@ const Lists = () => {
       setSearchTerm(location.state.searchTerm);
     }
   }, [location.state]);
+  
+  const handleSelectList = (listName) => {
+    setCurrentList(listName);
+  };
 
+  const handleSelectMedia = (mediaType) => {
+    setCurrentMedia(mediaType);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filterList = (list) => {
+    return list.filter(item => {
+      const matchesMedia = currentMedia === 'All' || item.media === currentMedia;
+      const matchesSearch = item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesMedia && matchesSearch;
+    });
+  };
+
+  //Function to take you to details when you click on an item
   const handleNavigate = (id) => {
     const currentState = {
       currentList,
@@ -76,6 +121,12 @@ const Lists = () => {
     navigate(`/${id}`, { state: currentState });
   };
 
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  //NOT IN USE YET
+  //Deletes item
   const handleDelete = async (id, listType) => {
     const user_token = localStorage.getItem('user_token');
     if (!user_token) {
@@ -120,49 +171,6 @@ const Lists = () => {
       console.error('Error deleting item from list:', error);
       alert(`Error deleting item from list: ${error.message}`)
     }
-  };
-
-  const handleSelectList = (listName) => {
-    setCurrentList(listName);
-  };
-
-  const handleSelectMedia = (mediaType) => {
-    setCurrentMedia(mediaType);
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const filterList = (list) => {
-    return list.filter(item => {
-      const matchesMedia = currentMedia === 'All' || item.media === currentMedia;
-      const matchesSearch = item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesMedia && matchesSearch;
-    });
-  };
-
-  // 
-  const renderList = (list, listType) => (
-    <div className="row">
-      {filterList(list).map((item, index) => (
-        <div className="col-md-4 mb-4" key={index}>
-          <ListCard
-            item={item}
-            onNavigate={handleNavigate}
-            onDelete={(id) => handleDelete(id, listType)}
-            type={item.type}
-            listType={listType}
-            reviewData={ReviewData} // Ensure correct prop name
-          />
-        </div>
-      ))}
-    </div>
-  );
-  
-
-  const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
   return (
