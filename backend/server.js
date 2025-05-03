@@ -37,6 +37,7 @@ app.use(express.json());
 
 // Use route files
 app.use('/auth/spotify', spotifyRoutes);
+app.use('/api/spotify', spotifyRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/list', listRoutes);
 app.use('/api/review', reviewRoutes);

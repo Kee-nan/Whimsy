@@ -1,39 +1,42 @@
+//spotifyRoutes.js
+
 const express = require('express');
 const axios = require('axios');
-
 const router = express.Router();
+const spotifyService = require('../controllers/spotifyService');
 
 /**
- * Route to initiate Spotify authentication.
- * Redirects user to Spotify login for authorization.
+ * Route: GET /api/spotify/search?q={query}
+ * Description: Searches for albums on Spotify based on query string.
  */
-router.get('/', (req, res) => {
-  const authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=user-read-private`;
-  res.redirect(authUrl);
+router.get('/search', async (req, res) => {
+  const { q } = req.query;
+  if (!q) return res.status(400).json({ error: 'Missing query parameter' });
+
+  try {
+    const data = await spotifyService.searchAlbums(q);
+    res.json(data.albums.items); // Send only items to frontend
+  } catch (err) {
+    console.error('Spotify Search Error:', err.message);
+    res.status(500).json({ error: 'Failed to search Spotify' });
+  }
 });
 
+
 /**
- * Route to handle Spotify token exchange.
- * Exchanges authorization code for access token.
+ * Route: GET /api/spotify/album/:id
+ * Description: Fetches album details and full track list from Spotify.
  */
-router.post('/callback', async (req, res) => {
-  const code = req.body.code;
+router.get('/album/:id', async (req, res) => {
+  const albumId = req.params.id;
+  console.log(`Fetching album details for ID: ${albumId}`);
   try {
-    const response = await axios.post('https://accounts.spotify.com/api/token', null, {
-      params: {
-        grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: process.env.REDIRECT_URI,
-        client_id: process.env.SPOTIFY_CLIENT_ID,
-        client_secret: process.env.SPOTIFY_CLIENT_SECRET,
-      },
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    const album = await spotifyService.getAlbumDetails(req.params.id);
+    console.log("Fetched album from Spotify:", album);
+    res.json(album);
+  } catch (err) {
+    console.error('Detail error:', err);
+    res.status(500).json({ error: 'Failed to fetch album details' });
   }
 });
 
