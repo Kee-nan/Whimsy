@@ -21,6 +21,11 @@ const mediaSchema = new mongoose.Schema({
   media: { type: String, required: true },
   title: { type: String, required: true },
   image: { type: String },
+  listType: {
+    type: String,
+    enum: ['completed', 'current', 'futures'],
+    required: true
+  }
 });
 
 // Define the User Schema with indexes and validation
@@ -30,9 +35,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  completed: [mediaSchema],  // Array of media objects
-  current: [mediaSchema],    // Array of media objects
-  futures: [mediaSchema],    // Array of media objects
+  lists: [mediaSchema], // Array of media objects
   favorites: [mediaSchema],  // Array of media objects
   reviews: [reviewSchema],   // Array of review objects
   bio: { type: String },

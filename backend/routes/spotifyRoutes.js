@@ -32,7 +32,7 @@ router.get('/album/:id', async (req, res) => {
   console.log(`Fetching album details for ID: ${albumId}`);
   try {
     const album = await spotifyService.getAlbumDetails(req.params.id);
-    console.log("Fetched album from Spotify:", album);
+    console.log("Fetched album from Spotify:", album.id);
     res.json(album);
   } catch (err) {
     console.error('Detail error:', err);

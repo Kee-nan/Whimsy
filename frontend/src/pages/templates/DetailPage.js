@@ -1,23 +1,46 @@
+// DetailPage.js
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
 import UserReviewCard from '../../components/userReviewCard';
-import ReviewModal from '../../components/ReviewModal'; // Import the new modal component
+import ReviewModal from '../../components/ReviewModal'; 
 
 const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // API data Initialization
   const [details, setDetails] = useState(null);
   const [review, setReview] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
-  const { searchKey, searchResults } = location.state || { searchKey: "", searchResults: [] };
+  const [userLists, setUserLists] = useState([]);
 
-  const [currentList, setCurrentList] = useState('Completed');
-  const [currentMedia, setCurrentMedia] = useState('anime');
-  const [searchTerm, setSearchTerm] = useState('');
+  // State to manage modal visibility
+  const [modalVisible, setModalVisible] = useState(false); 
 
+  // restore search/list context
+  const {
+    searchKey = "",
+    searchResults = [],
+    currentList = "current",
+    currentMedia = "All",
+    searchTerm = "",
+    origin
+  } = location.state || {};
+
+  // fetch the user’s lists so DetailCard can show the correct default
+  const fetchUserLists = async () => {
+    const token = localStorage.getItem('user_token');
+    const res = await fetch('http://localhost:5000/api/list/lists', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.ok) {
+      setUserLists(await res.json());
+    } 
+  };
+
+  // fetch the media details + any existing review
   const fetchMediaDetails = useCallback(async () => {
     try {
       const token = tokenRequired ? localStorage.getItem('spotifyToken') : null;
@@ -29,59 +52,57 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
 
     try {
       const userToken = localStorage.getItem('user_token');
-      const reviewResponse = await fetch(`http://localhost:5000/api/review/get?mediaType=${mediaType}&id=${id}`, {
-        method: 'GET',
+      const rev = await fetch(`http://localhost:5000/api/review/get?mediaType=${mediaType}&id=${id}`, {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type':'application/json',
           'Authorization': `Bearer ${userToken}`
         }
       });
-
-      if (reviewResponse.ok) {
-        const data = await reviewResponse.json();
-        setReview(data.review);
-      } else {
-        console.error(`Error fetching ${mediaType} review:`, await reviewResponse.text());
+      if (rev.ok) {
+        const { review } = await rev.json();
+        setReview(review);
       }
-    } catch (error) {
-      console.error(`Error fetching ${mediaType} review:`, error);
+    } catch (err) {
+      console.error('Error fetching review:', err);
     }
   }, [id, fetchDetails, extractDetails, mediaType, tokenRequired]);
 
+  // initial load
   useEffect(() => {
     fetchMediaDetails();
+    fetchUserLists();
   }, [fetchMediaDetails]);
 
-  const addToCompleted = () => handleAddToList('completed');
-  const addToFutures = () => handleAddToList('futures');
-  const addToCurrent = () => handleAddToList('current');
 
-  const handleAddToList = async (listName) => {
-    const media = {
-      id: `${mediaType}/${id}`,
-      media: mediaType,
-      title: details.title,
-      image: details.image,
+  // handle dropdown changes from DetailCard
+  const handleAddToList = async (listType, mediaId, mediaObj) => {
+    const token = localStorage.getItem('user_token');
+    const headers = {
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${token}`
     };
 
-    try {
-      const response = await fetch('http://localhost:5000/api/list/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('user_token')}`
-        },
-        body: JSON.stringify({ listName, media })
+    if (listType === 'none') {
+      await fetch('http://localhost:5000/api/list/delete', {
+        method: 'DELETE', headers,
+        body: JSON.stringify({ mediaId })
       });
-      console.log(response.data.message);
-      alert("Item Successfully added to list")
-    } catch (error) {
-      console.error(`Error adding to ${listName}:`, error);
+    } else {
+      await fetch('http://localhost:5000/api/list/upsert', {
+        method: 'POST', headers,
+        body: JSON.stringify({ media: mediaObj })
+      });
     }
+
+    // re‑load so dropdown default updates
+    fetchUserLists();
   };
 
-  const handleReview = () => setModalVisible(true); // Open the modal
 
+  /** 
+   * REVIEW DETAILS
+   */
+  const handleReview = () => setModalVisible(true); // Open the modal
   const handleCloseModal = () => setModalVisible(false); // Close the modal
 
   const handleReviewSubmit = () => {
@@ -90,6 +111,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     fetchMediaDetails();
   };
 
+  // Delete a given review for a piece of media
   const handleDelete = async () => {
     try {
       const userToken = localStorage.getItem('user_token');
@@ -117,31 +139,34 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     }
   };
 
+  // Loading value
+  if (!details) return <p>Loading...</p>;
+
+  // Handle back button navigation based on route origin
   const handleBack = () => {
     if (location.state?.origin === 'search') {
-      navigate(`/${mediaType}`, { state: { searchKey, searchResults } });
+      navigate(`/${mediaType}`, { state: { searchKey, searchResults, origin } });
     } else if (location.state?.origin === 'list') {
-      navigate('/lists', { state: { currentList, currentMedia, searchTerm } });
+      navigate('/lists', { state: { currentList, currentMedia, searchTerm, origin } });
     } else {
       navigate(-1); // Fallback to browser history
     }
   };
 
-  if (!details) return <p>Loading...</p>;
-
   return (
     <>
       <AppNavbar />
       <button onClick={handleBack} className="secondaryButton">Back</button>
+
       <DetailCard
         image={details.image}
         title={details.title}
         details={details.details}
-        onAddToCompleted={addToCompleted}
-        onAddToCurrent={addToCurrent}
-        onAddToFutures={addToFutures}
-        onReview={handleReview}
         type={mediaType}
+        onAddToList={handleAddToList}
+        onReview={handleReview}
+        mediaId={`${mediaType}/${id}`}
+        userLists={userLists}
       />
       {review && (
         <UserReviewCard
