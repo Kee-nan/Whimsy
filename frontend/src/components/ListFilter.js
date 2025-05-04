@@ -9,11 +9,25 @@ const SearchAndDropdowns = ({
   onMediaChange,
   onSearchChange,
   capitalizeFirstLetter,
+  viewMode,
+  onViewModeChange,
 }) => {
   return (
     <div className="search-bar py-3">
       <Container>
         <Form className="search-bar-form">
+          
+          {/* View Dropdown */}
+          <DropdownButton
+            id="view-mode-dropdown"
+            title={capitalizeFirstLetter(viewMode) + ' View'}
+            className="view-dropdown"
+          >
+            <Dropdown.Item onClick={() => onViewModeChange('card')}>Card View</Dropdown.Item>
+            <Dropdown.Item onClick={() => onViewModeChange('table')}>Table View</Dropdown.Item>
+          </DropdownButton>
+
+          {/* Filter for List */}
           <DropdownButton
             id="list-dropdown"
             title={currentList === 'completed' ? 'Completed' : currentList === 'futures' ? 'Futures' : 'Current'}
@@ -24,6 +38,7 @@ const SearchAndDropdowns = ({
             <Dropdown.Item onClick={() => onListChange('futures')}>Futures</Dropdown.Item>
           </DropdownButton>
 
+          {/* Filter for media classification */}
           <DropdownButton
             id="media-dropdown"
             title={capitalizeFirstLetter(currentMedia)}
@@ -39,6 +54,7 @@ const SearchAndDropdowns = ({
             <Dropdown.Item onClick={() => onMediaChange('game')}>Game</Dropdown.Item>
           </DropdownButton>
 
+          {/* search input */}
           <FormControl
               className="oval-form-control"
               placeholder="Search by title"
