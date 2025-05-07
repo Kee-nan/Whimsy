@@ -4,12 +4,17 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
 import SearchBar from '../../components/SearchBar';
 import GridCard from '../../components/GridCard';
+import TableView from '../../components/TableViewSearch';
+
 
 const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchKey, setSearchKey] = useState(location.state?.searchKey || "");
   const [results, setResults] = useState([]);
+
+  const [isTableView, setIsTableView] = useState(false);
+
 
   // Performs a search
   const handleSearch = (e) => {
@@ -61,13 +66,25 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
         clearFunction={clearResults}
         searchKey={searchKey}
         setSearchKey={setSearchKey}
+        isTableView={isTableView}
+        setIsTableView={setIsTableView}
       />
       
-      <GridCard
-        items={Array.isArray(results) ? results.map(item => ({ ...item, id: extractId(item) })) : []}
-        renderItem={renderCard}
-        onCardClick={handleCardClick}
-      />
+      
+      {isTableView ? (
+        <TableView
+          items={results.map(item => ({ ...item, id: extractId(item) }))}
+          onRowClick={handleCardClick}
+          placeholder={placeholder}
+        />
+      ) : (
+        <GridCard
+          items={results.map(item => ({ ...item, id: extractId(item) }))}
+          renderItem={renderCard}
+          onCardClick={handleCardClick}
+        />
+      )}
+
     </>
   );
 };
