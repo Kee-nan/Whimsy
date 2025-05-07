@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropdownButton, Dropdown, FormControl, Container, Form } from 'react-bootstrap';
+import { DropdownButton, Dropdown, FormControl, Container, Form, Button } from 'react-bootstrap';
 
 const SearchAndDropdowns = ({
   currentList,
@@ -11,6 +11,8 @@ const SearchAndDropdowns = ({
   capitalizeFirstLetter,
   viewMode,
   onViewModeChange,
+  onExportClick,
+  onImportClick,
 }) => {
   return (
     <div className="search-bar py-3">
@@ -54,7 +56,7 @@ const SearchAndDropdowns = ({
             <Dropdown.Item onClick={() => onMediaChange('game')}>Game</Dropdown.Item>
           </DropdownButton>
 
-          {/* search input */}
+          {/* Search input */}
           <FormControl
               className="oval-form-control"
               placeholder="Search by title"
@@ -63,6 +65,22 @@ const SearchAndDropdowns = ({
               value={searchTerm}
               onChange={onSearchChange}
             />
+
+          {/* Import and Export Buttons*/}
+          <Button
+            type="button"
+            className="btn btn-outline-primary ms-3"
+            onClick={onImportClick}
+          >
+            Import CSV
+          </Button>
+          <Button
+            type="button"
+            className="btn btn-outline-primary ms-3"
+            onClick={onExportClick}
+          >
+            Export CSV
+          </Button>
         </Form>
       </Container>
     </div>

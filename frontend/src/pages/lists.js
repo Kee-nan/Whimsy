@@ -5,10 +5,15 @@ import AppNavbar from '../components/Navbar';
 import ListCard from '../components/ListCard';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SearchAndDropdowns from '../components/ListFilter';
+import CSVImportModal from '../components/CSVImportModal';
+
 
 const Lists = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // control our import modal visibility
+  const [importModalShow, setImportModalShow] = useState(false);
 
   // Variables that will be loaded from the user account that will be filtered
   const [lists, setLists] = useState({
@@ -100,6 +105,47 @@ const Lists = () => {
   );
 
   /**
+   * Import and Export Buttons
+   */
+  const handleExportCSV = () => {
+    const allItems = [...lists.completed, ...lists.current, ...lists.futures];
+  
+    if (allItems.length === 0) {
+      alert("No list items to export.");
+      return;
+    }
+  
+    // Define headers including 'rating'
+    const headers = ['id', 'media', 'title', 'image', 'listType', 'rating'];
+    const csvRows = [headers.join(',')];
+  
+    for (const item of allItems) {
+      // Match review by id
+      const review = ReviewData.find(r => r.id === item.id);
+      const rating = review ? review.rating : '-';
+  
+      // Construct row with rating included
+      const row = headers.map(header => {
+        if (header === 'rating') return `"${rating}"`;
+        const value = item[header] || '';
+        return `"${String(value).replace(/"/g, '""')}"`;
+      }).join(',');
+  
+      csvRows.push(row);
+    }
+  
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+  
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'my_media_lists.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+  
+
+  /**
    * FILTER DETAILS 
    */
 
@@ -167,15 +213,28 @@ const Lists = () => {
       <AppNavbar />
 
       <SearchAndDropdowns
-          currentList={currentList}
-          currentMedia={currentMedia}
-          searchTerm={searchTerm}
-          onListChange={handleSelectList}
-          onMediaChange={handleSelectMedia}
-          onSearchChange={handleSearchChange}
-          onViewModeChange={setViewMode}
-          capitalizeFirstLetter={capitalizeFirstLetter}
-        />
+        currentList={currentList}
+        currentMedia={currentMedia}
+        searchTerm={searchTerm}
+        onListChange={handleSelectList}
+        onMediaChange={handleSelectMedia}
+        onSearchChange={handleSearchChange}
+        onViewModeChange={setViewMode}
+        capitalizeFirstLetter={capitalizeFirstLetter}
+        onExportClick={handleExportCSV}
+        onImportClick={() => setImportModalShow(true)}
+      />
+
+      {/* render the import‑CSV modal */}
+      <CSVImportModal
+        show={importModalShow}
+        onHide={() => setImportModalShow(false)}
+        onImportDone={count => {
+          // you can refetch lists or show a toast
+          console.log(`${count} items imported`);
+          setImportModalShow(false);
+        }}
+      />
 
       <Container className="mt-5">
         {(() => {
