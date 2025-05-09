@@ -8,22 +8,25 @@ const fetchBookDetails = async (id) => {
   return await axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`);
 };
 
+const stripHtmlTags = (html) => {
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
+  return tempDiv.innerText;
+};
+
 // Function to extract book details
 const extractBookDetails = (data) => {
   const book = data.volumeInfo;
   return {
     image: book.imageLinks?.thumbnail || 'placeholder.jpg',
     title: book.title, // Add title to ensure it's set
-    details: (
-      <>
-        <p><strong>Author(s):</strong> {book.authors ? book.authors.join(', ') : "Unknown Author"}</p>
-        <p><strong>Published Date:</strong> {book.publishedDate}</p>
-        <p><strong>Page Count:</strong> {book.pageCount}</p>
-        <p><strong>Publisher:</strong> {book.publisher}</p>
-        <p><strong>Categories:</strong> {book.categories ? book.categories.join(', ') : "None"}</p>
-        <p><strong>Google Books URL:</strong> <a href={book.infoLink} target="_blank" rel="noopener noreferrer">View on Google Books</a></p>
-      </>
-    )
+    details: [
+        <p><strong>Author(s):</strong> {book.authors ? book.authors.join(', ') : "Unknown Author"}</p>,
+        <p><strong>Published on:</strong> {book.publishedDate} by {book.publisher} </p>,
+        <p><strong>Page Count:</strong> {book.pageCount}</p>,
+        <p><strong>Categories:</strong> {book.categories ? book.categories.join(', ') : "None"}</p>,
+    ],
+    summary: stripHtmlTags(book.description)
   };
 };
 

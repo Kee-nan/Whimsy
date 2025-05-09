@@ -24,25 +24,23 @@ const extractAlbumDetails = (album) => {
   return {
     image: album.images?.[0]?.url || 'placeholder.jpg',
     title: album.name || 'Untitled',
-    details: (
-      <>
-        <p><strong>Artist(s):</strong> {album.artists?.map(artist => artist.name).join(', ')}</p>
-        <p><strong>Release Date:</strong> {album.release_date}</p>
-        <p><strong>Total Tracks:</strong> {album.total_tracks}</p>
-        <p><strong>Genres:</strong> {album.genres?.join(', ') || 'N/A'}</p>
-        <p><strong>Label:</strong> {album.label}</p>
-        <p><strong>Spotify URL:</strong> <a href={album.external_urls?.spotify} target="_blank" rel="noopener noreferrer">View on Spotify</a></p>
-        <div>
-          <h4>Track List:</h4>
-          <ul>
-            {(album.tracks?.items || []).map((track, index) => (
-              <li key={track.id}>
-                {index + 1}. {track.name} - {track.artists.map(artist => artist.name).join(', ')}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </>
+    details: [
+      <p key="artists"><strong>Artist(s):</strong> {album.artists?.map(artist => artist.name).join(', ')} produced with {album.label}</p>,
+      <p key="release"><strong>Release Date:</strong> {album.release_date}</p>,
+      <p key="genres"><strong>Genres:</strong> {album.genres?.join(', ') || 'N/A'}</p>,
+      <p key="spotify"><strong>Spotify URL:</strong> <a href={album.external_urls?.spotify} target="_blank" rel="noopener noreferrer">View on Spotify</a></p>
+    ],
+    summary: (
+      <div>
+        <h4>Track List:</h4>
+        <ul>
+          {(album.tracks?.items || []).map((track, index) => (
+            <li key={track.id || index}>
+              {index + 1}. {track.name} - {track.artists.map(artist => artist.name).join(', ')}
+            </li>
+          ))}
+        </ul>
+      </div>
     )
   };
 };

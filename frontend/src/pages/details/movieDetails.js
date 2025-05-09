@@ -18,13 +18,11 @@ const extractMovieDetails = (data) => {
   return {
     image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
     title: movie.title, // Ensure title is included
-    details: (
-      <>
-        <p><strong>Release Date:</strong> {movie.release_date}</p>
-        <p><strong>Genres:</strong> {movie.genres?.map(genre => genre.name).join(', ')}</p>
-        <p><strong>Overview:</strong> {movie.overview}</p>
-      </>
-    )
+    details: [
+        <p><strong>Release Date:</strong> {movie.release_date}</p>,
+        <p><strong>Genres:</strong> {movie.genres?.map(genre => genre.name).join(', ')}</p>,
+    ],
+    summary: movie.overview
   };
 };
 

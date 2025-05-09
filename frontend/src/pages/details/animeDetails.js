@@ -13,15 +13,13 @@ const extractAnimeDetails = (data) => {
   return {
     image: anime.images.jpg.image_url || 'placeholder.jpg',
     title: anime.title, // Ensure title is included
-    details: (
-      <>
-        <p><strong>Background:</strong> {anime.background}</p>
-        <p><strong>Episodes:</strong> {anime.episodes}</p>
-        <p><strong>Status:</strong> {anime.status}</p>
-        <p><strong>Year:</strong> {anime.year}</p>
-        <p><strong>Plot:</strong> {anime.synopsis}</p>
-      </>
-    )
+    details: [
+      <p><strong>Episodes:</strong> {anime.episodes}</p>,
+      <p><strong>Status:</strong> {anime.status}</p>,
+      <p><strong>Released in:</strong> {anime.year}</p>,
+      <p><strong>Genres/Themes:</strong> {anime.genres?.map(genre => genre.name).join(', ')} {anime.themes?.map(theme => theme.name).join(', ')} </p>,
+    ],
+    summary: <p> {anime.background}  {anime.synopsis} </p>
   };
 };
 

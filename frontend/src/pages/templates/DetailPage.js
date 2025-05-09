@@ -3,7 +3,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/DetailCard';
-import UserReviewCard from '../../components/userReviewCard';
 import ReviewModal from '../../components/ReviewModal'; 
 
 const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) => {
@@ -156,25 +155,23 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   return (
     <>
       <AppNavbar />
-      <button onClick={handleBack} className="secondaryButton">Back</button>
 
       <DetailCard
         image={details.image}
         title={details.title}
         details={details.details}
+        summary={details.summary}
         type={mediaType}
         onAddToList={handleAddToList}
         onReview={handleReview}
         mediaId={`${mediaType}/${id}`}
         userLists={userLists}
+        onBack={handleBack}
+        review={review}
+        onEdit={handleReview}
+        onDelete={handleDelete}
       />
-      {review && (
-        <UserReviewCard
-          review={review}
-          onDelete={handleDelete}
-          onEdit={handleReview} // Pass handleReview as onEdit
-        />
-      )}
+
       <ReviewModal
         show={modalVisible}
         onClose={handleCloseModal}

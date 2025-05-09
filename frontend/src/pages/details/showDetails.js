@@ -19,14 +19,13 @@ const extractShowDetails = (data) => {
   return {
     image: show.image?.original || 'placeholder.jpg',
     title: show.name, // Ensure title is included
-    details: (
-      <>
-        <p><strong>Language:</strong> {show.language}</p>
-        <p><strong>Status:</strong> {show.status}</p>
-        <p><strong>Genres:</strong> {show.genres.join(', ')}</p>
-        <p><strong>Summary:</strong> {stripHtmlTags(show.summary)}</p>
-      </>
-    )
+    details:[
+        <p><strong>Language:</strong> {show.language}</p>,
+        <p><strong>Status:</strong> {show.status}</p>,
+        <p><strong>Genres:</strong> {show.genres.join(', ')}</p>,
+        <p><strong>Premiered on:</strong> {show.premiered} and <strong>ended on</strong> {show.ended} </p>,
+    ],
+    summary: stripHtmlTags(show.summary)
   };
 };
 

@@ -16,15 +16,13 @@ const extractGameDetails = (data) => {
   return {
     image: game.background_image, // Adjust if the image key is different
     title: game.name, // Ensure title is included
-    details: (
-      <>
-        <p><strong>Release Date:</strong> {game.released}</p>
-        <p><strong>Genres:</strong> {game.genres?.map(genre => genre.name).join(', ')}</p>
-        <p><strong>Overview:</strong> {game.description_raw}</p>
-        <p><strong>Website:</strong> {game.website}</p>
-        <p><strong>Playtime:</strong> {game.playtime} hours</p>
-      </>
-    )
+    details: [
+        <p><strong>Release Date:</strong> {game.released}</p>,
+        <p><strong>Genres:</strong> {game.genres?.map(genre => genre.name).join(', ')}</p>,
+        <p><strong>Website:</strong> {game.website}</p>,
+        <p><strong>Playtime:</strong> {game.playtime} hours</p>,
+    ], 
+    summary: game.description_raw
   };
 };
 

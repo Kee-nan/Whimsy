@@ -14,16 +14,13 @@ const extractMangaDetails = (data) => {
   return {
     image: manga.images.jpg.image_url || 'placeholder.jpg',
     title: manga.title, // Ensure title is included
-    details: (
-      <>
-        <p><strong>Author:</strong> {manga.authors[0].name}</p>
-        <p><strong>Background:</strong> {manga.background}</p>
-        <p><strong>Demographic:</strong> {manga.demographics[0].name}</p>
-        <p><strong>Status:</strong> {manga.status}</p>
-        <p><strong>Genres:</strong> {manga.genres?.map(genre => genre.name).join(', ')}</p>
-        <p><strong>Plot:</strong> {manga.synopsis}</p>
-      </>
-    )
+    details: [
+        <p><strong>Author:</strong> {manga.authors[0].name}</p>,
+        <p><strong>Demographic:</strong> {manga.demographics[0].name}</p>,
+        <p><strong>Status:</strong> {manga.status}</p>,
+        <p><strong>Genres/Themes:</strong> {manga.genres?.map(genre => genre.name).join(', ')} {manga.themes?.map(theme => theme.name).join(', ')} </p>,
+    ],
+    summary: <p>{manga.background}  {manga.synopsis}</p>
   };
 };
 
