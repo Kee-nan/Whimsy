@@ -23,7 +23,7 @@ const SearchAndDropdowns = ({
           <DropdownButton
             id="view-mode-dropdown"
             title={capitalizeFirstLetter(viewMode) + ' View'}
-            className="view-dropdown"
+            className="media-dropdown"
           >
             <Dropdown.Item onClick={() => onViewModeChange('card')}>Card View</Dropdown.Item>
             <Dropdown.Item onClick={() => onViewModeChange('table')}>Table View</Dropdown.Item>
@@ -69,14 +69,14 @@ const SearchAndDropdowns = ({
           {/* Import and Export Buttons*/}
           <Button
             type="button"
-            className="btn btn-outline-primary ms-3"
+            className="btn btn-outline-light"
             onClick={onImportClick}
           >
             Import CSV
           </Button>
           <Button
             type="button"
-            className="btn btn-outline-primary ms-3"
+            className="btn btn-outline-light" 
             onClick={onExportClick}
           >
             Export CSV
