@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, FormControl, Container, Dropdown } from 'react-bootstrap';
+import '../styles/formsandbuttons.css';
 
 const SearchBar = ({
   placeholder,
@@ -11,20 +12,14 @@ const SearchBar = ({
   setIsTableView
 }) => {
   return (
-    <div className="search-bar py-3">
+    <div className="whimsy-search-bar py-3">
       <Container>
-        <Form className="search-bar-form d-flex align-items-center gap-2" onSubmit={searchFunction}>
-          <button type="submit" className="btn btn-outline-light">
-            Search
-          </button>
+        <Form className="whimsy-search-form d-flex align-items-center gap-2" onSubmit={searchFunction}>
+          <button type="submit" className="whimsy-btn-outline">Search</button>
+          <button type="button" onClick={clearFunction} className="whimsy-btn-outline">Clear</button>
 
-          <button type="button" onClick={clearFunction} className="btn btn-outline-light">
-            Clear
-          </button>
-
-          {/* Move Dropdown here with both Toggle and Menu */}
           <Dropdown>
-            <Dropdown.Toggle variant="outline-secondary" className="btn btn-outline-light">
+            <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn-outline">
               {isTableView ? 'Table View' : 'Grid View'}
             </Dropdown.Toggle>
             <Dropdown.Menu>
@@ -33,9 +28,8 @@ const SearchBar = ({
             </Dropdown.Menu>
           </Dropdown>
 
-          {/* Search input comes after buttons */}
           <FormControl
-            className="oval-form-control"
+            className="whimsy-form-control"
             type="search"
             placeholder={placeholder}
             aria-label="Search"
@@ -45,6 +39,7 @@ const SearchBar = ({
         </Form>
       </Container>
     </div>
+
   );
 };
 

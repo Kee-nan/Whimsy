@@ -6,6 +6,7 @@ import ListCard from '../components/ListCard';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SearchAndDropdowns from '../components/ListFilter';
 import CSVImportModal from '../components/CSVImportModal';
+import '../styles/tableStyles.css';
 
 
 const Lists = () => {
@@ -72,35 +73,34 @@ const Lists = () => {
   );
 
   const renderTable = (list) => (
-    <div className="table-responsive">
-      <table className="table table-striped table-hover align-middle">
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Title</th>
-            <th>Media Type</th>
-            <th>User Rating</th>
-            <th>ID</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filterList(list).map((item, index) => {
-            const review = ReviewData.find(r => r.id === `${item.id}`);
-            return (
-              <tr key={index} onClick={() => handleNavigate(item.id)} style={{ cursor: 'pointer' }}>
-                <td>
-                  <img src={item.image} alt={item.title} style={{ width: '60px', height: 'auto', borderRadius: '5px' }} />
-                </td>
-                <td>{item.title}</td>
-                <td>{item.media}</td>
-                <td>{review ? review.rating : '—'}</td>
-                <td>{item.id}</td>
-                
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div className="whimsy-table-container">
+      <div className="whimsy-table-wrapper">
+        <table className="table whimsy-table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Media Type</th>
+              <th>User Rating</th>
+              <th>ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filterList(list).map((item, index) => {
+              const review = ReviewData.find(r => r.id === `${item.id}`);
+              return (
+                <tr key={index} onClick={() => handleNavigate(item.id)}>
+                  <td><img src={item.image} alt={item.title} /></td>
+                  <td>{item.title}</td>
+                  <td>{item.media}</td>
+                  <td>{review ? review.rating : '—'}</td>
+                  <td>{item.id}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 
@@ -223,6 +223,7 @@ const Lists = () => {
         capitalizeFirstLetter={capitalizeFirstLetter}
         onExportClick={handleExportCSV}
         onImportClick={() => setImportModalShow(true)}
+        viewMode={viewMode}
       />
 
       {/* render the import‑CSV modal */}

@@ -1,0 +1,103 @@
+.whimsy-search-bar {
+  background-color: #3e3d3f;
+  border-bottom: 1px solid #353535;
+}
+
+.whimsy-search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.whimsy-btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s;
+}
+
+.whimsy-btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.whimsy-btn-outline {
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.25rem;
+  transition: all 0.3s;
+}
+
+.whimsy-btn-outline:hover {
+  background-color: white;
+  color: black;
+}
+
+.whimsy-form-control {
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  width: 700px;
+  transition: border 0.3s;
+}
+
+.whimsy-form-control:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.whimsy-dropdown-list,
+.whimsy-dropdown-media {
+  margin-right: 0.5rem;
+}
+
+/* Set min-width and prevent stretching */
+.whimsy-dropdown-list,
+#view-mode-dropdown {
+  margin-right: 0.5rem;
+  min-width: 7.4rem; /* Adjust based on widest content */
+  white-space: nowrap;
+  text-align: left;
+}
+
+.whimsy-dropdown-media,
+#view-mode-dropdown {
+  margin-right: 0.5rem;
+  min-width: 5.5rem; /* Adjust based on widest content */
+  white-space: nowrap;
+  text-align: left;
+}
+
+.whimsy-dropdown-view,
+#view-mode-dropdown {
+  margin-right: 0.5rem;
+  min-width: 4rem; /* Adjust based on widest content */
+  white-space: nowrap;
+  text-align: left;
+}
+
+/* Optional: enforce max width with ellipsis if needed */
+.whimsy-dropdown-list .dropdown-toggle,
+.whimsy-dropdown-media .dropdown-toggle,
+#view-mode-dropdown .dropdown-toggle {
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Optional: dynamically enforce width based on longest item */
+.whimsy-dropdown-list::after,
+.whimsy-dropdown-media::after,
+#view-mode-dropdown::after {
+  content: 'Completed'; /* or the longest label */
+  visibility: hidden;
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+

@@ -15,15 +15,15 @@ const SearchAndDropdowns = ({
   onImportClick,
 }) => {
   return (
-    <div className="search-bar py-3">
+    <div className="whimsy-search-bar py-3">
       <Container>
-        <Form className="search-bar-form">
+        <Form className="whimsy-search-form">
           
           {/* View Dropdown */}
           <DropdownButton
-            id="view-mode-dropdown"
-            title={capitalizeFirstLetter(viewMode) + ' View'}
-            className="media-dropdown"
+            id="list-dropdown"
+            title= "View"
+            className="whimsy-dropdown-view"
           >
             <Dropdown.Item onClick={() => onViewModeChange('card')}>Card View</Dropdown.Item>
             <Dropdown.Item onClick={() => onViewModeChange('table')}>Table View</Dropdown.Item>
@@ -31,9 +31,9 @@ const SearchAndDropdowns = ({
 
           {/* Filter for List */}
           <DropdownButton
-            id="list-dropdown"
+            id="media-dropdown"
             title={currentList === 'completed' ? 'Completed' : currentList === 'futures' ? 'Futures' : 'Current'}
-            className={`custom-dropdown ${currentList}`}
+            className="whimsy-dropdown-list"
           >
             <Dropdown.Item onClick={() => onListChange('completed')}>Completed</Dropdown.Item>
             <Dropdown.Item onClick={() => onListChange('current')}>Current</Dropdown.Item>
@@ -44,7 +44,7 @@ const SearchAndDropdowns = ({
           <DropdownButton
             id="media-dropdown"
             title={capitalizeFirstLetter(currentMedia)}
-            className={`media-dropdown`}
+            className="whimsy-dropdown-media"
           >
             <Dropdown.Item onClick={() => onMediaChange('All')}>All</Dropdown.Item>
             <Dropdown.Item onClick={() => onMediaChange('anime')}>Anime</Dropdown.Item>
@@ -58,29 +58,28 @@ const SearchAndDropdowns = ({
 
           {/* Search input */}
           <FormControl
-              className="oval-form-control"
-              placeholder="Search by title"
-              aria-label="Search by title"
-              aria-describedby="basic-addon2"
-              value={searchTerm}
-              onChange={onSearchChange}
-            />
+            className="whimsy-form-control"
+            placeholder="Search by title"
+            aria-label="Search by title"
+            aria-describedby="basic-addon2"
+            value={searchTerm}
+            onChange={onSearchChange}
+          />
 
-          {/* Import and Export Buttons*/}
-          <Button
-            type="button"
-            className="btn btn-outline-light"
+          {/* Import and Export Buttons */}
+          <button
+            className="whimsy-btn-outline"
             onClick={onImportClick}
           >
-            Import CSV
-          </Button>
-          <Button
-            type="button"
-            className="btn btn-outline-light" 
+            Import
+          </button>
+
+          <button
+            className="whimsy-btn-outline"
             onClick={onExportClick}
           >
-            Export CSV
-          </Button>
+            Export
+          </button>
         </Form>
       </Container>
     </div>
