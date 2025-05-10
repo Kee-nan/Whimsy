@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
-import AccountDetailsCard from '../components/AccountDetailsCard';
 import UserProfileCard from '../components/ProfileCard';
 
 const Profile = () => {
@@ -49,8 +48,6 @@ const Profile = () => {
       <Container>
 
         <UserProfileCard user={user} setUser={setUser} />
-
-        <AccountDetailsCard user={user} />
 
       </Container>
     </>
