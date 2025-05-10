@@ -2,22 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Card, Form } from 'react-bootstrap';
 
 const AccountDetailsCard = ({ user }) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingAccount, setIsEditingAccount] = useState(false);
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
 
   useEffect(() => {
-    if (isEditing) {
+    if (isEditingAccount) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setUsername(user.username);
       setEmail(user.email);
     }
-  }, [isEditing, user]);
+  }, [isEditingAccount, user]);
 
-  const handleEditToggle = () => setIsEditing(!isEditing);
+  const handleEditToggle = () => setIsEditing(!isEditingAccount);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +45,7 @@ const AccountDetailsCard = ({ user }) => {
         throw new Error(errorData.message);
       }
 
-      setIsEditing(false);
+      setIsEditingAccount(false);
       window.location.reload();
     } catch (error) {
       console.error('Error updating user details:', error);
@@ -56,7 +56,7 @@ const AccountDetailsCard = ({ user }) => {
     <Card className="profile-card account-details-card mb-4">
       <Card.Body className="profile-card-body">
         <Card.Title className="profile-card-title">Account Details</Card.Title>
-        {isEditing ? (
+        {isEditingAccount ? (
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="formFirstName" className="mb-3">
               <Form.Label>First Name</Form.Label>

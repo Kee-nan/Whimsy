@@ -1,10 +1,8 @@
 //frontend\src\pages\friend.js
 import React from 'react';
-import FriendRequestForm from '../components/friends/SendRequest';
-import PendingFriendRequests from '../components/friends/PendingRequests';
-import FriendsList from '../components/friends/FriendList';
 import AppNavbar from '../components/Navbar';
 import { Container } from 'react-bootstrap';
+import FriendPageCard from '../components/friends/FriendPageCard';
 
 const FriendPage = () => {
   return (
@@ -12,9 +10,7 @@ const FriendPage = () => {
       <AppNavbar />
 
       <Container>
-        <FriendsList />
-        <PendingFriendRequests />
-        <FriendRequestForm />
+        <FriendPageCard />
       </Container>
         
     </>
