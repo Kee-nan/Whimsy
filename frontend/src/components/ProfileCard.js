@@ -4,6 +4,8 @@ import { Image, Form, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import '../styles/profilepage.css';
 import '../styles/modal.css';
+import AccountSettingsModal from '../components/AccountSettingsModal.js';
+
 import {
   Chart as ChartJS,
   BarController,
@@ -34,6 +36,28 @@ const UserProfileCard = ({ user, setUser }) => {
   const chartRef = useRef(null);
 
   const [completedCounts, setCompletedCounts] = useState([]);
+
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [viewSetting, setViewSetting] = useState("card"); // or "table"
+
+  const updateUser = async (updatedUser) => {
+    try {
+      const token = localStorage.getItem("user_token");
+      const response = await fetch('http://localhost:5000/api/accounts/user', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedUser),
+      });
+  
+      if (!response.ok) throw new Error(await response.text());
+      setUser(updatedUser);
+    } catch (err) {
+      console.error("Error updating user:", err);
+    }
+  };
 
 
   // Variables that will be loaded from the user account that will be filtered
@@ -232,7 +256,7 @@ const UserProfileCard = ({ user, setUser }) => {
           </div>
           <div className="profile-right vertical-buttons">
             <button className="primaryButton" onClick={handleShow}>Sign Out</button>
-            <button className="secondaryButton" onClick={() => navigate('/account')}>Account Details</button>
+            <button className="secondaryButton" onClick={() => setShowSettingsModal(true)}>Account Details</button>
           </div>
         </div>
   
@@ -290,71 +314,19 @@ const UserProfileCard = ({ user, setUser }) => {
         </Modal.Footer>
       </Modal>
 
+      {/* Account Settings Modal */}
+      <AccountSettingsModal
+        show={showSettingsModal}
+        handleClose={() => setShowSettingsModal(false)}
+        user={user}
+        updateUser={updateUser}
+        viewSetting={viewSetting}
+        setViewSetting={setViewSetting}
+      />
+
     </>
   );
   
 };
 
 export default UserProfileCard;
-
-
-
-
-
-
-{/* <Card className="profile-card user-profile-card mb-4">
-        <Card.Body className="profile-card-body d-flex flex-column align-items-center">
-          <Image
-            src={user.profilePicture || 'https://via.placeholder.com/150'}
-            roundedCircle
-            width="150"
-            height="150"
-            className="mb-3"
-          />
-          <Card.Title className="profile-card-title">{user.username}'s Profile</Card.Title>
-          {isEditing ? (
-            <Form.Control
-              as="textarea"
-              rows={3}
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className="mb3 profile-card-text-edit"
-            />
-          ) : (
-            <Card.Text className="profile-card-text">{user.bio}</Card.Text>
-          )}
-          <div className="d-flex justify-content-center mt-3">
-            {isEditing ? (
-              <>
-                <button className="primaryButton" onClick={handleSave}>Save</button>
-                <button className="secondaryButton" onClick={handleCancel}>Cancel</button>
-              </>
-            ) : (
-              <>
-                <button className="primaryButton" onClick={handleEdit}>Edit Bio</button>
-                <button className="secondaryButton" onClick={navtofriends}>Friends</button>
-                <button className="secondaryButton" onClick={handleShow}>Sign Out</button>
-              </>
-            )}
-          </div>
-        </Card.Body>
-      </Card>
-
-      <Modal show={showModal} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Sign Out</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you would like to sign out?
-        </Modal.Body>
-        <Modal.Footer>
-          <button className='secondaryButton' onClick={handleClose}>
-            Cancel
-          </button>
-          <button className='primaryButton' onClick={handleConfirmSignOut}>
-            Confirm
-          </button>
-        </Modal.Footer>
-      </Modal> */}
-    
-
