@@ -94,8 +94,10 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
   };
 
   return (
-    <Modal show={show} onHide={onHide} size="lg">
-      <Modal.Header closeButton><Modal.Title>Import CSV</Modal.Title></Modal.Header>
+    <Modal show={show} onHide={onHide} size="lg" className="custom-modal">
+      <Modal.Header closeButton>
+        <Modal.Title>Import CSV</Modal.Title>
+      </Modal.Header>
       <Modal.Body>
         {!rows.length && (
           <Form.Group>
@@ -106,18 +108,19 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
         {loading && <Spinner animation="border" className="my-3" />}
         {candidates.length > 0 && (
           <Table hover responsive className="mt-3">
-            <tr><th>#</th><th>Image</th><th>Media</th><th>Title</th><th>Match</th></tr>
+            <thead>
+              <tr><th>#</th><th>Image</th><th>Media</th><th>Title</th><th>Match</th></tr>
+            </thead>
             <tbody>
               {candidates.map((c, ci) => {
                 const selected = c.hits[c.selectedIndex];
                 const norm = selected ? normalizeResult(selected, c.row.media) : null;
-
                 return (
                   <tr key={ci}>
                     <td>{ci + 1}</td>
                     <td>
                       {norm?.image
-                        ? <img src={norm.image} alt={norm.title} style={{ height: '64px', borderRadius: '4px' }} />
+                        ? <img src={norm.image} alt={norm.title} className="modal-table-img" />
                         : <span style={{ color: '#aaa' }}>No image</span>
                       }
                     </td>
@@ -142,10 +145,11 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>Cancel</Button>
-        <Button variant="primary" onClick={handleConfirm} disabled={!candidates.length}>Confirm & Add Completed</Button>
+        <button className="secondaryButton" onClick={onHide}>Cancel</button>
+        <button className="primaryButton" onClick={handleConfirm} disabled={!candidates.length}>Confirm & Add Completed</button>
       </Modal.Footer>
     </Modal>
+
   );
 }
 

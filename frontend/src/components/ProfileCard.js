@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Image, Form, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import '../styles/profilepage.css';
+import '../styles/modal.css';
 import {
   Chart as ChartJS,
   BarController,
@@ -278,7 +279,7 @@ const UserProfileCard = ({ user, setUser }) => {
       </div>
   
       {/* Sign Out Modal */}
-      <Modal show={showModal} onHide={handleClose} centered>
+      <Modal show={showModal} onHide={handleClose} centered className="custom-modal">
         <Modal.Header closeButton>
           <Modal.Title>Confirm Sign Out</Modal.Title>
         </Modal.Header>
@@ -288,6 +289,7 @@ const UserProfileCard = ({ user, setUser }) => {
           <button className="primaryButton" onClick={handleConfirmSignOut}>Confirm</button>
         </Modal.Footer>
       </Modal>
+
     </>
   );
   

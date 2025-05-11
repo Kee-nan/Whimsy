@@ -1,0 +1,133 @@
+/* Modal Container */
+.custom-modal .modal-content {
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  color: #212529;
+}
+
+/* Header */
+.custom-modal .modal-header {
+  background-color: #462d46;
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem 1.5rem;
+  color: white;
+}
+
+.custom-modal .modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Body */
+.custom-modal .modal-body {
+  padding: 1.5rem;
+  background-color: #1b1a1b;
+  color: white
+}
+
+/* Footer */
+.custom-modal .modal-footer {
+  background-color: #1b1a1b;
+  border-top: 1px solid #dee2e6;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Buttons */
+.primaryButton {
+  padding: 6px 12px;
+  background: #00aaff;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+.secondaryButton {
+  padding: 6px 12px;
+  background: #ff4c4c;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+/* Close Button */
+.custom-modal .btn-close {
+  filter: brightness(0.6);
+}
+
+.custom-modal .btn-close:hover {
+  filter: brightness(0.3);
+}
+
+/* Utility */
+.modal-table-img {
+  height: 60px;
+  border-radius: 4px;
+}
+
+/* Ensure the modal takes more width */
+.custom-modal .modal-dialog {
+  max-width: 800px; /* wider than default */
+}
+
+/* Review Modal Layout */
+.review-modal-card {
+  background-color: #2c2b2c;
+  border: none;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.review-modal-card-img {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto; /* center horizontally */
+}
+
+.review-modal-card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+/* Align vertically */
+.review-modal-card .row > .col-md-5 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Input Styles */
+.review-modal-label {
+  color: #ffffff;
+  font-weight: 500;
+  margin-top: 0.75rem;
+}
+
+.review-modal-input {
+  background-color: #343334;
+  color: #ffffff;
+  border: 1px solid #555;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+/* Smaller width for rating input */
+.review-modal-input[type="number"] {
+  width: 120px;
+}
+
+/* Optional spacing under submit button */
+.primaryButton {
+  margin-top: 1rem;
+}

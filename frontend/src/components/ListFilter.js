@@ -67,19 +67,19 @@ const SearchAndDropdowns = ({
           />
 
           {/* Import and Export Buttons */}
-          <button
+          <Button
             className="whimsy-btn-outline"
             onClick={onImportClick}
           >
             Import
-          </button>
+          </Button>
 
-          <button
+          <Button
             className="whimsy-btn-outline"
             onClick={onExportClick}
           >
             Export
-          </button>
+          </Button>
         </Form>
       </Container>
     </div>

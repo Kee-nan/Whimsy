@@ -54,11 +54,11 @@ const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
   };
 
   return (
-    <Modal show={show} onHide={onClose} centered className='review-modal-container'>
-      <Modal.Header closeButton className='review-modal-header'>
+    <Modal show={show} onHide={onClose} centered className="custom-modal">
+      <Modal.Header closeButton>
         <Modal.Title>Leave a Review</Modal.Title>
       </Modal.Header>
-      <Modal.Body closeButton className='review-modal-header'>
+      <Modal.Body>
         <Card className="review-modal-card">
           <Row>
             <Col md={5}>
@@ -99,6 +99,7 @@ const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
         </Card>
       </Modal.Body>
     </Modal>
+
   );
 };
 

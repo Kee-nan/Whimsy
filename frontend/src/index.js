@@ -10,8 +10,7 @@ import './styles/login.css';
 import './styles/detailpage.css';
 import './styles/list.css';
 import './styles/homepage.css';
-import './styles/profile.css';
-import './styles/reviewcard.css';
+
 
 
 import App from './App'; // Adjust the path accordingly
