@@ -43,6 +43,7 @@ router.post('/create', async (req, res) => {
       futures: [],
       favorites: [],
       reviews: [],
+      view_setting: "table",
       bio: 'Default Bio',
     });
 

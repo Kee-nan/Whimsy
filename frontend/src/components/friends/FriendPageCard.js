@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/friendpage.css';
 import { useNavigate } from 'react-router-dom';
+import '../../styles/modal.css'
+import { Modal } from 'react-bootstrap';
+
 
 const FriendPageCard = () => {
   const [friends, setFriends] = useState([]);
@@ -9,13 +12,19 @@ const FriendPageCard = () => {
   const [globalSearch, setGlobalSearch] = useState('');
   const [globalResults, setGlobalResults] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
+  const [message, setMessage] = useState('');
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedFriend, setSelectedFriend] = useState(null);
+
 
   const navigate = useNavigate();
 
+  // Load friends and pending requests
   useEffect(() => {
-    // Load user's friends
+    const token = localStorage.getItem('user_token');
+
     const fetchFriends = async () => {
-      const token = localStorage.getItem('user_token');
       const response = await fetch('/api/friends/friends', {
         headers: { 'Authorization': `Bearer ${token}` },
       });
@@ -26,9 +35,7 @@ const FriendPageCard = () => {
       }
     };
 
-    // Load pending friend requests
     const fetchFriendRequests = async () => {
-      const token = localStorage.getItem('user_token');
       const response = await fetch('/api/friends/pending', {
         headers: { 'Authorization': `Bearer ${token}` },
       });
@@ -42,16 +49,55 @@ const FriendPageCard = () => {
     fetchFriendRequests();
   }, []);
 
+  // Filter friends list
   useEffect(() => {
-    // Filter friend list
     const lower = friendSearch.toLowerCase();
     setFilteredFriends(friends.filter(f => f.username.toLowerCase().includes(lower)));
   }, [friendSearch, friends]);
 
-  const handleFriendSearch = (e) => {
-    setFriendSearch(e.target.value);
+  // Handlers
+  const handleFriendSearch = (e) => setFriendSearch(e.target.value);
+
+  const handleDeleteClick = (friend) => {
+    setSelectedFriend(friend);
+    setShowDeleteModal(true);
   };
 
+  const handleConfirmDelete = async () => {
+    const token = localStorage.getItem('user_token');
+    const response = await fetch(`/api/friends/delete/${selectedFriend.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+  
+    if (response.ok) {
+      setFriends(friends.filter(f => f.id !== selectedFriend.id));
+      setFilteredFriends(filteredFriends.filter(f => f.id !== selectedFriend.id));
+      setMessage('Friend removed.');
+    } else {
+      setMessage('Failed to remove friend.');
+    }
+  
+    setShowDeleteModal(false);
+    setSelectedFriend(null);
+  };
+  
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setSelectedFriend(null);
+  };
+  
+  
+
+  /**
+   *  Top Right
+   *  Search and Add
+   *
+   */
+
+  // This function Handles the Global Search to find new friends (TOP RIGHT OF CARD)
   const handleGlobalSearch = async (e) => {
     const query = e.target.value;
     setGlobalSearch(query);
@@ -62,13 +108,82 @@ const FriendPageCard = () => {
     }
 
     const token = localStorage.getItem('user_token');
-    const response = await fetch(`/api/users/search?query=${query}`, {
+    const response = await fetch(`/api/friends/search?query=${query}`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
 
     if (response.ok) {
       const data = await response.json();
-      setGlobalResults(data);
+      setGlobalResults(data.slice(0, 3)); // Limit to first 3 results
+    }
+  };
+
+  const handleSendRequest = async (receiverUsername) => {
+    const token = localStorage.getItem('user_token');
+    try {
+      const response = await fetch('/api/friends/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ receiverUsername }),
+      });
+  
+      if (response.ok) {
+        setMessage('Friend request sent!');
+      } else {
+        setMessage('Failed to send request.');
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage('An error occurred.');
+    }
+  };
+  
+
+
+
+  /**
+   *  Bottom Right
+   *  Accept and Deny
+   *
+   */
+  const handleAccept = async (id) => {
+    const token = localStorage.getItem('user_token');
+    const response = await fetch('/api/friends/acceptRequest', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ requestId: id }),
+    });
+
+    if (response.ok) {
+      setFriendRequests(friendRequests.filter(req => req.id !== id));
+      setMessage('Friend request accepted.');
+    } else {
+      setMessage('Failed to accept request.');
+    }
+  };
+
+  const handleDeny = async (id) => {
+    const token = localStorage.getItem('user_token');
+    const response = await fetch('/api/friends/declineRequest', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ requestId: id }),
+    });
+
+    if (response.ok) {
+      setFriendRequests(friendRequests.filter(req => req.id !== id));
+      setMessage('Friend request denied.');
+    } else {
+      setMessage('Failed to deny request.');
     }
   };
 
@@ -78,7 +193,7 @@ const FriendPageCard = () => {
 
   return (
     <div className="friend-page-container">
-      {/* Left: Friends list */}
+      {/* Left: Friend List */}
       <div className="friend-section left">
         <div className="section-header">
           <h2>Friends</h2>
@@ -95,7 +210,10 @@ const FriendPageCard = () => {
             filteredFriends.map(friend => (
               <div key={friend.id} className="friend-row">
                 <span>{friend.username}</span>
-                <button onClick={() => handleViewList(friend.username, friend.id)} className="primaryButton">View</button>
+                <div>
+                  <button onClick={() => handleDeleteClick(friend)} className="secondaryButton">Delete</button>
+                  <button onClick={() => handleViewList(friend.username, friend.id)} className="primaryButton">View</button>
+                </div>
               </div>
             ))
           ) : (
@@ -104,9 +222,9 @@ const FriendPageCard = () => {
         </div>
       </div>
 
-      {/* Right: Add + Pending Requests */}
+      {/* Right: Add + Pending */}
       <div className="friend-section right">
-        {/* Add Friend */}
+        {/* Top Right: Add Friend */}
         <div className="sub-section">
           <h3>Add Friends</h3>
           <input
@@ -121,7 +239,7 @@ const FriendPageCard = () => {
               globalResults.map(user => (
                 <div key={user.id} className="friend-row">
                   <span>{user.username}</span>
-                  <button className="primaryButton">Add</button>
+                  <button className="primaryButton" onClick={() => handleSendRequest(user.username)}>Add</button>
                 </div>
               ))
             ) : (
@@ -130,7 +248,7 @@ const FriendPageCard = () => {
           </div>
         </div>
 
-        {/* Pending Friend Requests */}
+        {/* Bottom Right: Pending Requests */}
         <div className="sub-section">
           <h3>Pending Requests</h3>
           <div className="scroll-box">
@@ -139,8 +257,8 @@ const FriendPageCard = () => {
                 <div key={req.id} className="friend-row">
                   <span>{req.username}</span>
                   <div>
-                    <button className="primaryButton">Accept</button>
-                    <button className="secondaryButton">Deny</button>
+                    <button className="primaryButton" onClick={() => handleAccept(req.id)}>Accept</button>
+                    <button className="secondaryButton" onClick={() => handleDeny(req.id)}>Deny</button>
                   </div>
                 </div>
               ))
@@ -149,9 +267,33 @@ const FriendPageCard = () => {
             )}
           </div>
         </div>
+
+        {/* Status Message */}
+        {message && <p className="status-message">{message}</p>}
+
       </div>
+  
+      <Modal show={showDeleteModal} centered className="custom-modal">
+      <Modal.Header closeButton>
+        <Modal.Title>Confirm Friend Delete</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {selectedFriend
+          ? `Are you sure you want to remove ${selectedFriend.username} as a friend?`
+          : 'Loading...'}
+      </Modal.Body>
+      <Modal.Footer>
+        <button onClick={handleConfirmDelete} className="primaryButton" disabled={!selectedFriend}>
+          Confirm
+        </button>
+        <button onClick={handleCancelDelete} className="secondaryButton">Cancel</button>
+      </Modal.Footer>
+    </Modal>
+
     </div>
+    
   );
 };
 
 export default FriendPageCard;
+

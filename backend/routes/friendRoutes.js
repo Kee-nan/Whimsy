@@ -28,6 +28,34 @@ router.post('/send', authenticateToken, async (req, res) => {
   }
 });
 
+// Search for users by username (for friend adding)
+router.get('/search', authenticateToken, async (req, res) => {
+  const { query } = req.query;
+  const userId = req.user._id;
+
+  if (!query) return res.status(400).json({ message: 'Query is required' });
+
+  try {
+    const user = await User.findById(userId);
+
+    // Perform case-insensitive partial match on username
+    const users = await User.find({
+      username: { $regex: query, $options: 'i' },
+      _id: { $ne: userId }, // Exclude self
+      _id: { $nin: user.friends }, // Optional: exclude current friends
+    })
+      .select('username') // Limit returned fields
+      .limit(10); // Limit number of results
+
+    res.json(users);
+  } catch (error) {
+    console.error('Error in search:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+
 // Get pending friend requests
 router.get('/pending', authenticateToken, async (req, res) => {
   const userId = req.user._id;
@@ -93,6 +121,32 @@ router.get('/friends', authenticateToken, async (req, res) => {
     res.status(500).send('Error fetching friends list');
   }
 });
+
+// Delete friend
+router.delete('/delete/:friendId', authenticateToken, async (req, res) => {
+  const userId = req.user._id;
+  const friendId = req.params.friendId;
+
+  try {
+    const user = await User.findById(userId);
+    const friend = await User.findById(friendId);
+
+    if (!user || !friend) return res.status(404).json({ message: 'User not found' });
+
+    // Remove each other from friends list
+    user.friends = user.friends.filter(id => id.toString() !== friendId);
+    friend.friends = friend.friends.filter(id => id.toString() !== userId);
+
+    await user.save();
+    await friend.save();
+
+    res.status(200).json({ message: 'Friend removed successfully' });
+  } catch (error) {
+    console.error('Error removing friend:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 // Route to get a friend's lists
 router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {

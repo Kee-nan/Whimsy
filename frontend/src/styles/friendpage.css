@@ -1,7 +1,7 @@
 .friend-page-container {
   display: flex;
   width: 95%;
-  height: 600px;
+  height: 800px;
   background: #1c1c1c;
   color: white;
   border: 2px solid white;
@@ -75,4 +75,9 @@
   color: white;
   margin-left: 8px;
   cursor: pointer;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
 }
