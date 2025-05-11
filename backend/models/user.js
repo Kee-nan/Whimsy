@@ -9,7 +9,7 @@ const reviewSchema = new mongoose.Schema({
     type: Number, 
     required: true,
     min: [1, 'Rating must be at least 1'],
-    max: [100, 'Rating cannot exceed 100']
+    max: [30, 'Rating cannot exceed 30']
   },
   review: { type: String },
   title: { type: String, required: true },
@@ -39,6 +39,11 @@ const userSchema = new mongoose.Schema({
   favorites: [mediaSchema],  // Array of media objects
   reviews: [reviewSchema],   // Array of review objects
   bio: { type: String },
+  view_setting: {
+    type: String,
+    enum: ['table', 'card'],
+    required: true
+  },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   friendRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 }, { collection: 'User-test' }); // Specify the collection name
