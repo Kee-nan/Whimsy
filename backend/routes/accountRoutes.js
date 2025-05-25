@@ -87,6 +87,7 @@ router.get('/user', authenticateToken, async (req, res) => {
       lastName: user.lastName,
       username: user.username,
       email: user.email,
+      view_setting: user.view_setting,
       bio: user.bio
     });
   } catch (error) {
@@ -131,6 +132,29 @@ router.put('/user', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Error updating user details' });
   }
 });
+
+// PATCH view_setting
+router.patch('/user/view-setting', authenticateToken, async (req, res) => {
+  try {
+    const { view_setting } = req.body;
+
+    if (!['card', 'table'].includes(view_setting)) {
+      return res.status(400).json({ message: 'Invalid view_setting value' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { view_setting },
+      { new: true }
+    );
+
+    res.json({ message: 'View setting updated', view_setting: updatedUser.view_setting });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating view setting' });
+  }
+});
+
 
 
 module.exports = router;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, FormControl, Container, Dropdown } from 'react-bootstrap';
 import '../styles/formsandbuttons.css';
+import axios from 'axios';
 
 const SearchBar = ({
   placeholder,
@@ -11,6 +12,24 @@ const SearchBar = ({
   isTableView,
   setIsTableView
 }) => {
+  const handleViewChange = async (viewType) => {
+    setIsTableView(viewType === 'table');
+
+    try {
+      const user_token = localStorage.getItem('user_token');
+      await axios.patch('http://localhost:5000/api/accounts/user/view-setting', {
+        view_setting: viewType,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user_token}`,
+        }
+      });
+    } catch (error) {
+      console.error('Error updating view setting:', error);
+    }
+  };
+
   return (
     <div className="whimsy-search-bar py-3">
       <Container>
@@ -20,11 +39,11 @@ const SearchBar = ({
 
           <Dropdown>
             <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn-outline">
-              {isTableView ? 'Table View' : 'Grid View'}
+              {isTableView ? 'Table View' : 'Card View'}
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setIsTableView(false)}>Grid View</Dropdown.Item>
-              <Dropdown.Item onClick={() => setIsTableView(true)}>Table View</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleViewChange('card')}>Card View</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleViewChange('table')}>Table View</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
 
@@ -39,9 +58,9 @@ const SearchBar = ({
         </Form>
       </Container>
     </div>
-
   );
 };
+
 
 export default SearchBar;
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { DropdownButton, Dropdown, FormControl, Container, Form, Button } from 'react-bootstrap';
+import axios from 'axios';
 
 const SearchAndDropdowns = ({
   currentList,
@@ -9,25 +10,45 @@ const SearchAndDropdowns = ({
   onMediaChange,
   onSearchChange,
   capitalizeFirstLetter,
-  viewMode,
-  onViewModeChange,
+  isTableView,
+  setIsTableView,
   onExportClick,
   onImportClick,
 }) => {
+
+  const handleViewChange = async (viewType) => {
+    setIsTableView(viewType === 'table');
+
+    try {
+      const user_token = localStorage.getItem('user_token');
+      await axios.patch('http://localhost:5000/api/accounts/user/view-setting', {
+        view_setting: viewType,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user_token}`,
+        }
+      });
+    } catch (error) {
+      console.error('Error updating view setting:', error);
+    }
+  };
+
   return (
     <div className="whimsy-search-bar py-3">
       <Container>
         <Form className="whimsy-search-form">
           
           {/* View Dropdown */}
-          <DropdownButton
-            id="list-dropdown"
-            title= "View"
-            className="whimsy-dropdown-view"
-          >
-            <Dropdown.Item onClick={() => onViewModeChange('card')}>Card View</Dropdown.Item>
-            <Dropdown.Item onClick={() => onViewModeChange('table')}>Table View</Dropdown.Item>
-          </DropdownButton>
+          <Dropdown>
+            <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn-outline">
+              {isTableView ? 'Table View' : 'Card View'}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => handleViewChange('card')}>Card View</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleViewChange('table')}>Table View</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
 
           {/* Filter for List */}
           <DropdownButton
