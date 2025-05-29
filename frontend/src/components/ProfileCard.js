@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/profilepage.css';
 import '../styles/modal.css';
 import AccountSettingsModal from '../components/AccountSettingsModal.js';
+import GreatEight from '../components/GreatEight';
 
 import {
   Chart as ChartJS,
@@ -93,6 +94,10 @@ const UserProfileCard = ({ user, setUser }) => {
       .map(([media, count]) => ({ media, count }))
       .sort((a, b) => b.count - a.count);
   };
+
+  useEffect(() => {
+    setBio(user.bio || '');
+  }, [user]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -188,7 +193,8 @@ const UserProfileCard = ({ user, setUser }) => {
     });
   }, [completed]);
   
-  
+  const totalItems = lists.futures.length + lists.current.length + lists.completed.length;
+
 
 
 
@@ -297,9 +303,35 @@ const UserProfileCard = ({ user, setUser }) => {
         </div>
   
         {/* Bottom Row */}
+        
         <div className="profile-bottom bordered">
-          <p>Bottom content area (customizable)</p>
-        </div>
+          <div className="stat-bar-box">
+            <div className="stat-list">
+              <div className="stat-list-header">List Stats</div>
+              <div><strong>Futures:</strong> {lists.futures.length}</div>
+              <div><strong>Current:</strong> {lists.current.length}</div>
+              <div><strong>Completed:</strong> {lists.completed.length}</div>
+              <div><strong>Total:</strong> {lists.futures.length + lists.current.length + lists.completed.length}</div>
+            </div>
+            <div className="vertical-bar-container">
+              <div
+                className="bar-segment futures"
+                style={{ height: `${(lists.futures.length / totalItems) * 100 || 0}%` }}
+              />
+              <div
+                className="bar-segment current"
+                style={{ height: `${(lists.current.length / totalItems) * 100 || 0}%` }}
+              />
+              <div
+                className="bar-segment completed"
+                style={{ height: `${(lists.completed.length / totalItems) * 100 || 0}%` }}
+              />
+            </div>
+          </div>
+          <div className="great-eight-wrapper">
+            <GreatEight />
+          </div>
+        </div>  
       </div>
   
       {/* Sign Out Modal */}

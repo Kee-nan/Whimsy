@@ -53,7 +53,6 @@
   border: none;
   border-radius: 6px;
   color: white;
-  margin-left: 8px;
   cursor: pointer;
 }
 
@@ -125,9 +124,4 @@
 /* Smaller width for rating input */
 .review-modal-input[type="number"] {
   width: 120px;
-}
-
-/* Optional spacing under submit button */
-.primaryButton {
-  margin-top: 1rem;
 }

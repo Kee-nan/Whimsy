@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router(); 
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
@@ -130,6 +130,19 @@ router.put('/user', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error updating user details' });
+  }
+});
+
+// Get favorites list
+router.get('/favorites', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json(user.favorites); // assuming favorites is an array of media items
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching favorites' });
   }
 });
 

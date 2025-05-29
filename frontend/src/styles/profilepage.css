@@ -35,7 +35,7 @@
 }
 
 .profile-username {
-  font-size: 2.5rem;
+  font-size: 3.69rem;
   margin: 0;
 }
 
@@ -65,6 +65,8 @@
 .button-group {
   display: flex;
   gap: 0.5rem;
+  justify-content: flex-start;
+  margin-top: 0.5rem;
 }
 
 /* Stack buttons vertically */
@@ -77,7 +79,7 @@
 /* Make bio section taller than wide */
 .bio-section {
   width: 200px;
-  height: 300px;
+  height: 500px;
   overflow-y: auto;
 }
 
@@ -119,7 +121,8 @@
   padding: 1.5rem;
   background-color: #2a2a2a; /* changed from gradient to grey */
   color: #fff;
-  min-height: 350px;
+  min-height: 355px;
+  max-height: 355px;
   border-radius: 10px;
   overflow: auto;
   display: flex;
@@ -133,7 +136,8 @@
   padding: 1.5rem;
   background-color: #2a2a2a; /* changed from gradient to grey */
   color: #fff;
-  min-height: 350px;
+  min-height: 355px;
+  max-height: 355px;
   border-radius: 10px;
   overflow: auto;
   display: flex;
@@ -151,15 +155,18 @@
   align-items: center;
 }
 
-.bio-content {
+.bio-content { 
   overflow-y: auto;
-  max-height: 150px;
+  max-height: 300px;
   padding-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 .bio-textarea {
   resize: none;
-  height: 150px;
+  height: 250px;
+  padding-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 .profile-bottom {
@@ -180,4 +187,108 @@
   cursor: pointer;
   font-size: 0.8rem;
 }
+
+/* STAT BOX DETAILS*/
+.stat-bar-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  background-color: #2a2a2a;
+  padding: 1rem;
+  border: 1px solid #444;
+  border-radius: 10px;
+  width: 220px;
+}
+
+.stat-list {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.vertical-bar-container {
+  width: 30px;
+  height: 180px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.bar-segment {
+  width: 100%;
+}
+
+.bar-segment.futures {
+  background-color: #00c2ff; /* light blue */
+}
+
+.bar-segment.current {
+  background-color: #fcd303; /* yellow */
+}
+
+.bar-segment.completed {
+  background-color: #00cc44; /* green */
+}
+
+.stat-list-header {
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 0.5rem;
+}
+
+/* Great Eight DETAILS*/
+.great-eight-container {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #1c1c1e;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.great-eight-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.great-eight-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.great-eight-card {
+  display: flex;
+  align-items: center;
+  background-color: #2c2c2e;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 0.5rem;
+  height: 100px;
+}
+
+.great-eight-card img {
+  width: 70px;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 1rem;
+}
+
+.great-eight-title-text p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+
 
