@@ -3,6 +3,12 @@
   border-bottom: 1px solid #353535;
 }
 
+.whimsy-friend-search-bar {
+  background-color: #1b1a1b;
+  border-bottom: 1px solid #353535;
+  border-radius: 25px;
+}
+
 .whimsy-search-form {
   display: flex;
   flex-wrap: wrap;
@@ -30,7 +36,7 @@
   padding: 0.4rem 0.75rem;
   border-radius: 0.25rem;
   transition: all 0.3s;
-}
+} 
 
 .whimsy-btn-outline:hover {
   background-color: white;

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/profilepage.css';
 import '../styles/modal.css';
 import AccountSettingsModal from '../components/AccountSettingsModal.js';
-import GreatEight from '../components/GreatEight';
+import GreatEight from '../components/GreatEight.js'
 
 import {
   Chart as ChartJS,
@@ -72,6 +72,7 @@ const UserProfileCard = ({ user, setUser }) => {
   // Initialized as an empty array for Review Data
   const [ReviewData, setReviewData] = useState([]);
   
+  // Function to Sort the completed list into media types for the chart
   const countCompletedMediaTypes = (completedList) => {
     const counts = {
       album: 0,
@@ -329,7 +330,6 @@ const UserProfileCard = ({ user, setUser }) => {
             </div>
           </div>
           <div className="great-eight-wrapper">
-            <GreatEight />
           </div>
         </div>  
       </div>

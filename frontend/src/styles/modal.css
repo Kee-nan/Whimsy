@@ -125,3 +125,34 @@
 .review-modal-input[type="number"] {
   width: 120px;
 }
+
+/* Ensure padding/spacing aligns with sketch */
+.review-modal-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  background-color: #343334;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.review-modal-label {
+  font-weight: 500;
+  color: #ccc;
+}
+
+.review-modal-input {
+  background-color: #343334;
+  color: #ffffff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin-top: 0.25rem;
+}
+
+/* Optional: prevent long reviews from stretching the layout too much */
+.review-modal-input p {
+  white-space: pre-wrap;
+  max-height: 150px;
+  overflow-y: auto;
+}
