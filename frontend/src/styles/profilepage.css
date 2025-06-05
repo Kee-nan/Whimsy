@@ -174,7 +174,11 @@
   background-color: #2a2a2a;
   color: #ccc;
   border-radius: 10px;
-  flex: 1; /* Allows it to grow and fill remaining space */
+  display: flex;               /* ✅ Make it horizontal */
+  gap: 1rem;                   /* ✅ Space between children */
+  height: auto;                /* ✅ Let it adjust based on content */
+  flex-wrap: wrap;             /* ✅ Wrap on smaller screens */
+  justify-content: space-between;
 }
 
 
@@ -198,7 +202,7 @@
   padding: 1rem;
   border: 1px solid #444;
   border-radius: 10px;
-  width: 220px;
+  width: 20%;
 }
 
 .stat-list {
@@ -244,51 +248,59 @@
 }
 
 /* Great Eight DETAILS*/
-.great-eight-container {
-  margin-top: 2rem;
-  padding: 1rem;
-  background-color: #1c1c1e;
-  border-radius: 12px;
-  color: #fff;
+.favorites-box {
+  width: 100%;                 /* default for small screens */           /* ✅ reasonable limit */
+  background-color: #1e1e1e;
+  padding: 0.75rem;
+  border-radius: 8px;
+  color: white;
+  flex: 1;    
 }
 
-.great-eight-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.favorite-tile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   text-align: center;
 }
 
-.great-eight-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-}
-
-.great-eight-card {
-  display: flex;
-  align-items: center;
-  background-color: #2c2c2e;
-  border-radius: 8px;
-  overflow: hidden;
-  padding: 0.5rem;
+.favorite-tile img {
+  width: 80px;
   height: 100px;
-}
-
-.great-eight-card img {
-  width: 70px;
-  height: 100%;
   object-fit: cover;
   border-radius: 4px;
-  margin-right: 1rem;
+  margin-bottom: 0.25rem;
+  white-space: normal;      /* Allow text to wrap */
+  overflow: visible;        /* Don't hide overflow */
+  text-overflow: unset;     /* Disable ellipsis */
+  word-break: break-word;   /* Break long words if needed */
+  max-width: 100%;          /* Ensure it doesn't overflow parent */
 }
 
-.great-eight-title-text p {
-  margin: 0;
+.favorite-title {
   font-size: 1rem;
-  font-weight: 500;
-  color: #fff;
+  color: #ccc;
+  padding-left: 1rem;
+  white-space: normal;      /* Allow text to wrap */
+  overflow: visible;        /* Don't hide overflow */
+  text-overflow: unset;     /* Disable ellipsis */
+  word-break: break-word;   /* Break long words if needed */
+  max-width: 100%;       
 }
+
+.favorites-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
 
 
 

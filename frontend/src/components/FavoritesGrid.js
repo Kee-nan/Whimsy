@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/profilepage.css'; // we'll create this file next
+import '../styles/profilepage.css';
 
-const GreatEight = () => {
+const FavoritesGrid = ({ onEditClick }) => {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     const fetchFavorites = async () => {
       const token = localStorage.getItem('user_token');
       try {
-        const res = await fetch('http://localhost:5000/api/list/favorites', {
+        const res = await fetch('http://localhost:5000/api/accounts/favorites', {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error('Failed to fetch favorites');
         const data = await res.json();
-        setFavorites(data.slice(0, 8)); // just show top 8
+        setFavorites(data.slice(0, 8)); // only show top 8
       } catch (error) {
         console.error(error);
       }
@@ -23,15 +23,17 @@ const GreatEight = () => {
   }, []);
 
   return (
-    <div className="great-eight-container">
-      <h3 className="great-eight-title">Great Eight</h3>
-      <div className="great-eight-grid">
+    <div className="favorites-box">
+      <div className="favorites-header">
+        <h4>Favorites</h4>
+        <button className="smallButton" onClick={onEditClick}>Edit</button>
+      </div>
+
+      <div className="favorites-grid">
         {favorites.map((item, index) => (
-          <div key={index} className="great-eight-card">
+          <div key={index} className="favorite-tile">
             <img src={item.image || 'https://via.placeholder.com/80x100'} alt={item.title} />
-            <div className="great-eight-title-text">
-              <p>{item.title}</p>
-            </div>
+            <p className="favorite-title">{item.title}</p>
           </div>
         ))}
       </div>
@@ -39,4 +41,4 @@ const GreatEight = () => {
   );
 };
 
-export default GreatEight;
+export default FavoritesGrid;

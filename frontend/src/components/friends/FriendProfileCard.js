@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Card, Image } from 'react-bootstrap';
 import '../../styles/profilepage.css';
 import '../../styles/modal.css';
-import GreatEight from '../GreatEight'
 import {
   Chart as ChartJS,
   BarController,

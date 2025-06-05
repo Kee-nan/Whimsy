@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/profilepage.css';
 import '../styles/modal.css';
 import AccountSettingsModal from '../components/AccountSettingsModal.js';
-import GreatEight from '../components/GreatEight.js'
+import FavoritesGrid from '../components/FavoritesGrid';
+import FavoritesModal from '../components/FavoritesModal.js'
 
 import {
   Chart as ChartJS,
@@ -35,6 +36,12 @@ const UserProfileCard = ({ user, setUser }) => {
   const navigate = useNavigate();
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
+
+  // *** New state for the FavoritesModal ***
+  const [showFavsModal, setShowFavsModal] = useState(false);
+
+  // Keep local copy of favorites so we can pass down
+  const [userFavorites, setUserFavorites] = useState([]);
 
   const [completedCounts, setCompletedCounts] = useState([]);
 
@@ -305,32 +312,36 @@ const UserProfileCard = ({ user, setUser }) => {
   
         {/* Bottom Row */}
         
-        <div className="profile-bottom bordered">
-          <div className="stat-bar-box">
-            <div className="stat-list">
-              <div className="stat-list-header">List Stats</div>
-              <div><strong>Futures:</strong> {lists.futures.length}</div>
-              <div><strong>Current:</strong> {lists.current.length}</div>
-              <div><strong>Completed:</strong> {lists.completed.length}</div>
-              <div><strong>Total:</strong> {lists.futures.length + lists.current.length + lists.completed.length}</div>
+        <div className="profile-bottom">
+            <div className="stat-bar-box">
+              <div className="stat-list">
+                <div className="stat-list-header">List Stats</div>
+                <div><strong>Futures:</strong> {lists.futures.length}</div>
+                <div><strong>Current:</strong> {lists.current.length}</div>
+                <div><strong>Completed:</strong> {lists.completed.length}</div>
+                <div><strong>Total:</strong> {lists.futures.length + lists.current.length + lists.completed.length}</div>
+              </div>
+              <div className="vertical-bar-container">
+                <div
+                  className="bar-segment futures"
+                  style={{ height: `${(lists.futures.length / totalItems) * 100 || 0}%` }}
+                />
+                <div
+                  className="bar-segment current"
+                  style={{ height: `${(lists.current.length / totalItems) * 100 || 0}%` }}
+                />
+                <div
+                  className="bar-segment completed"
+                  style={{ height: `${(lists.completed.length / totalItems) * 100 || 0}%` }}
+                />
+              </div>
+              
             </div>
-            <div className="vertical-bar-container">
-              <div
-                className="bar-segment futures"
-                style={{ height: `${(lists.futures.length / totalItems) * 100 || 0}%` }}
-              />
-              <div
-                className="bar-segment current"
-                style={{ height: `${(lists.current.length / totalItems) * 100 || 0}%` }}
-              />
-              <div
-                className="bar-segment completed"
-                style={{ height: `${(lists.completed.length / totalItems) * 100 || 0}%` }}
-              />
-            </div>
-          </div>
-          <div className="great-eight-wrapper">
-          </div>
+
+            
+              <FavoritesGrid onEditClick={() => setShowFavsModal(true)} />
+
+
         </div>  
       </div>
   
@@ -354,6 +365,15 @@ const UserProfileCard = ({ user, setUser }) => {
         updateUser={updateUser}
         viewSetting={viewSetting}
         setViewSetting={setViewSetting}
+      />
+
+      {/* FAVORITES MODAL */}
+      <FavoritesModal
+        show={showFavsModal}
+        onHide={() => setShowFavsModal(false)}
+        allLists={lists}
+        userFavorites={userFavorites}
+        setUserFavorites={setUserFavorites}
       />
 
     </>

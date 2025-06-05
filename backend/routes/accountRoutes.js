@@ -133,6 +133,7 @@ router.put('/user', authenticateToken, async (req, res) => {
   }
 });
 
+// Favorite nodes
 // Get favorites list
 router.get('/favorites', authenticateToken, async (req, res) => {
   try {
@@ -143,6 +144,28 @@ router.get('/favorites', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error fetching favorites' });
+  }
+});
+
+// PATCH update favorites (replace entire array with the provided one)
+// Expecting body: { favorites: [ /* array of media objects */ ] }
+router.patch('/favorites', authenticateToken, async (req, res) => {
+  try {
+    const newFavorites = req.body.favorites;
+    if (!Array.isArray(newFavorites) || newFavorites.length > 8) {
+      return res.status(400).json({ message: 'Favorites must be an array of at most 8 items.' });
+    }
+    // Optional: you can validate each object structure here (e.g. has id, title, image, listType, etc.)
+
+    const updated = await User.findByIdAndUpdate(
+      req.user._id,
+      { favorites: newFavorites },
+      { new: true, select: 'favorites' }
+    );
+    res.json({ favorites: updated.favorites });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error updating favorites' });
   }
 });
 
