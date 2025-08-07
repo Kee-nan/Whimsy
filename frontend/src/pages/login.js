@@ -1,13 +1,16 @@
 // src/pages/LoginPage.js
-// src/pages/LoginPage.js
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
 
 const LoginPage = () => {
+  
+  //Variables to hold the entered username and password
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(''); //Error Tracker
+
   const navigate = useNavigate();
 
   //Function to handle logging in
@@ -28,6 +31,7 @@ const LoginPage = () => {
         // If login is successful, navigate to the homepage
         const data = await response.json();
         localStorage.setItem('user_token', data.user_token); // Store the token in localStorage
+        localStorage.setItem('tokenExpiry', data.expiresAt); // Store the expiration in localStorage
         navigate('/homepage');
       } else {
         // If login fails, set error message
@@ -51,6 +55,7 @@ const LoginPage = () => {
         <Form className="w-100" onSubmit={handleSubmit}>
           {error && <Alert variant="danger">{error}</Alert>}
 
+          {/* Username Enter Field */}
           <Form.Group controlId="formUsername">
             <Form.Label className="form-label">Username</Form.Label>
             <Form.Control
@@ -63,6 +68,7 @@ const LoginPage = () => {
             />
           </Form.Group>
 
+          {/* Password Enter Field */}
           <Form.Group controlId="formPassword" className="mt-3">
             <Form.Label className="form-label">Password</Form.Label>
             <Form.Control

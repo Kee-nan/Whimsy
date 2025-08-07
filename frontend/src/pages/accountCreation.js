@@ -4,6 +4,7 @@ import { Container, Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CreateAccountPage = () => {
+  //Account Variable details
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');

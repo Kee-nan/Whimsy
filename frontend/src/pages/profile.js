@@ -3,8 +3,11 @@ import axios from 'axios';
 import { Container } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 import UserProfileCard from '../components/ProfileCard';
+import { useNavigate } from 'react-router-dom';
+import { checkTokenExpiration } from '../utils/checkTokenExpiration';
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
@@ -15,6 +18,8 @@ const Profile = () => {
   });
 
   useEffect(() => {
+
+    if (checkTokenExpiration(navigate)) return;
 
     //Get User Details from Database to use to Load on page
     const fetchUserDetails = async () => {

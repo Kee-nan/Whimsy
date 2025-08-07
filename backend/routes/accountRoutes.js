@@ -1,3 +1,4 @@
+// \routes\accountRoutes.js
 const express = require('express');
 const router = express.Router(); 
 const User = require('../models/user');
@@ -11,7 +12,38 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Account creation endpoint
+/**
+ *  Login Endpoint
+ */
+router.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username }); // Find the Username via querey
+
+    if (!user) return res.status(401).send('Username does not exist'); //Return error if cant find user
+
+    // Compare the hashed password with the provided password
+    const isMatch = await bcrypt.compare(password, user.password); // Decryption step
+    if (!isMatch) return res.status(401).send('Password does not match this User'); // Wrong password
+
+    const user_token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '5h' }); // Given user token for their details
+    const decoded = jwt.decode(user_token);
+
+
+    res.json({ 
+      user_token,
+      expiresAt: decoded.exp * 1000 // Convert to milliseconds
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error logging in'); //Other error catching
+  }
+});
+
+
+/**
+ *  Account creation endpoint
+ */
 router.post('/create', async (req, res) => {
   try {
     const { firstName, lastName, username, email, password } = req.body;
@@ -19,6 +51,7 @@ router.post('/create', async (req, res) => {
     // Check if username or email already exists
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
 
+    // Check for previous accounts with same Username or Email
     if (existingUser) {
       if (existingUser.username === username) {
         return res.status(400).send('Error Creating Account: Username already exists');
@@ -55,27 +88,11 @@ router.post('/create', async (req, res) => {
   }
 });
 
-// Login endpoint
-router.post('/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
 
-    if (!user) return res.status(401).send('Username does not exist');
 
-    // Compare the hashed password with the provided password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).send('Password does not match this User');
-
-    const user_token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '3h' });
-    res.json({ user_token });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error logging in');
-  }
-});
-
-// Get user details endpoint
+/**
+ *  =Get User Details
+ */
 router.get('/user', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -96,7 +113,9 @@ router.get('/user', authenticateToken, async (req, res) => {
   }
 });
 
-// Update user details endpoint
+/**
+ *  Update User Details
+ */
 router.put('/user', authenticateToken, async (req, res) => {
   try {
     const { firstName, lastName, username, email, bio } = req.body;
@@ -133,8 +152,9 @@ router.put('/user', authenticateToken, async (req, res) => {
   }
 });
 
-// Favorite nodes
-// Get favorites list
+/**
+ *  Get favorites list
+ */
 router.get('/favorites', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);

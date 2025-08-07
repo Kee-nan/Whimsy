@@ -37,9 +37,10 @@ const Lists = () => {
   const fetchData = async () => {
     console.log('Fetching user + lists...');
 
+    if (checkTokenExpiration(navigate)) return;
     const token = localStorage.getItem('user_token');
     if (!token) return console.error('no user token');
-
+    
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`

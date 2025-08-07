@@ -17,7 +17,7 @@ const authenticateToken = (req, res, next) => {
       return res.sendStatus(403); // Forbidden if token verification fails
     }
     req.user = { _id: decodedToken.userId };
-    console.log('User authenticated:', req.user);
+    // console.log('User authenticated:', req.user);
     next();
   });
 };
