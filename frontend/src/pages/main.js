@@ -1,8 +1,15 @@
+//frontend\src\pages\main.js
+// jmmdw
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 
+
+/**
+ *  Main homepage
+ *  Just has basic information about all of the media and details about the website.
+ */
 const MainPage = () => {
   return (
     <>

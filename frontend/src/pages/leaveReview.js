@@ -4,6 +4,12 @@ import { Container, Card, Form, Button } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppNavbar from '../components/Navbar';
 
+
+/**
+ *  Main homepage
+ *  Just has basic information about all of the media and details about the website.
+ */
+
 const LeaveReview = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -106,7 +112,7 @@ const LeaveReview = () => {
             <Form style={styles.form} onSubmit={handleSubmit}>
 
               <Form.Group controlId="rating">
-                <Form.Label>Rating (1-100)</Form.Label>
+                <Form.Label>Rating (1-30)</Form.Label>
                 <Form.Control
                   type="number"
                   value={rating}

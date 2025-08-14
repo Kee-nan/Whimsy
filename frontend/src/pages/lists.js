@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import SearchAndDropdowns from '../components/ListFilter';
 import CSVImportModal from '../components/CSVImportModal';
 import '../styles/tableStyles.css';
+import { checkTokenExpiration } from '../utils/checkTokenExpiration';
 
 
 const Lists = () => {

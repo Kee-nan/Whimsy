@@ -6,7 +6,7 @@ import DetailPage from '../templates/DetailPage';
 
 // Fetch album from our backend
 const fetchAlbumDetails = async (id) => {
-  const response = await axios.get(`/api/spotify/album/${id}`);
+  const response = await axios.get(`/api/search/albums/${id}`);
   console.log("Album Details Response:", response);
   return response;
 };

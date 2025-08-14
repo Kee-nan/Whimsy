@@ -3,6 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+/**
+ *  Account creation
+ *  All the details an account
+ */
+
 const CreateAccountPage = () => {
   //Account Variable details
   const [firstName, setFirstName] = useState('');

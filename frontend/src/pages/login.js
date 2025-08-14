@@ -4,6 +4,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
 
+
+/**
+ *  Page that appears to log everyone in
+ */
 const LoginPage = () => {
   
   //Variables to hold the entered username and password

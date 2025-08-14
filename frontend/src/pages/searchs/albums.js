@@ -6,7 +6,7 @@ import { Card } from 'react-bootstrap';
 
 // Function to search for albums from spotify and return json of search
 const searchAlbums = async (key) => {
-  const response = await axios.get(`/api/spotify/search`, {
+  const response = await axios.get(`/api/search/albums`, {
     params: { q: key }
   });
   return { data: response.data };

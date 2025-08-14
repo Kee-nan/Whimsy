@@ -6,6 +6,11 @@ import UserProfileCard from '../components/ProfileCard';
 import { useNavigate } from 'react-router-dom';
 import { checkTokenExpiration } from '../utils/checkTokenExpiration';
 
+/**
+ *  Profile Page
+ *  Just has basic information about all of the media and details about the website.
+ */
+
 const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({
