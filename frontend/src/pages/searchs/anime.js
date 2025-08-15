@@ -1,9 +1,11 @@
-
-import React from 'react';
 import axios from 'axios';
 import SearchPage from '../templates/SearchPage';
 import { Card } from 'react-bootstrap';
 
+
+/**
+ *  Search for Anime with backend call
+ */
 const searchAnime = async (key) => {
   try {
     const response = await axios.get('https://api.jikan.moe/v4/anime', {
@@ -18,6 +20,9 @@ const searchAnime = async (key) => {
   }
 };
 
+/**
+ * Render Anime card 
+ */
 const renderAnimeCard = (item) => (
   <>
     <Card.Img src={item.images.jpg.image_url} alt={item.title} className="grid-card-image poster" />
@@ -27,6 +32,9 @@ const renderAnimeCard = (item) => (
   </>
 );
 
+/**
+ *  Export the Search result to the search page template
+ */
 const AnimeSearch = () => (
   <SearchPage
     searchFunction={searchAnime}

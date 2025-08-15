@@ -1,9 +1,12 @@
 
-import React from 'react';
 import axios from 'axios';
 import SearchPage from '../templates/SearchPage';
 import { Card } from 'react-bootstrap';
 
+
+/**
+ *  Search for shows with backend call
+ */
 const searchShows = async (key) => {
   try {
     const response = await axios.get('https://api.tvmaze.com/search/shows', {
@@ -17,6 +20,9 @@ const searchShows = async (key) => {
   }
 };
 
+/**
+ * Render Show card 
+ */
 const renderShowCard = (item) => (
   <>
     <Card.Img src={item.image?.medium || 'placeholder.jpg'} alt={item.name} className="grid-card-image poster"/>
@@ -26,6 +32,9 @@ const renderShowCard = (item) => (
   </>
 );
 
+/**
+ *  Export the Search result to the search page template
+ */
 const ShowsSearch = () => (
   <SearchPage
     searchFunction={searchShows}

@@ -1,10 +1,11 @@
 // albums.js
-import React from 'react';
 import axios from 'axios';
 import SearchPage from '../templates/SearchPage';
 import { Card } from 'react-bootstrap';
 
-// Function to search for albums from spotify and return json of search
+/**
+ *  Search for Album with backend call
+ */
 const searchAlbums = async (key) => {
   const response = await axios.get(`/api/search/albums`, {
     params: { q: key }
@@ -12,7 +13,9 @@ const searchAlbums = async (key) => {
   return { data: response.data };
 };
 
-// Function to load the details of the album onto the card
+/**
+ * Render Album card 
+ */
 const renderAlbumCard = (album) => (
   <>
     <Card.Img src={album.images[0]?.url || 'placeholder.jpg'} alt={album.name} className="grid-card-image album"/>
@@ -23,7 +26,9 @@ const renderAlbumCard = (album) => (
   </>
 );
 
-// Page load of the template
+/**
+ *  Export the Search result to the search page template
+ */
 const Albums = () => (
   <SearchPage
     searchFunction={searchAlbums}

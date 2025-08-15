@@ -1,9 +1,11 @@
-import React from 'react';
+
 import axios from 'axios';
 import SearchPage from '../templates/SearchPage';
 import { Card } from 'react-bootstrap';
 
-// Function to fetch games from backend route
+/**
+ *  Search for Games with backend call
+ */
 const searchGames = async (key) => {
   try {
     const response = await axios.get(`/api/search/games?q=${encodeURIComponent(key)}`);
@@ -15,7 +17,9 @@ const searchGames = async (key) => {
   }
 };
 
-// Function to render each game card
+/**
+ * Render Games card 
+ */
 const renderGameCard = (item) => (
   <>
     <Card.Img src={item.background_image} alt={item.name} className="grid-card-image album" />
@@ -25,7 +29,9 @@ const renderGameCard = (item) => (
   </>
 );
 
-// GameSearch component
+/**
+ *  Export the Search result to the search page template
+ */
 const GameSearch = () => (
   <SearchPage
     searchFunction={searchGames}

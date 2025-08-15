@@ -1,10 +1,12 @@
 
 // src/pages/search/Manga.js
-import React from 'react';
 import axios from 'axios';
 import SearchPage from '../templates/SearchPage';
 import { Card } from 'react-bootstrap';
 
+/**
+ *  Search for Manga with backend call
+ */
 const searchManga = async (key) => {
   try {
     const response = await axios.get('https://api.jikan.moe/v4/manga', {
@@ -18,6 +20,9 @@ const searchManga = async (key) => {
   }
 };
 
+/**
+ * Render Manga card 
+ */
 const renderMangaCard = (item) => (
   <>
     <Card.Img src={item.images.jpg.image_url} alt={item.title} className="grid-card-image poster"/>
@@ -27,6 +32,9 @@ const renderMangaCard = (item) => (
   </>
 );
 
+/**
+ *  Export the Search result to the search page template
+ */
 const MangaSearch = () => (
   <SearchPage
     searchFunction={searchManga}

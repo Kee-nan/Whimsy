@@ -1,9 +1,10 @@
 
-
-import React from 'react';
 import SearchPage from '../templates/SearchPage';
 import { Card } from 'react-bootstrap';
 
+/**
+ *  Search for movies with backend call
+ */
 const searchMovies = async (key) => {
   try {
     const response = await fetch(`/api/search/movies?q=${encodeURIComponent(key)}`, {
@@ -23,7 +24,9 @@ const searchMovies = async (key) => {
   }
 };
 
-
+/**
+ * Render Movie card 
+ */
 const renderMovieCard = (item) => (
   <>
     <Card.Img src={`https://image.tmdb.org/t/p/w500${item.poster_path}`} alt={item.title} className="grid-card-image poster"/>
@@ -33,6 +36,9 @@ const renderMovieCard = (item) => (
   </>
 );
 
+/**
+ *  Export the Search result to the search page template
+ */
 const MovieSearch = () => (
   <SearchPage
     searchFunction={searchMovies}

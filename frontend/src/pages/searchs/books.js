@@ -1,10 +1,12 @@
 
 // src/pages/search/BookSearch.js
-import React from 'react';
 import axios from 'axios';
 import SearchPage from '../templates/SearchPage';
 import { Card } from 'react-bootstrap';
 
+/**
+ *  Search for Books with backend call
+ */
 const searchBooks = async (key) => {
   try {
     const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
@@ -18,6 +20,9 @@ const searchBooks = async (key) => {
   }
 };
 
+/**
+ * Render Book card 
+ */
 const renderBookCard = (item) => (
   <>
     <Card.Img src={item.volumeInfo.imageLinks?.thumbnail || 'placeholder.jpg'} alt={item.volumeInfo.title} className="grid-card-image poster"/>
@@ -27,6 +32,9 @@ const renderBookCard = (item) => (
   </>
 );
 
+/**
+ *  Export the Search result to the search page template
+ */
 const BookSearch = () => (
   <SearchPage
     searchFunction={searchBooks}
