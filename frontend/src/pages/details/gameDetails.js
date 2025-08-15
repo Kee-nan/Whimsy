@@ -5,9 +5,8 @@ import axios from 'axios';
 
 // Function to fetch game details (no token needed)
 const fetchGameDetails = async (id) => {
-  return await axios.get(`https://api.rawg.io/api/games/${id}`, {
-    params: { key: 'c9ab999c9033481ebbcf7903a8293428' }
-  });
+  const response = await axios.get(`/api/search/games/${id}`);
+  return response
 };
 
 // Function to extract game details

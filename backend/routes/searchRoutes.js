@@ -36,7 +36,7 @@ router.get('/movies', async (req, res) => {
 /**
  *  Get movies by ID for details
  */
-router.get('/movie/:id', async (req, res) => {
+router.get('/movies/:id', async (req, res) => {
   const movieId = req.params.id;
   const apiKey = process.env.TMDB_API_KEY;
 
@@ -45,12 +45,14 @@ router.get('/movie/:id', async (req, res) => {
       params: { api_key: apiKey }
     });
 
-    res.send(response);
+    res.json(response.data); 
+    console.log(response.data)
   } catch (error) {
-    console.error('Error fetching movie details:', error);
+    console.error('Error fetching movie details:', error.message);
     res.status(500).json({ error: 'An error occurred while fetching movie details' });
   }
 });
+
 
 
 /**

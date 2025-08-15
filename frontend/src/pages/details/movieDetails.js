@@ -6,23 +6,22 @@ import axios from 'axios';
 
 // Function to fetch movie details (no token needed)
 const fetchMovieDetails = async (id) => {
-  return await axios.get(`https://api.themoviedb.org/3/movie/${id}`, {
-    params: { api_key: '670e04ce75f540ad139cadd217bad472' }
-  });
+  const response = await axios.get(`/api/search/movies/${id}`);
+  return response
 };
-
 
 // Function to extract movie details
 const extractMovieDetails = (data) => {
-  const movie = data;
+  if (!data) return null; // ⬅ guard
+
   return {
-    image: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-    title: movie.title, // Ensure title is included
+    image: `https://image.tmdb.org/t/p/w500${data.poster_path}`,
+    title: data.title,
     details: [
-        <p><strong>Release Date:</strong> {movie.release_date}</p>,
-        <p><strong>Genres:</strong> {movie.genres?.map(genre => genre.name).join(', ')}</p>,
+      <p key="release"><strong>Release Date:</strong> {data.release_date}</p>,
+      <p key="genres"><strong>Genres:</strong> {data.genres?.map(genre => genre.name).join(', ')}</p>,
     ],
-    summary: movie.overview
+    summary: data.overview
   };
 };
 
