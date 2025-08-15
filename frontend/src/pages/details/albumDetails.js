@@ -1,17 +1,19 @@
 // albumDetails.js
-import React from 'react';
 import axios from 'axios';
 import DetailPage from '../templates/DetailPage';
 
-
-// Fetch album from our backend
+/**
+ *  Search for Album with backend call
+ */
 const fetchAlbumDetails = async (id) => {
   const response = await axios.get(`/api/search/albums/${id}`);
   console.log("Album Details Response:", response);
   return response;
 };
 
-// Function to extract album details
+/**
+ *  Extract the specific details for the media
+ */
 const extractAlbumDetails = (album) => {
   if (!album) {
     console.error("Album is undefined in extractAlbumDetails!");
@@ -45,7 +47,9 @@ const extractAlbumDetails = (album) => {
   };
 };
 
-// Page function that calls template
+/**
+ *  Put out the data to then detail page
+ */
 const AlbumDetail = () => {
   
   return (

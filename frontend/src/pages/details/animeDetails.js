@@ -1,13 +1,18 @@
 
 // src/pages/searchs/AnimeDetail.js
-import React from 'react';
 import axios from 'axios';
 import DetailPage from '../templates/DetailPage';
 
+/**
+ *  Search for Album with backend call
+ */
 const fetchAnimeDetails = async (id) => {
   return await axios.get(`https://api.jikan.moe/v4/anime/${id}/full`);
 };
 
+/**
+ *  Extract the specific details for the media
+ */
 const extractAnimeDetails = (data) => {
   const anime = data.data;
   return {
@@ -23,6 +28,9 @@ const extractAnimeDetails = (data) => {
   };
 };
 
+/**
+ *  Put out the data to then detail page
+ */
 const AnimeDetail = () => {
   return (
     <DetailPage

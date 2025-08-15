@@ -1,13 +1,18 @@
-
 // src/pages/details/ShowDetail.js
-import React from 'react';
 import axios from 'axios';
 import DetailPage from '../templates/DetailPage';
 
+/**
+ *  Fetch the Details 
+ */
 const fetchShowDetails = async (id) => {
   return await axios.get(`https://api.tvmaze.com/shows/${id}`);
 };
 
+
+/**
+ *  Extract the specific details for the media
+ */
 const extractShowDetails = (data) => {
   const show = data;
   const stripHtmlTags = (html) => {
@@ -29,6 +34,9 @@ const extractShowDetails = (data) => {
   };
 };
 
+/**
+ *  Put out the data to then detail page
+ */
 const ShowDetail = () => {
   return (
     <DetailPage

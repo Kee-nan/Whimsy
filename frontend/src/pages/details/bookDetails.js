@@ -1,9 +1,10 @@
 // src/pages/searchs/BookDetail.js
-import React from 'react';
 import axios from 'axios';
 import DetailPage from '../templates/DetailPage';
 
-// Function to fetch book details (no token needed)
+/**
+ *  Search for Album with backend call
+ */
 const fetchBookDetails = async (id) => {
   return await axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`);
 };
@@ -14,7 +15,9 @@ const stripHtmlTags = (html) => {
   return tempDiv.innerText;
 };
 
-// Function to extract book details
+/**
+ *  Extract the specific details for the media
+ */
 const extractBookDetails = (data) => {
   const book = data.volumeInfo;
   return {
@@ -30,6 +33,9 @@ const extractBookDetails = (data) => {
   };
 };
 
+/**
+ *  Put out the data to then detail page
+ */
 const BookDetail = () => {
   return (
     <DetailPage

@@ -1,15 +1,18 @@
 // src/pages/details/GameDetail.js
-import React from 'react';
 import DetailPage from '../templates/DetailPage';
 import axios from 'axios';
 
-// Function to fetch game details (no token needed)
+/**
+ *  Search for Album with backend call
+ */
 const fetchGameDetails = async (id) => {
   const response = await axios.get(`/api/search/games/${id}`);
   return response
 };
 
-// Function to extract game details
+/**
+ *  Extract the specific details for the media
+ */
 const extractGameDetails = (data) => {
   const game = data;
   return {
@@ -25,6 +28,9 @@ const extractGameDetails = (data) => {
   };
 };
 
+/**
+ *  Put out the data to then detail page
+ */
 const GameDetail = () => {
   return (
     <DetailPage

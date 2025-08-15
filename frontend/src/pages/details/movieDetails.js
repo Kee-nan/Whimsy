@@ -1,16 +1,18 @@
-
 // src/pages/details/MovieDetail.js
-import React from 'react';
 import DetailPage from '../templates/DetailPage';
 import axios from 'axios';
 
-// Function to fetch movie details (no token needed)
+/**
+ *  Search for Album with backend call
+ */
 const fetchMovieDetails = async (id) => {
   const response = await axios.get(`/api/search/movies/${id}`);
   return response
 };
 
-// Function to extract movie details
+/**
+ *  Extract the specific details for the media
+ */
 const extractMovieDetails = (data) => {
   if (!data) return null; // ⬅ guard
 
@@ -25,6 +27,9 @@ const extractMovieDetails = (data) => {
   };
 };
 
+/**
+ *  Put out the data to then detail page
+ */
 const MovieDetail = () => {
   return (
     <DetailPage
