@@ -46,7 +46,6 @@ router.get('/movies/:id', async (req, res) => {
     });
 
     res.json(response.data); 
-    console.log(response.data)
   } catch (error) {
     console.error('Error fetching movie details:', error.message);
     res.status(500).json({ error: 'An error occurred while fetching movie details' });
@@ -128,7 +127,6 @@ router.get('/albums/:id', async (req, res) => {
   console.log(`Fetching album details for ID: ${albumId}`);
   try {
     const album = await spotifyService.getAlbumDetails(req.params.id);
-    console.log("Fetched album from Spotify:", album.id);
     res.json(album);
   } catch (err) {
     console.error('Detail error:', err);

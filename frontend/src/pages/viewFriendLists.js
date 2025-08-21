@@ -1,5 +1,4 @@
 // frontend/src/pages/ViewFriendLists.js
-// frontend/src/pages/ViewFriendLists.js
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -9,6 +8,11 @@ import FriendListCard from '../components/friends/FriendListCard';
 import FriendSearchAndDropdowns from '../components/FriendListFilter';
 import FriendProfileCard from '../components/friends/FriendProfileCard';
 import { Spinner } from 'react-bootstrap';
+
+/**
+ *  Main homepage
+ *  Just has basic information about all of the media and details about the website.
+ */
 
 const ViewFriendLists = () => {
   const [completedList, setCompletedList] = useState([]);
