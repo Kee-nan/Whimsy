@@ -4,16 +4,33 @@ import SearchPage from '../templates/SearchPage';
 import { Card } from 'react-bootstrap';
 
 /**
- *  Search for Games with backend call
+ * Search for Games with backend call
  */
-const searchGames = async (key) => {
+const searchGames = async (key, page = 1, pageSize = 15) => {
   try {
-    const response = await axios.get(`/api/search/games?q=${encodeURIComponent(key)}`);
-    return { data: response.data.results || [] }; // Ensure data.results is always an array
+    const response = await axios.get(`/api/search/games`, {
+      params: { q: key, page, page_size: pageSize },
+    });
+
+    const count = response.data.count || 0;
+    const totalPages = Math.ceil(count / pageSize);
+
+    return {
+      data: response.data.results || [],
+      pagination: {
+        current_page: response.data.page || 1,
+        last_visible_page: totalPages || 1,   // 🔹 match anime/manga format
+        items: {
+          count: count,
+          per_page: pageSize,
+        },
+        has_next_page: !!response.data.next,
+      },
+    };
   } catch (error) {
     console.error("Error fetching games:", error);
     alert("Error fetching games");
-    return { data: [] }; // Return empty array if there's an error
+    return { data: [], pagination: {} };
   }
 };
 

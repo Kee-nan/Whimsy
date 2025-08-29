@@ -6,12 +6,37 @@ import { Card } from 'react-bootstrap';
 /**
  *  Search for Album with backend call
  */
-const searchAlbums = async (key) => {
-  const response = await axios.get(`/api/search/albums`, {
-    params: { q: key }
-  });
-  return { data: response.data };
+/**
+ * Search for Albums with backend call
+ */
+const searchAlbums = async (key, page = 1, limit = 15) => {
+  try {
+    const response = await axios.get(`/api/search/albums`, {
+      params: { q: key, page, limit },
+    });
+
+    const total = response.data.total || 0;
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data: response.data.results || [],
+      pagination: {
+        current_page: response.data.page || 1,
+        last_visible_page: totalPages || 1,
+        items: {
+          count: total,
+          per_page: limit,
+        },
+        has_next_page: !!response.data.next,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching Albums:", error);
+    alert("Error fetching Albums");
+    return { data: [], pagination: {} };
+  }
 };
+
 
 /**
  * Render Album card 

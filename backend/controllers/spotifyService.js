@@ -34,19 +34,22 @@ async function getAppAccessToken() {
 
 
 // Given a query string it searches albums on spotify
-async function searchAlbums(query) {
+async function searchAlbums(query, limit = 15, offset = 0) {
   const token = await getAppAccessToken();
   const response = await axios.get('https://api.spotify.com/v1/search', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
     params: {
-      q: query, // entered query from the searchbar
-      type: 'album', // only return type album
+      q: query,
+      type: 'album',
+      limit,
+      offset,
     },
   });
   return response.data;
 }
+
 
 
 // Fetches full album details including a separate request for track list.

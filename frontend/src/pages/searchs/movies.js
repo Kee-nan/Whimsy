@@ -16,11 +16,17 @@ const searchMovies = async (key) => {
     }
 
     const data = await response.json();
-    return { data: data.results || [] }; // Ensure data.results is always an array
+
+    return { 
+      data: data.results || [], 
+      page: data.page || 1,
+      totalPages: data.total_pages || 1,
+      totalResults: data.total_results || 0
+    };
   } catch (error) {
     console.error("Error fetching movies:", error);
     alert("Error fetching movies");
-    return { data: [] }; // Return empty array if there's an error
+    return { data: [], page: 1, totalPages: 1, totalResults: 0 };
   }
 };
 

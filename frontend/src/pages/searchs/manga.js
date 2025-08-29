@@ -7,12 +7,20 @@ import { Card } from 'react-bootstrap';
 /**
  *  Search for Manga with backend call
  */
-const searchManga = async (key) => {
+const searchManga = async (key, page = 1, limit = 15) => {
   try {
     const response = await axios.get('https://api.jikan.moe/v4/manga', {
-      params: { q: key, sfw: true }
+      params: { 
+        q: key, // 🔹 safely encode search
+        sfw: true, 
+        page, 
+        limit: Math.min(limit, 15) // 🔹 enforce Jikan's max
+      }
     });
-    return { data: response.data.data || [] }; // Ensure data is always an array
+    return { 
+      data: response.data.data || [], // Ensure data is always an array
+      pagination: response.data.pagination || {} // Jikan returns pagination info
+    };
   } catch (error) {
     console.error("Error fetching Manga:", error);
     alert("Error fetching Manga");

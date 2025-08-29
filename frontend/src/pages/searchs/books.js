@@ -7,18 +7,53 @@ import { Card } from 'react-bootstrap';
 /**
  *  Search for Books with backend call
  */
-const searchBooks = async (key) => {
+const searchBooks = async (key, page = 1, pageSize = 15) => {
   try {
-    const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
-      params: { q: key }
+    const maxPages = 5; // maximum pages to fetch
+    const cappedPage = Math.min(page, maxPages);
+    const startIndex = (cappedPage - 1) * pageSize;
+
+    const response = await axios.get("https://www.googleapis.com/books/v1/volumes", {
+      params: {
+        q: key,
+        startIndex,
+        maxResults: pageSize,
+      },
     });
-    return { data: response.data.items || [] }; // Ensure data is always an array
-  } catch(error) {
+
+    // totalItems cannot exceed pageSize * maxPages
+    const totalItems = Math.min(response.data.totalItems || 0, maxPages * pageSize);
+    const lastVisiblePage = Math.ceil(totalItems / pageSize);
+
+    return {
+      data: response.data.items || [],
+      pagination: {
+        totalItems,
+        page: cappedPage,
+        pageSize,
+        last_visible_page: lastVisiblePage,
+        has_next_page: cappedPage < lastVisiblePage,
+        has_prev_page: cappedPage > 1,
+      },
+    };
+  } catch (error) {
     console.error("Error fetching Books:", error);
     alert("Error fetching Books");
-    return [];
+    return {
+      data: [],
+      pagination: {
+        totalItems: 0,
+        page: 1,
+        pageSize,
+        last_visible_page: 1,
+        has_next_page: false,
+        has_prev_page: false,
+      },
+    };
   }
 };
+
+
 
 /**
  * Render Book card 
