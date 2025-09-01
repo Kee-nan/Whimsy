@@ -1,3 +1,4 @@
+// src/components/profile/ProfileCard.js
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Image, Form, Modal } from 'react-bootstrap';
@@ -41,7 +42,7 @@ const UserProfileCard = ({ user, setUser }) => {
   const [showFavsModal, setShowFavsModal] = useState(false);
 
   // Keep local copy of favorites so we can pass down
-  const [userFavorites, setUserFavorites] = useState([]);
+  const [userFavorites, setUserFavorites] = useState(Array(8).fill(null));
 
   const [completedCounts, setCompletedCounts] = useState([]);
 
@@ -203,8 +204,30 @@ const UserProfileCard = ({ user, setUser }) => {
   
   const totalItems = lists.futures.length + lists.current.length + lists.completed.length;
 
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      const token = localStorage.getItem('user_token');
+      if (!token) return;
+      try {
+        const res = await fetch('http://localhost:5000/api/accounts/favorites', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error('Failed to fetch favorites');
+        const data = await res.json();
+        // normalize to slot array of length 8
+        let slots = Array(8).fill(null);
+        if (Array.isArray(data)) {
+          if (data.length === 8) slots = data;
+          else for (let i = 0; i < Math.min(8, data.length); i++) slots[i] = data[i];
+        }
+        setUserFavorites(slots);
+      } catch (err) {
+        console.error('Failed to fetch favorites', err);
+      }
+    };
 
-
+    fetchFavorites();
+  }, []);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -339,7 +362,11 @@ const UserProfileCard = ({ user, setUser }) => {
             </div>
 
             
-              <FavoritesGrid onEditClick={() => setShowFavsModal(true)} />
+             
+               <FavoritesGrid
+                 onEditClick={() => setShowFavsModal(true)}
+                 favorites={userFavorites}
+               />
 
 
         </div>  
@@ -373,7 +400,10 @@ const UserProfileCard = ({ user, setUser }) => {
         onHide={() => setShowFavsModal(false)}
         allLists={lists}
         userFavorites={userFavorites}
-        setUserFavorites={setUserFavorites}
+        setUserFavorites={(slots) => {
+          // update local UI and keep in sync
+          setUserFavorites(slots);
+        }}
       />
 
     </>

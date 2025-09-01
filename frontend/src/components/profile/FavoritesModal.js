@@ -1,91 +1,161 @@
-// src/components/FavoritesModal.js
+// src/components/profile/FavoritesModal.js
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Row, Col, Form, Image } from 'react-bootstrap';
 import axios from 'axios';
 import '../../styles/modal.css';
 
-const FavoritesModal = ({
-  show,
-  onHide,
-  allLists,         // { completed: [...], current: [...], futures: [...] }
-  userFavorites,    // [ { id, media, title, image, listType, ... }, ... ]
-  setUserFavorites  // function to update parent’s favorites array
-}) => {
+/**
+ * Expectation:
+ * - userFavorites prop should be an array of length 8 (slots A..H).
+ *   Each slot is either null or an object: { id, title, image, media, ... }
+ *
+ * If your backend currently returns a compacted array, convert it before passing in:
+ *   e.g. expandToSlots(compactedArray) => slotsArray (8 length)
+ */
+
+const SLOT_COUNT = 8;
+const SLOT_LABELS = ['A','B','C','D','E','F','G','H'];
+
+const FavoritesModal = ({ show, onHide, allLists, userFavorites, setUserFavorites }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [combinedList, setCombinedList] = useState([]); // all media items
+  const [combinedList, setCombinedList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
 
-  // Build a single array of all media items (completed + current + futures)
+  // local copy of the 8-slot favorites (array length = SLOT_COUNT)
+  const [localFavorites, setLocalFavorites] = useState(Array(SLOT_COUNT).fill(null));
+
+  // Build combined list from allLists (completed + current + futures)
   useEffect(() => {
     const arr = [
       ...(allLists.completed || []),
-      ...(allLists.current   || []),
-      ...(allLists.futures   || [])
-    ];
+      ...(allLists.current || []),
+      ...(allLists.futures || [])
+    ]
+      // dedupe by id (optional) and keep stable order
+      .reduce((acc, item) => {
+        if (!acc.some(x => x.id === item.id)) acc.push(item);
+        return acc;
+      }, []);
     setCombinedList(arr);
   }, [allLists]);
 
   // Filter combinedList by searchTerm
   useEffect(() => {
-    const term = searchTerm.toLowerCase();
-    const flt = combinedList.filter(item =>
-      item.title.toLowerCase().includes(term)
-    );
-    setFilteredList(flt);
+    const term = (searchTerm || '').toLowerCase();
+    if (!term) {
+      setFilteredList(combinedList);
+    } else {
+      setFilteredList(
+        combinedList.filter(item => (item.title || '').toLowerCase().includes(term))
+      );
+    }
   }, [searchTerm, combinedList]);
 
-  // LOCAL copy of favorites to allow immediate UI updates
-  const [localFavorites, setLocalFavorites] = useState([]);
-
-  // When opening, initialize localFavorites from prop
+  // Initialize localFavorites when modal opens from prop userFavorites
   useEffect(() => {
     if (show) {
-      setLocalFavorites(userFavorites.slice()); // shallow clone
+      // Support two possible incoming shapes:
+      // 1) Already length-8 slot array with nulls -> use as-is
+      // 2) Compacted array of favorites -> place in first N slots, keep others null
+      if (Array.isArray(userFavorites)) {
+        if (userFavorites.length === SLOT_COUNT) {
+          setLocalFavorites(userFavorites.map(slot => slot || null));
+        } else {
+          // compact -> expand to slots keeping original indices: fill front to back
+          const fill = Array(SLOT_COUNT).fill(null);
+          for (let i = 0; i < Math.min(userFavorites.length, SLOT_COUNT); i++) {
+            fill[i] = userFavorites[i] || null;
+          }
+          setLocalFavorites(fill);
+        }
+      } else {
+        setLocalFavorites(Array(SLOT_COUNT).fill(null));
+      }
     }
   }, [show, userFavorites]);
 
-  // Helper: Is this media object already in favorites?
-  const isInFavorites = (mediaObj) => {
-    return localFavorites.some(fav => fav.id === mediaObj.id);
+  // helper: check if item exists anywhere in slots (by id)
+  const isInSlots = (mediaObj) => {
+    if (!mediaObj) return false;
+    return localFavorites.some(slot => slot && slot.id === mediaObj.id);
   };
 
-  // Handler to remove a favorite by index
+  // remove (set slot to null) by index
   const handleRemoveFavorite = (index) => {
-    const newFavs = [...localFavorites];
-    newFavs.splice(index, 1);
-    setLocalFavorites(newFavs);
+    setLocalFavorites(prev => {
+      const cp = [...prev];
+      cp[index] = null;
+      return cp;
+    });
   };
 
-  // Handler to add a media object to favorites
+  // add to first empty slot
   const handleAddFavorite = (mediaObj) => {
-    if (localFavorites.length >= 8) return;
-    // make sure it’s not already in favorites
-    if (!isInFavorites(mediaObj)) {
-      setLocalFavorites(prev => [...prev, mediaObj]);
-    }
+    if (!mediaObj) return;
+    if (isInSlots(mediaObj)) return;
+
+    setLocalFavorites(prev => {
+      const cp = [...prev];
+      const firstEmpty = cp.findIndex(x => x === null);
+      if (firstEmpty === -1) return cp; // no space
+      cp[firstEmpty] = mediaObj;
+      return cp;
+    });
   };
 
-  // Save to backend and propagate to parent
+  // when Save clicked -> send full slots array to backend
   const handleSaveFavorites = async () => {
     try {
       const token = localStorage.getItem('user_token');
       const headers = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
       };
-      // We send the entire updated favorites array
-      const response = await axios.patch(
-        'http://localhost:5000/api/accounts/favorites',
-        { favorites: localFavorites },
-        { headers }
-      );
-      // On success, inform parent
-      setUserFavorites(response.data.favorites);
+
+      // send full 8-slot array. If your backend expects compacted, change accordingly.
+      const payload = { favorites: localFavorites };
+
+      const res = await axios.patch('http://localhost:5000/api/accounts/favorites', payload, { headers });
+
+      // Expect res.data.favorites to be the saved slots array; if not, normalize here
+      const saved = res.data.favorites;
+      setUserFavorites(saved);
       onHide();
     } catch (err) {
       console.error('Error updating favorites:', err);
       alert('Could not save favorites. Please try again.');
     }
+  };
+
+  // helper: nice placeholder rendering
+  const renderSlot = (slot, idx) => {
+    return (
+      <Row key={`slot-${idx}`} className="align-items-center mb-2">
+        <Col xs={2} style={{ color: '#ccc' }}>{SLOT_LABELS[idx]}.</Col>
+
+        <Col xs={3}>
+          {slot ? (
+            <Image src={slot.image || 'https://via.placeholder.com/60x80'} thumbnail style={{ height: 60, width: 45, objectFit: 'cover' }} />
+          ) : (
+            <div style={{ height: 60, width: 45, display: 'flex', alignItems: 'center', justifyContent: 'center', color:'#666' }}>—</div>
+          )}
+        </Col>
+
+        <Col xs={5}>
+          {slot ? (
+            <div style={{ color: 'white', fontSize: '0.95rem' }}>{slot.title}</div>
+          ) : (
+            <div style={{ color: '#666' }}>—</div>
+          )}
+        </Col>
+
+        <Col xs={2}>
+          {slot ? (
+            <Button variant="outline-danger" size="sm" onClick={() => handleRemoveFavorite(idx)}>✕</Button>
+          ) : null}
+        </Col>
+      </Row>
+    );
   };
 
   return (
@@ -96,40 +166,17 @@ const FavoritesModal = ({
 
       <Modal.Body>
         <Row>
-          {/* LEFT PANE: Current Favorites (max 8) */}
-          <Col md={5} style={{ borderRight: '1px solid #444' }}>
-            <h5 style={{ color: 'white', marginBottom: '1rem' }}>Your Favorites ({localFavorites.length}/8):</h5>
-            {localFavorites.length === 0 && (
-              <p style={{ color: '#ccc' }}>You have no favorites yet.</p>
-            )}
-            <div>
-              {localFavorites.map((fav, idx) => (
-                <Row key={fav.id} className="align-items-center mb-3">
-                  <Col xs={3}>
-                    <Image
-                      src={fav.image}
-                      thumbnail
-                      style={{ maxHeight: '60px', objectFit: 'cover' }}
-                    />
-                  </Col>
-                  <Col xs={7}>
-                    <span style={{ color: 'white' }}>{fav.title}</span>
-                  </Col>
-                  <Col xs={2}>
-                    <Button
-                      variant="outline-danger"
-                      size="sm"
-                      onClick={() => handleRemoveFavorite(idx)}
-                    >
-                      ✕
-                    </Button>
-                  </Col>
-                </Row>
-              ))}
+          {/* LEFT: fixed slots */}
+          <Col md={5} style={{ borderRight: '1px solid #444', minHeight: '420px' }}>
+            <h5 style={{ color: 'white', marginBottom: '1rem' }}>Your Favorites ({localFavorites.filter(Boolean).length}/{SLOT_COUNT}):</h5>
+
+            {/* Always render all slots */}
+            <div style={{ minHeight: '320px' }}>
+              {localFavorites.map((slot, idx) => renderSlot(slot, idx))}
             </div>
           </Col>
 
-          {/* RIGHT PANE: All media with search + “Add” button */}
+          {/* RIGHT: search + results */}
           <Col md={7}>
             <Form.Control
               type="text"
@@ -144,30 +191,22 @@ const FavoritesModal = ({
               }}
             />
 
-            <div style={{
-              maxHeight: '400px',
-              overflowY: 'auto',
-              paddingRight: '0.5rem'
-            }}>
+            <div style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '0.5rem' }}>
               {filteredList.map(item => {
-                const already = isInFavorites(item);
+                const already = isInSlots(item);
                 return (
                   <Row key={item.id} className="align-items-center mb-2">
                     <Col xs={3}>
-                      <Image
-                        src={item.image}
-                        thumbnail
-                        style={{ maxHeight: '50px', objectFit: 'cover' }}
-                      />
+                      <Image src={item.image || 'https://via.placeholder.com/50x70'} thumbnail style={{ maxHeight: '50px', objectFit: 'cover' }} />
                     </Col>
                     <Col xs={6}>
                       <span style={{ color: 'white' }}>{item.title}</span>
                     </Col>
                     <Col xs={3}>
                       <Button
-                        variant="outline-success"
+                        variant={already ? "outline-secondary" : "outline-success"}
                         size="sm"
-                        disabled={already || localFavorites.length >= 8}
+                        disabled={already || !localFavorites.some(x => x === null)}
                         onClick={() => handleAddFavorite(item)}
                       >
                         {already ? 'Added' : 'Add'}
@@ -176,17 +215,17 @@ const FavoritesModal = ({
                   </Row>
                 );
               })}
-              {filteredList.length === 0 && (
-                <p style={{ color: '#aaa', marginTop: '1rem' }}>No matching items.</p>
-              )}
+              {filteredList.length === 0 && <p style={{ color: '#aaa', marginTop: '1rem' }}>No matching items.</p>}
             </div>
           </Col>
         </Row>
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>Cancel</Button>
-        <Button variant="primary" onClick={handleSaveFavorites} disabled={localFavorites.length === 0 && userFavorites.length === 0}>
+        <Button variant="secondary" onClick={() => { onHide(); }}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={handleSaveFavorites}>
           Save Favorites
         </Button>
       </Modal.Footer>
@@ -195,3 +234,4 @@ const FavoritesModal = ({
 };
 
 export default FavoritesModal;
+
