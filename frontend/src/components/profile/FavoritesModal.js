@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Row, Col, Form, Image } from 'react-bootstrap';
 import axios from 'axios';
-import '../styles/modal.css';
+import '../../styles/modal.css';
 
 const FavoritesModal = ({
   show,

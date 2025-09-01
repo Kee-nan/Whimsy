@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
-import '../styles/modal.css'; // <- Make sure this path is correct
+import '../../styles/modal.css'; // <- Make sure this path is correct
 
 const AccountSettingsModal = ({ show, handleClose, user, updateUser, viewSetting, setViewSetting }) => {
   const [editableFields, setEditableFields] = useState({});

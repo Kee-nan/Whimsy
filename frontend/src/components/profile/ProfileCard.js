@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Image, Form, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import '../styles/profilepage.css';
-import '../styles/modal.css';
-import AccountSettingsModal from '../components/AccountSettingsModal.js';
-import FavoritesGrid from '../components/FavoritesGrid';
-import FavoritesModal from '../components/FavoritesModal.js'
+import '../../styles/profilepage.css';
+import '../../styles/modal.css';
+import AccountSettingsModal from './AccountSettingsModal.js';
+import FavoritesGrid from './FavoritesGrid.js';
+import FavoritesModal from './FavoritesModal.js'
 
 import {
   Chart as ChartJS,

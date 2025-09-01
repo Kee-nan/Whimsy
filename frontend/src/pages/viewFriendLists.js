@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Modal, Button } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 import FriendListCard from '../components/friends/FriendListCard';
-import FriendSearchAndDropdowns from '../components/FriendListFilter';
+import FriendSearchAndDropdowns from '../components/friends/FriendListFilter';
 import FriendProfileCard from '../components/friends/FriendProfileCard';
 import { Spinner } from 'react-bootstrap';
 

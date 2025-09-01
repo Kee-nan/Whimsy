@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
-import UserProfileCard from '../components/ProfileCard';
+import UserProfileCard from '../components/profile/ProfileCard';
 import { useNavigate } from 'react-router-dom';
 import { checkTokenExpiration } from '../utils/checkTokenExpiration';
 

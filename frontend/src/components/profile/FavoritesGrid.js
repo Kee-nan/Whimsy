@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/profilepage.css';
+import '../../styles/profilepage.css';
 
 const FavoritesGrid = ({ onEditClick }) => {
   const [favorites, setFavorites] = useState([]);
