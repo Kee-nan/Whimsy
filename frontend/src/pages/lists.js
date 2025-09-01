@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { Spinner } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
-import ListCard from '../components/ListCard';
+import ListCard from '../components/lists/ListCard';
 import { useNavigate, useLocation } from 'react-router-dom';
-import SearchAndDropdowns from '../components/ListFilter';
-import CSVImportModal from '../components/CSVImportModal';
+import SearchAndDropdowns from '../components/lists/ListFilter';
+import CSVImportModal from '../components/lists/CSVImportModal';
 import '../styles/tableStyles.css';
 import { checkTokenExpiration } from '../utils/checkTokenExpiration';
 

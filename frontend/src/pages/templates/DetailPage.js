@@ -2,8 +2,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
-import DetailCard from '../../components/DetailCard';
-import ReviewModal from '../../components/ReviewModal'; 
+import DetailCard from '../../components/details/DetailCard';
+import ReviewModal from '../../components/details/ReviewModal'; 
 
 const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) => {
   const { id } = useParams();

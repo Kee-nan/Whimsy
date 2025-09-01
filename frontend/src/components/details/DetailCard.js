@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
-import '../styles/detailpage.css';
+import '../../styles/detailpage.css';
 
 const DetailCard = ({ image, title, details, summary, type, mediaId, userLists, onAddToList, onReview, onBack, review, onEdit, onDelete }) => {
   let imageClass = 'anime-image';
