@@ -1,7 +1,9 @@
+// src/components/profile/FriendProfileCard.js
 import React, { useEffect, useRef, useState } from 'react';
-import { Card, Image } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 import '../../styles/profilepage.css';
 import '../../styles/modal.css';
+import FavoritesGrid from '../profile/FavoritesGrid'; // ✅ reuse FavoritesGrid
 import {
   Chart as ChartJS,
   BarController,
@@ -23,11 +25,16 @@ ChartJS.register(
   Legend
 );
 
-const FriendProfileCard = ({ friendBio, friendUsername, friendFuturesList, friendCurrentList, friendCompletedList }) => {
+const FriendProfileCard = ({
+  friendBio,
+  friendUsername,
+  friendFuturesList,
+  friendCurrentList,
+  friendCompletedList,
+  friendFavorites = [] // ✅ accept favorites as prop
+}) => {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
-  const [completedCounts, setCompletedCounts] = useState([]);
-
 
   const MEDIA_COLORS = {
     movie: '#ff4d4d',
@@ -61,61 +68,56 @@ const FriendProfileCard = ({ friendBio, friendUsername, friendFuturesList, frien
       .sort((a, b) => b.count - a.count);
   };
 
-  
-
   useEffect(() => {
-      if (!friendCompletedList || friendCompletedList.length === 0) return;
-    
-      const chartData = countCompletedMediaTypes(friendCompletedList);
-    
-      // Use raw media types for color lookup
-      const rawMediaTypes = chartData.map(d => d.media);
-      const counts = chartData.map(d => d.count);
-    
-      // Capitalize and pluralize for axis labels
-      const pluralize = (word) => {
-        if (word === 'anime' || word === 'manga') return word.charAt(0).toUpperCase() + word.slice(1);
-        return word.charAt(0).toUpperCase() + word.slice(1) + 's';
-      };
-      const labels = rawMediaTypes.map(pluralize);
-    
-      const colors = rawMediaTypes.map(type => MEDIA_COLORS[type] || '#999');
-    
-      if (chartRef.current) {
-        chartRef.current.destroy();
-      }
-    
-      chartRef.current = new ChartJS(canvasRef.current, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Completed Media',
-            data: counts,
-            backgroundColor: colors,
-            borderColor: '#fff',
-            borderWidth: 1
-          }]
+    if (!friendCompletedList || friendCompletedList.length === 0) return;
+
+    const chartData = countCompletedMediaTypes(friendCompletedList);
+    const rawMediaTypes = chartData.map(d => d.media);
+    const counts = chartData.map(d => d.count);
+
+    const pluralize = (word) => {
+      if (word === 'anime' || word === 'manga') return word.charAt(0).toUpperCase() + word.slice(1);
+      return word.charAt(0).toUpperCase() + word.slice(1) + 's';
+    };
+    const labels = rawMediaTypes.map(pluralize);
+
+    const colors = rawMediaTypes.map(type => MEDIA_COLORS[type] || '#999');
+
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
+
+    chartRef.current = new ChartJS(canvasRef.current, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Completed Media',
+          data: counts,
+          backgroundColor: colors,
+          borderColor: '#fff',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false }
         },
-        options: {
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false }
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: { color: '#ddd' },
+            grid: { color: '#333' }
           },
-          scales: {
-            x: {
-              beginAtZero: true,
-              ticks: { color: '#ddd' },
-              grid: { color: '#333' }
-            },
-            y: {
-              ticks: { color: '#ddd' },
-              grid: { color: '#333' }
-            }
+          y: {
+            ticks: { color: '#ddd' },
+            grid: { color: '#333' }
           }
         }
-      });
-    }, [friendCompletedList]);
+      }
+    });
+  }, [friendCompletedList]);
 
   const totalItems = friendCompletedList.length + friendCurrentList.length + friendFuturesList.length;
 
@@ -136,31 +138,27 @@ const FriendProfileCard = ({ friendBio, friendUsername, friendFuturesList, frien
           <div className="profile-center">
             <h1 className="profile-username">{friendUsername}'s Profile</h1>
           </div>
-          <div className="profile-right vertical-buttons">
-          </div>
+          <div className="profile-right vertical-buttons"></div>
         </div>
-  
+
         {/* Middle 3 Cards Row */}
         <div className="profile-middle">
-          
           <div className="profile-bio-card bio-card bordered">
             <div className="bio-header">
               <h4>Bio:</h4>
             </div>
-              <div className="bio-content">
-                <p>{friendBio || "This user hasn't written a bio yet."}</p>
-              </div>
+            <div className="bio-content">
+              <p>{friendBio || "This user hasn't written a bio yet."}</p>
+            </div>
           </div>
-  
+
           <div className="profile-chart-card meter-card bordered">
             <h4>Total Media Meter</h4>
             <canvas ref={canvasRef}></canvas>
           </div>
-
         </div>
-  
+
         {/* Bottom Row */}
-        
         <div className="profile-bottom bordered">
           <div className="stat-bar-box">
             <div className="stat-list">
@@ -168,7 +166,7 @@ const FriendProfileCard = ({ friendBio, friendUsername, friendFuturesList, frien
               <div><strong>Futures:</strong> {friendFuturesList.length}</div>
               <div><strong>Current:</strong> {friendCurrentList.length}</div>
               <div><strong>Completed:</strong> {friendCompletedList.length}</div>
-              <div><strong>Total:</strong> {friendFuturesList.length + friendCurrentList.length + friendCompletedList.length}</div>
+              <div><strong>Total:</strong> {totalItems}</div>
             </div>
             <div className="vertical-bar-container">
               <div
@@ -185,12 +183,16 @@ const FriendProfileCard = ({ friendBio, friendUsername, friendFuturesList, frien
               />
             </div>
           </div>
+
+          {/* ✅ Great 8 (Read-only, no edit button) */}
           <div className="great-eight-wrapper">
+            <FavoritesGrid favorites={friendFavorites} />
           </div>
-        </div>  
+        </div>
       </div>
     </>
   );
 };
 
 export default FriendProfileCard;
+
