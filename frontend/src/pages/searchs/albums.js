@@ -3,9 +3,7 @@ import axios from 'axios';
 import SearchPage from '../templates/SearchPage';
 import { Card } from 'react-bootstrap';
 
-/**
- *  Search for Album with backend call
- */
+
 /**
  * Search for Albums with backend call
  */
