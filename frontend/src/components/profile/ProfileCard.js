@@ -336,6 +336,7 @@ const UserProfileCard = ({ user, setUser }) => {
         {/* Bottom Row */}
         
         <div className="profile-bottom">
+
             <div className="stat-bar-box">
               <div className="stat-list">
                 <div className="stat-list-header">List Stats</div>
@@ -358,11 +359,8 @@ const UserProfileCard = ({ user, setUser }) => {
                   style={{ height: `${(lists.completed.length / totalItems) * 100 || 0}%` }}
                 />
               </div>
-              
             </div>
-
             
-             
                <FavoritesGrid
                  onEditClick={() => setShowFavsModal(true)}
                  favorites={userFavorites}

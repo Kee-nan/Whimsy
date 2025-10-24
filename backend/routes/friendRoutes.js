@@ -175,10 +175,10 @@ router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {
     }
 
     // Fetch the friend's lists (assuming they are stored on the user document)
-    const { lists, reviews, username, bio, view_setting } = friend;
+    const { lists, reviews, username, bio, view_setting, favorites } = friend;
 
     // Send the lists back to the client
-    res.json({ lists, reviews, username, bio, view_setting });
+    res.json({ lists, reviews, username, bio, view_setting, favorites });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

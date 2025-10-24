@@ -18,6 +18,7 @@ const ViewFriendLists = () => {
   const [completedList, setCompletedList] = useState([]);
   const [futuresList, setFuturesList] = useState([]);
   const [currentListData, setCurrentListData] = useState([]); 
+  const [FavoritesData, setFavoritesData] = useState([]); 
   const [reviews, setReviews] = useState([]);
 
   const[bio, setBio] = useState('')
@@ -63,6 +64,7 @@ const ViewFriendLists = () => {
         setCompletedList(data.lists.filter(item => item.listType ==='completed'));
         setCurrentListData(data.lists.filter(item => item.listType === 'current'));
         setFuturesList(data.lists.filter(item => item.listType === 'futures'));
+        setFavoritesData(data.favorites || []);
         setReviews(data.reviews || []);
         setBio(data.bio || []);
         setUsername(data.username || []);
@@ -169,6 +171,7 @@ const ViewFriendLists = () => {
             friendCompletedList={completedList}
             friendCurrentList={currentListData}
             friendFuturesList={futuresList}
+            friendFavorites={FavoritesData}
           />
 
         <FriendSearchAndDropdowns

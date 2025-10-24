@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Image } from 'react-bootstrap';
 import '../../styles/profilepage.css';
 import '../../styles/modal.css';
-import FavoritesGrid from '../profile/FavoritesGrid'; // ✅ reuse FavoritesGrid
+import FriendFavoritesGrid from './FriendFavoritesGrid'; 
 import {
   Chart as ChartJS,
   BarController,
@@ -31,7 +31,7 @@ const FriendProfileCard = ({
   friendFuturesList,
   friendCurrentList,
   friendCompletedList,
-  friendFavorites = [] // ✅ accept favorites as prop
+  friendFavorites
 }) => {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
@@ -184,10 +184,8 @@ const FriendProfileCard = ({
             </div>
           </div>
 
-          {/* ✅ Great 8 (Read-only, no edit button) */}
-          <div className="great-eight-wrapper">
-            <FavoritesGrid favorites={friendFavorites} />
-          </div>
+            <FriendFavoritesGrid favorites={friendFavorites} />
+        
         </div>
       </div>
     </>
