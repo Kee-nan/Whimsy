@@ -69,13 +69,13 @@ const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
                 <Card.Title className="review-modal-card-title">{mediaDetails.title}</Card.Title>
                 <Form onSubmit={handleSubmit}>
                   <Form.Group controlId="rating">
-                    <Form.Label className="review-modal-label">Rating (1-100)</Form.Label>
+                    <Form.Label className="review-modal-label">Rating (1-30)</Form.Label>
                     <Form.Control
                       type="number"
                       value={rating}
                       onChange={(e) => setRating(e.target.value)}
                       min="1"
-                      max="100"
+                      max="30"
                       required
                       className="review-modal-input"
                     />
