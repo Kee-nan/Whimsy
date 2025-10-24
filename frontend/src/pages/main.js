@@ -39,11 +39,13 @@ const MainPage = () => {
         </Container>
       </div>
 
+      {/* Powered by grid */}
       <div className="features-section py-5" style={{ paddingBottom: '150px' }}>
         <Container fluid>
-          <Row className="g-4"> {/* g-4 adds spacing between columns */}
+          <Row className="g-4 gy-4"> {/* g-4 adds spacing between columns */}
             {/* Example Card */}
             <Col md={6}>
+
               <Card className="homepage-card animate__animated animate__zoomIn">
                 <div className="card-flex">
                   <img
@@ -64,19 +66,21 @@ const MainPage = () => {
               <Card className="homepage-card animate__animated animate__zoomIn">
                 <div className="card-flex">
                   <img
-                    src={malLogo}
-                    alt="Music"
+                    src={googleLogo}
+                    alt="Books"
                     className="card-img-left"
                   />
                   <Card.Body className="homepage-card-body">
-                    <Card.Title className="homepage-card-title">Anime and Manga</Card.Title>
-                    <Card.Subtitle className="homepage-card-subtitle">Powered by MAL/Jikan</Card.Subtitle>
+                    <Card.Title className="homepage-card-title">Literature</Card.Title>
+                    <Card.Subtitle className="homepage-card-subtitle">Powered by Google Books</Card.Subtitle>
                     <Card.Text className="homepage-card-text">
-                      Music has been an integral part of human culture for thousands of years...
+                      Books have long been a cornerstone of human expression, preserving ideas, stories, and knowledge across generations. From ancient manuscripts and printed tomes to modern e-books, the written word has continually evolved while remaining a vital force for imagination and learning. The art of storytelling through literature allows readers to explore diverse worlds, emotions, and perspectives. With digital platforms, you can instantly access a global library of fiction, nonfiction, and poetry, discovering new voices and timeless classics alike.
                     </Card.Text>
                   </Card.Body>
                 </div>
               </Card>
+
+              
 
               <Card className="homepage-card animate__animated animate__zoomIn">
                 <div className="card-flex">
@@ -98,6 +102,7 @@ const MainPage = () => {
             </Col>
 
             <Col md={6}>
+
               <Card className="homepage-card animate__animated animate__zoomIn">
                 <div className="card-flex">
                   <img
@@ -118,15 +123,15 @@ const MainPage = () => {
               <Card className="homepage-card animate__animated animate__zoomIn">
                 <div className="card-flex">
                   <img
-                    src={googleLogo}
-                    alt="Cinema"
+                    src={malLogo}
+                    alt="Anime and Manga"
                     className="card-img-left"
                   />
                   <Card.Body className="homepage-card-body">
-                    <Card.Title className="homepage-card-title">Literature</Card.Title>
-                    <Card.Subtitle className="homepage-card-subtitle">Powered by Google Books</Card.Subtitle>
+                    <Card.Title className="homepage-card-title">Anime & Manga</Card.Title>
+                    <Card.Subtitle className="homepage-card-subtitle">Powered by Mal/Jikan</Card.Subtitle>
                     <Card.Text className="homepage-card-text">
-                      Cinema, as an art form and entertainment medium, has undergone remarkable evolution...
+                      Originating in Japan, anime and manga have grown from niche entertainment into a global cultural phenomenon. Blending striking visual artistry with deep storytelling, these mediums capture a wide range of genres—from action and fantasy to romance and slice of life. Manga provides a serialized, often introspective reading experience, while anime brings those stories to life with color, sound, and motion. Today, streaming platforms and digital readers make it easier than ever to explore the vibrant world of Japanese animation and comics, bridging cultures through creativity.
                     </Card.Text>
                   </Card.Body>
                 </div>
