@@ -31,7 +31,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   // fetch the user’s lists so DetailCard can show the correct default
   const fetchUserLists = async () => {
     const token = localStorage.getItem('user_token');
-    const res = await fetch('http://localhost:5000/api/list/lists', {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/list/lists`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.ok) {
@@ -51,7 +51,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
 
     try {
       const userToken = localStorage.getItem('user_token');
-      const rev = await fetch(`http://localhost:5000/api/review/get?mediaType=${mediaType}&id=${id}`, {
+      const rev = await fetch(`/api/review/get?mediaType=${mediaType}&id=${id}`, {
         headers: {
           'Content-Type':'application/json',
           'Authorization': `Bearer ${userToken}`
@@ -82,12 +82,12 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     };
 
     if (listType === 'none') {
-      await fetch('http://localhost:5000/api/list/delete', {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/list/delete`, {
         method: 'DELETE', headers,
         body: JSON.stringify({ mediaId })
       });
     } else {
-      await fetch('http://localhost:5000/api/list/upsert', {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/list/upsert`, {
         method: 'POST', headers,
         body: JSON.stringify({ media: mediaObj })
       });
@@ -115,7 +115,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     try {
       const userToken = localStorage.getItem('user_token');
       console.log(`Deleting review for mediaType: ${mediaType}, id: ${id}`);
-      const deleteResponse = await fetch(`http://localhost:5000/api/review/delete?mediaType=${mediaType}&id=${id}`, {
+      const deleteResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/review/delete?mediaType=${mediaType}&id=${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

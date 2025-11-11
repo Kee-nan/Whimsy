@@ -115,7 +115,7 @@ const FavoritesModal = ({ show, onHide, allLists, userFavorites, setUserFavorite
       // send full 8-slot array. If your backend expects compacted, change accordingly.
       const payload = { favorites: localFavorites };
 
-      const res = await axios.patch('http://localhost:5000/api/accounts/favorites', payload, { headers });
+      const res = await axios.patch(`${process.env.REACT_APP_API_URL}/api/accounts/favorites`, payload, { headers });
 
       // Expect res.data.favorites to be the saved slots array; if not, normalize here
       const saved = res.data.favorites;

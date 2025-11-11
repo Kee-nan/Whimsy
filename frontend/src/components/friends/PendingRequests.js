@@ -38,7 +38,7 @@ const PendingFriendRequests = () => {
   const handleAccept = async (id) => {
     const user_token = localStorage.getItem('user_token');
     try {
-      const response = await fetch('http://localhost:5000/api/friends/acceptRequest', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/acceptRequest`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

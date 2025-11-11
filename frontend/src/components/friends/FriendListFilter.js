@@ -19,7 +19,7 @@ const FriendSearchAndDropdowns = ({
 
     try {
       const user_token = localStorage.getItem('user_token');
-      await axios.patch('http://localhost:5000/api/accounts/user/view-setting', {
+      await axios.patch(`${process.env.REACT_APP_API_URL}/api/accounts/user/view-setting`, {
         view_setting: viewType,
       }, {
         headers: {

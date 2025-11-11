@@ -34,7 +34,7 @@ const AccountDetailsCard = ({ user }) => {
         'Authorization': `Bearer ${user_token}`,
       };
 
-      const response = await fetch('http://localhost:5000/api/accounts/user', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/user`, {
         method: 'PUT',
         headers: headers,
         body: JSON.stringify(updatedUser),

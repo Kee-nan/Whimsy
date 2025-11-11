@@ -31,7 +31,7 @@ const CreateAccountPage = () => {
 
     try {
       // Send a POST request to the backend API to save user data
-      const response = await fetch('http://localhost:5000/api/accounts/create', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

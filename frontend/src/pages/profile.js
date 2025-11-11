@@ -35,7 +35,7 @@ const Profile = () => {
           'Authorization': `Bearer ${user_token}`,
         };
 
-        const response = await axios.get('http://localhost:5000/api/accounts/user', { headers });
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/accounts/user`, { headers });
 
         if (response.status !== 200) {
           throw new Error('Error fetching user details');

@@ -52,7 +52,7 @@ const UserProfileCard = ({ user, setUser }) => {
   const updateUser = async (updatedUser) => {
     try {
       const token = localStorage.getItem("user_token");
-      const response = await fetch('http://localhost:5000/api/accounts/user', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/user`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ const UserProfileCard = ({ user, setUser }) => {
       };
   
       try {
-        const res = await fetch('http://localhost:5000/api/list/lists', { headers });
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/list/lists`, { headers });
         if (!res.ok) throw new Error('failed to fetch lists');
         const data = await res.json();
         setLists(data);
@@ -128,7 +128,7 @@ const UserProfileCard = ({ user, setUser }) => {
         const counts = countCompletedMediaTypes(data.completed);
         setCompletedCounts(counts);
   
-        const rev = await fetch('http://localhost:5000/api/list/reviews', { headers });
+        const rev = await fetch(`${process.env.REACT_APP_API_URL}/api/list/reviews`, { headers });
         setReviewData(rev.ok ? await rev.json() : []);
       } catch (err) {
         console.error(err);
@@ -209,7 +209,7 @@ const UserProfileCard = ({ user, setUser }) => {
       const token = localStorage.getItem('user_token');
       if (!token) return;
       try {
-        const res = await fetch('http://localhost:5000/api/accounts/favorites', {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/favorites`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error('Failed to fetch favorites');
@@ -261,7 +261,7 @@ const UserProfileCard = ({ user, setUser }) => {
       };
 
       const response = await axios.put(
-        'http://localhost:5000/api/accounts/user',
+        `${process.env.REACT_APP_API_URL}/api/accounts/user`,
         { bio },
         { headers }
       );
