@@ -1,0 +1,70 @@
+// albumDetails.js
+import axios from 'axios';
+import DetailPage from '../templates/DetailPage';
+
+/**
+ *  Search for Album with backend call
+ */
+const fetchAlbumDetails = async (id) => {
+  const response = await axios.get(`/api/search/albums/${id}`);
+  console.log("Album Details Response:", response);
+  return response;
+};
+
+/**
+ *  Extract the specific details for the media
+ */
+const extractAlbumDetails = (album) => {
+  if (!album) {
+    console.error("Album is undefined in extractAlbumDetails!");
+    return { title: 'Unknown Album', image: 'placeholder.jpg', details: <p>Error loading album.</p> };
+  }
+
+  console.log("Extracting album details from:", album);
+
+  // Html structure of the information about the album I want to display:
+  return {
+    image: album.images?.[0]?.url || 'placeholder.jpg',
+    title: album.name || 'Untitled',
+    details: [
+      <p key="artists"><strong>Artist(s):</strong> {album.artists?.map(artist => artist.name).join(', ')} produced with {album.label}</p>,
+      <p key="release"><strong>Release Date:</strong> {album.release_date}</p>,
+      <p key="genres"><strong>Genres:</strong> {album.genres?.join(', ') || 'N/A'}</p>,
+      <p key="spotify"><strong>Spotify URL:</strong> <a href={album.external_urls?.spotify} target="_blank" rel="noopener noreferrer">View on Spotify</a></p>
+    ],
+    summary: (
+      <div>
+        <h4>Track List:</h4>
+        <ul>
+          {(album.tracks?.items || []).map((track, index) => (
+            <li key={track.id || index}>
+              {index + 1}. {track.name} - {track.artists.map(artist => artist.name).join(', ')}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  };
+};
+
+/**
+ *  Put out the data to then detail page
+ */
+const AlbumDetail = () => {
+  
+  return (
+    <DetailPage
+      fetchDetails={fetchAlbumDetails}
+      extractDetails={extractAlbumDetails}
+      mediaType="album"
+      tokenRequired={false} 
+    />
+  );
+};
+
+export default AlbumDetail;
+
+
+
+
+

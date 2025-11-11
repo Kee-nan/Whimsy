@@ -1,0 +1,113 @@
+/* styles.css */
+
+/* Card container */
+.features-section {
+  padding-bottom: 150px; /* Adjust as needed */
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Individual card styles */
+.welcome-section {
+  background-color: var(--component-background-color, #1b1a1b); /* Default background color with optional CSS variable */
+  color: white; /* White text color */
+  padding: 5rem 0; /* Adjust padding as needed */
+}
+
+.welcome-section h1 {
+  font-family: 'Pacifico', cursive;
+  font-size: 3rem;
+}
+
+.welcome-section p {
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+
+
+/* Each card */
+.homepage-card {
+  background: linear-gradient(to right, #1e1a29, #1b1a1b);
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+  border-radius: 12px;
+  border: none;
+  height: 100%;
+  min-height: 230px; /* ensures equal heights */
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.homepage-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card-flex {
+  display: flex;
+  align-items: center; /* center image vertically */
+  padding: 20px;
+}
+
+.card-img-left {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.homepage-card-body {
+  padding: 0;
+}
+
+/* Typography */
+.homepage-card-title {
+  font-size: 1.4rem !important;
+  font-weight: bold !important;
+  color: #fff !important;
+  margin-bottom: 6px !important;
+}
+
+.homepage-card-subtitle {
+  font-size: 1rem !important;
+  color: #bbb !important;
+  margin-bottom: 10px !important;
+}
+
+.homepage-card-text {
+  font-size: 0.95rem !important;
+  line-height: 1.5 !important;
+  color: #ddd !important;
+}
+
+/* Make sure all cards are same height in grid */
+.row > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
+}
+
+.homepage-card {
+  flex-grow: 1;
+}
+
+/* Keyframe animation for fade-in */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

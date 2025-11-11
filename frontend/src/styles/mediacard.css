@@ -1,0 +1,106 @@
+
+/* Grid Card Component */
+/* ############################################################################################### */
+
+.custom-row-margin {
+  margin-top: 20px; /* Adjust the top margin as needed */
+  margin-bottom: 50px; /* Adjust the bottom margin as needed */
+}
+
+/* Updated Grid Card for Landscape Layout */
+.grid-card-body.landscape {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 200px; /* Set a fixed height for the card */
+  background: linear-gradient(to right, #1e1a29, #1b1a1b);
+  padding: 12px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden; /* Prevents content from shifting */
+}
+
+.grid-card-body.landscape::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit; /* Keeps the gradient */
+  transition: transform 0.2s ease-in-out;
+  z-index: -1;
+}
+
+.grid-card-body.landscape:hover::before {
+  transform: scale(1.05); /* Slightly enlarges only the background */
+}
+
+.grid-card-body.landscape:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid white;
+}
+
+/* Hover Effect */
+.grid-card-body.landscape:hover { 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  transform: scale(1.02);
+  border: 2px solid white;
+}
+
+/* Image Handling */
+.grid-card-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.grid-card-image {
+  border-radius: 8px;
+  border: 2px solid white;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.5);
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+/* Album (Square Image) */
+.grid-card-image.album {
+  width: 150px;
+  height: 150px;
+}
+
+/* Game (Landscape Image) */
+.grid-card-image.game {
+  width: 186px;
+  height: 150px;
+}
+
+/* Poster (Portrait Image) */
+.grid-card-image.poster {
+  width: 126px;
+  height: 182px;
+}
+
+/* Card Text */
+.grid-card-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  color: white;
+}
+
+.grid-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.grid-card-info {
+  font-size: 1rem;
+  opacity: 0.8;
+}

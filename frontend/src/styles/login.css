@@ -1,0 +1,102 @@
+
+/* Login page */
+/* ############################################################################################### */
+/* Page Background */
+.login-page {
+  background: var(--base-gradient); /* Example gradient background */
+  height: 100vh; /* Full viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Header Style */
+.login-page .header-title {
+  font-family: 'Pacifico', cursive;
+  font-size: 3rem;
+  font-weight: 400;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Form Styles */
+.login-page .form-control {
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+}
+
+.login-page .form-control:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.25);
+}
+
+/* Login Button Style */
+.login-page .button-login {
+  background-image: radial-gradient(100% 100% at 100% 0, var(--three-purple) 0, var(--one-purple) 100%);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  color: #fff;
+  cursor: pointer;
+  height: 48px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 18px;
+  text-align: center;
+  line-height: 1;
+  padding: 0 16px;
+  transition: box-shadow .15s, transform .15s;
+}
+
+.login-page .button-login:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.login-page .button-login:active {
+  box-shadow: var(--two-purple) 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* Create Account Button Style */
+.login-page .button-create {
+  background-image: radial-gradient(100% 100% at 100% 0, var(--three-purple) 0, var(--four-purple) 100%) !;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  color: #fff;
+  cursor: pointer;
+  height: 48px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 18px;
+  text-align: center;
+  line-height: 1;
+  padding: 0 16px;
+  transition: box-shadow .15s, transform .15s;
+}
+
+.login-page .button-create:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--two-purple) 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.login-page .button-create:active {
+  box-shadow: var(--two-purple) 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* Apply unique styles to the login page */
+.login-page .btn {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.login-page .form-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  color: #fff;
+}

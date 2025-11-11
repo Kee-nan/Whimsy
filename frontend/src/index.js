@@ -1,16 +1,29 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+
+// Every style sheet must be imported here to be implemented across the pages
 import './index.css';
+import './styles/custom.css';
+import './styles/navbar.css';
+import './styles/mediacard.css';
+import './styles/login.css';
+import './styles/detailpage.css';
+import './styles/list.css';
+import './styles/homepage.css';
+
+
+
 import App from './App'; // Adjust the path accordingly
 import reportWebVitals from './reportWebVitals';
 
-const root = (
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement);
+
+root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
-
-ReactDOM.createRoot(document.getElementById('root')).render(root);
 
 reportWebVitals();
 

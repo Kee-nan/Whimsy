@@ -1,0 +1,191 @@
+/* detailpage.css */
+.back-arrow {
+  font-size: 1.5rem;
+  cursor: pointer;
+  border: 1px solid white;
+  padding: 0.25rem 0.5rem;
+  color: white;
+}
+
+.summary-box {
+  min-height: 120px;
+  text-align: center;
+}
+
+.anime-detail-container {
+  display: flex;
+  padding: 1.5rem;
+  margin: 1rem; /* adds spacing from edges */
+  border-radius: 15px; /* rounded corners */
+  border: 2px solid white;
+  gap: 2rem;
+  color: white;
+  background-color: #1c1c1c;
+  min-height: 80vh; /* take most of vertical space */
+  box-sizing: border-box;
+}
+
+.anime-detail-container {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* LEFT SIDE */
+.anime-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.title-row {
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+
+.back-container {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.title-container {
+  margin: 0 auto; /* centers horizontally */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.anime-title {
+  font-size: 2rem;
+  font-weight: bold;
+  border: 1px solid white;
+  padding: 0.5rem 1rem;
+}
+
+.anime-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* full width */
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+}
+
+.image-wrapper {
+  flex: 1; /* take remaining vertical space */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* centers vertically */
+}
+
+.anime-image {
+  object-fit: cover;
+  border: 2px solid white;
+  max-width: 100%;
+  height: auto;
+}
+
+
+/* Size variants */
+.large {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Aspect ratios */
+.portrait {
+  width: 600px;
+  height: 775px;
+}
+
+.square {
+  width: 775px;
+  height: 775px;
+}
+
+.landscape {
+  width: 1200px;
+  height: 680px;
+}
+
+/* RIGHT SIDE */
+.anime-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Details Grid */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 0.5rem;
+  width: 100%;
+  border: 1px solid white;
+}
+
+.detail-cell {
+  border: 1px solid white;
+  padding: 0.5rem;
+}
+
+/* Summary Box */
+.summary-box {
+  width: 100%;
+  min-height: 150px;
+  border: 1px solid white;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  border: 1px solid white;
+  gap: 0.5rem;
+}
+
+.stat-cell {
+  border: 1px solid white;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+/* Buttons */
+.anime-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.anime-buttons button {
+  padding: 0.5rem 1rem;
+  background-color: #444;
+  color: white;
+  border: 1px solid white;
+  cursor: pointer;
+}
+
+.review-box {
+  width: 100%;
+  min-height: 100px;
+  border: 1px solid white;
+  padding: 1rem;
+  text-align: center;
+  color: white;
+}
+

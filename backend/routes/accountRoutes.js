@@ -1,0 +1,221 @@
+// \routes\accountRoutes.js
+const express = require('express');
+const router = express.Router(); 
+const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
+const authenticateToken = require('../middleware/authenticateToken');
+
+// Environment config
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+/**
+ *  Login Endpoint
+ */
+router.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username }); // Find the Username via querey
+
+    if (!user) return res.status(401).send('Username does not exist'); //Return error if cant find user
+
+    // Compare the hashed password with the provided password
+    const isMatch = await bcrypt.compare(password, user.password); // Decryption step
+    if (!isMatch) return res.status(401).send('Password does not match this User'); // Wrong password
+
+    const user_token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '5h' }); // Given user token for their details
+    const decoded = jwt.decode(user_token);
+
+
+    res.json({ 
+      user_token,
+      expiresAt: decoded.exp * 1000 // Convert to milliseconds
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error logging in'); //Other error catching
+  }
+});
+
+
+/**
+ *  Account creation endpoint
+ */
+router.post('/create', async (req, res) => {
+  try {
+    const { firstName, lastName, username, email, password } = req.body;
+
+    // Check if username or email already exists
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+
+    // Check for previous accounts with same Username or Email
+    if (existingUser) {
+      if (existingUser.username === username) {
+        return res.status(400).send('Error Creating Account: Username already exists');
+      }
+      if (existingUser.email === email) {
+        return res.status(400).send('Error Creating Account: Email already exists');
+      }
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Default User structure
+    const newUser = new User({
+      firstName,
+      lastName,
+      username,
+      email,
+      password: hashedPassword,
+      completed: [],
+      current: [],
+      futures: [],
+      favorites: [],
+      reviews: [],
+      view_setting: "table",
+      bio: 'Default Bio',
+    });
+
+    await newUser.save();
+    res.status(201).send('Account created successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error creating account');
+  }
+});
+
+
+
+/**
+ *  =Get User Details
+ */
+router.get('/user', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      email: user.email,
+      view_setting: user.view_setting,
+      bio: user.bio
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching user details' });
+  }
+});
+
+/**
+ *  Update User Details
+ */
+router.put('/user', authenticateToken, async (req, res) => {
+  try {
+    const { firstName, lastName, username, email, bio } = req.body;
+
+    // Check if username or email already exists for another user
+    const existingUser = await User.findOne({ 
+      $or: [{ username }, { email }],
+      _id: { $ne: req.user._id } // Exclude the current user from the check
+    });
+
+    if (existingUser) {
+      if (existingUser.username === username) {
+        return res.status(400).json({ message: 'Username already exists' });
+      }
+      if (existingUser.email === email) {
+        return res.status(400).json({ message: 'Email already exists' });
+      }
+    }
+
+    const updateData = {
+      firstName,
+      lastName,
+      username,
+      email,
+      bio, 
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, updateData, { new: true });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating user details' });
+  }
+});
+
+/**
+ *  Get favorites list
+ */
+router.get('/favorites', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json(user.favorites); // assuming favorites is an array of media items
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching favorites' });
+  }
+});
+
+// PATCH update favorites (replace entire array with the provided one)
+// Expecting body: { favorites: [ /* array of media objects */ ] }
+router.patch('/favorites', authenticateToken, async (req, res) => {
+  try {
+    const newFavorites = req.body.favorites;
+    if (!Array.isArray(newFavorites) || newFavorites.length > 8) {
+      return res.status(400).json({ message: 'Favorites must be an array of at most 8 items.' });
+    }
+    // Optional: you can validate each object structure here (e.g. has id, title, image, listType, etc.)
+
+    const updated = await User.findByIdAndUpdate(
+      req.user._id,
+      { favorites: newFavorites },
+      { new: true, select: 'favorites' }
+    );
+    res.json({ favorites: updated.favorites });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error updating favorites' });
+  }
+});
+
+// PATCH view_setting
+router.patch('/user/view-setting', authenticateToken, async (req, res) => {
+  try {
+    const { view_setting } = req.body;
+
+    if (!['card', 'table'].includes(view_setting)) {
+      return res.status(400).json({ message: 'Invalid view_setting value' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { view_setting },
+      { new: true }
+    );
+
+    res.json({ message: 'View setting updated', view_setting: updatedUser.view_setting });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating view setting' });
+  }
+});
+
+
+
+module.exports = router;
+
+
+
+
+

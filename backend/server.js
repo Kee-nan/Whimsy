@@ -1,49 +1,51 @@
 const express = require('express');
-const axios = require('axios');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 
+// Import route files 
+// const spotifyRoutes = require('./routes/spotifyRoutes');
+const accountRoutes = require('./routes/accountRoutes');
+const listRoutes = require('./routes/listRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const searchRoutes = require('./routes/searchRoutes');
+const friendRoutes = require('./routes/friendRoutes');
+
+// Environment config
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Mongo Connection
+const mongoUri = process.env.MONGO_URI;
+
+mongoose.connect(mongoUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log('Connected to MongoDB');
+})
+.catch((error) => {
+  console.error('Error connecting to MongoDB:', error);
+});
+
 app.use(cors());
 app.use(express.json());
 
-// Route to handle Spotify authentication
-app.get('/auth/spotify', (req, res) => {
-  const authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=user-read-private`;
-  res.redirect(authUrl);
-});
+// Use route files
+//app.use('/auth/spotify', spotifyRoutes);
+//app.use('/api/spotify', spotifyRoutes);
+app.use('/api/accounts', accountRoutes);
+app.use('/api/list', listRoutes);
+app.use('/api/review', reviewRoutes);
+app.use('/api/search', searchRoutes);
+//app.use('/auth/igdb', igdbAuthRoutes);
+app.use('/api/friends', friendRoutes);
 
-// Route to handle Spotify token exchange
-app.post('/auth/spotify/callback', async (req, res) => {
-  const code = req.body.code;
-  try {
-    const response = await axios.post('https://accounts.spotify.com/api/token', null, {
-      params: {
-        grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: process.env.REDIRECT_URI,
-        client_id: process.env.SPOTIFY_CLIENT_ID,
-        client_secret: process.env.SPOTIFY_CLIENT_SECRET,
-      },
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Test route
-app.get("/api", (req, res) => {
-  res.json({ "users": ["userOne", "userTwo", "userThree"] });
-});
-
+// Start server
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
-});
+}); 
+

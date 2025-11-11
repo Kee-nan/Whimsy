@@ -1,0 +1,77 @@
+
+/* Navbar Styles */
+/* ############################################################################################### */
+.navbar-custom {
+  background: var(--base-gradient); /* Dark grey background */
+  /*height: 75px;*/
+}
+
+.navbar-custom .navbar-brand {
+    color: var(--one-purple); /* Light text color for the brand */
+    font-weight: bold; /* Make the brand text bold */
+    font-family: 'Pacifico', cursive;
+    font-size: 3rem; /* Increase the font size */
+    font-weight: 400;
+    text-shadow: 2px 2px 4px #fff; /* Add white shadow */
+    letter-spacing: 0.1em; /* Increase letter spacing */
+}
+
+.navbar-custom .navbar-brand:hover {
+  color: #532a5f; /* Light purple color on hover */
+}
+  
+.navbar-custom .nav-link-button {
+  background-image: radial-gradient(100% 100% at 100% 0, var(--three-purple) 0, var(--one-purple) 100%);
+  border: 0 solid #E5E7EB;
+  box-sizing: border-box;
+  color: var(--white);
+  display: flex;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1rem;
+  font-weight: 500;
+  justify-content: center;
+  line-height: 1.2rem;
+  padding: .75rem 1.65rem;
+  position: relative;
+  text-align: center;
+  text-decoration: none var(--white) solid;
+  text-decoration-thickness: auto;
+  width: auto; /* Adjusted to fit nav-link */
+  cursor: pointer;
+  transform: rotate(-2deg);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin: 5px;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.5); /* White shadow around the image */
+}
+
+.navbar-custom .nav-link:hover {
+  color: #d1b4d4f1; /* Change color on hover */
+}
+
+.navbar-custom .nav-link-button:focus {
+  outline: 0;
+}
+
+.navbar-custom .nav-link-button:after {
+  content: '';
+  position: absolute;
+  border: 1px solid var(--white);
+  bottom: 4px;
+  left: 4px;
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+}
+
+.navbar-custom .nav-link-button:hover:after {
+  bottom: 2px;
+  left: 2px;
+}
+
+@media (min-width: 768px) {
+  .navbar-custom .nav-link-button {
+    padding: .75rem 3rem;
+    font-size: 1.25rem;
+  }
+}
