@@ -43,7 +43,7 @@ const LeaveReview = () => {
 
     // API call to add review
     try {
-      const response = await fetch('http://localhost:5000/api/review/add', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/review/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

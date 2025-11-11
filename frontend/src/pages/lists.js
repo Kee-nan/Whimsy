@@ -49,11 +49,11 @@ const Lists = () => {
       };
 
       try {
-        const res = await fetch('http://localhost:5000/api/list/lists', { headers });
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/list/lists`, { headers });
         const data = await res.json();
         setLists(data);
 
-        const userRes = await fetch('http://localhost:5000/api/accounts/user', { headers });
+        const userRes = await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/user`, { headers });
         if (userRes.ok) {
           const userData = await userRes.json();
           console.log('Fetched user data:', userData);
@@ -61,7 +61,7 @@ const Lists = () => {
           setIsTableView(userData.view_setting === 'table');
         }
 
-        const rev = await fetch('http://localhost:5000/api/list/reviews', { headers });
+        const rev = await fetch(`${process.env.REACT_APP_API_URL}/api/list/reviews`, { headers });
         setReviewData(rev.ok ? await rev.json() : []);
       } catch (err) {
         console.error(err);

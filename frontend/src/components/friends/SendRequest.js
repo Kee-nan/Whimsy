@@ -14,7 +14,7 @@ const FriendRequestForm = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/friends/send', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

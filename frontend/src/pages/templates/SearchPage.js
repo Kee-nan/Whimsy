@@ -33,7 +33,7 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
           'Authorization': `Bearer ${user_token}`,
         };
 
-        const response = await axios.get('http://localhost:5000/api/accounts/user', { headers });
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/accounts/user`, { headers });
         const userData = response.data;
         setUser(userData);
         setIsTableView(userData.view_setting === 'table');

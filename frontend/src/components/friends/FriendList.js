@@ -12,7 +12,7 @@ const FriendsList = () => {
     const fetchFriends = async () => {
       //API Call
       try {
-        const response = await fetch('http://localhost:5000/api/friends/friends', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/friends`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
