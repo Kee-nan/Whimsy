@@ -16,6 +16,8 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
   const [searchKey, setSearchKey] = useState(location.state?.searchKey || '');
   const [submittedKey, setSubmittedKey] = useState(location.state?.searchKey || '');
 
+  const [, setUser] = useState(null);
+
   const [results, setResults] = useState([]);
   const [pagination, setPagination] = useState({});
   const [page, setPage] = useState(1); // current page
