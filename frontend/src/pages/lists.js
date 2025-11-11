@@ -14,6 +14,7 @@ const Lists = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(true);
+  const [, setUser] = useState(null);
 
   const [isTableView, setIsTableView] = useState(false);
 

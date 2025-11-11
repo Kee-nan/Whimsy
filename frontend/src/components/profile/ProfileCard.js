@@ -38,6 +38,12 @@ const UserProfileCard = ({ user, setUser }) => {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
 
+  // ProfileCard.js
+  const [, setCompletedCounts] = useState({});
+  const [, setReviewData] = useState([]);
+
+
+
   // *** New state for the FavoritesModal ***
   const [showFavsModal, setShowFavsModal] = useState(false);
 
