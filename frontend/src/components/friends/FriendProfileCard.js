@@ -36,16 +36,6 @@ const FriendProfileCard = ({
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
 
-  const MEDIA_COLORS = {
-    movie: '#ff4d4d',
-    show: '#e37005',
-    anime: '#fcd303',
-    book: '#00cc44',
-    manga: '#00c2ff',
-    game: '#2e1df0',
-    album: '#9400d3'
-  };
-
   const countCompletedMediaTypes = (friendCompletedList) => {
     const counts = {
       album: 0,
@@ -70,6 +60,16 @@ const FriendProfileCard = ({
 
   useEffect(() => {
     if (!friendCompletedList || friendCompletedList.length === 0) return;
+
+    const MEDIA_COLORS = {
+      movie: '#ff4d4d',
+      show: '#e37005',
+      anime: '#fcd303',
+      book: '#00cc44',
+      manga: '#00c2ff',
+      game: '#2e1df0',
+      album: '#9400d3'
+    };
 
     const chartData = countCompletedMediaTypes(friendCompletedList);
     const rawMediaTypes = chartData.map(d => d.media);

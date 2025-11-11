@@ -140,18 +140,20 @@ const UserProfileCard = ({ user, setUser }) => {
     fetchData();
   }, []);
 
-  const MEDIA_COLORS = {
-    movie: '#ff4d4d',   // red
-    show: '#e37005',    // orange
-    anime: '#fcd303',   // yellow
-    book: '#00cc44',    // green
-    manga: '#00c2ff',   // blue
-    game: '#2e1df0',    // indigo
-    album: '#9400d3'    // violet
-  };
+  
 
   useEffect(() => {
     if (!completed || completed.length === 0) return;
+
+    const MEDIA_COLORS = {
+      movie: '#ff4d4d',   // red
+      show: '#e37005',    // orange
+      anime: '#fcd303',   // yellow
+      book: '#00cc44',    // green
+      manga: '#00c2ff',   // blue
+      game: '#2e1df0',    // indigo
+      album: '#9400d3'    // violet
+    };
   
     const chartData = countCompletedMediaTypes(completed);
   
