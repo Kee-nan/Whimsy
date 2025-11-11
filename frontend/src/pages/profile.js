@@ -48,7 +48,7 @@ const Profile = () => {
     };
 
     fetchUserDetails();
-  }, []);
+  }, [navigate]);
 
 
   return (

@@ -21,7 +21,6 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
   const [page, setPage] = useState(1); // current page
 
   const [isTableView, setIsTableView] = useState(null);
-  const [user, setUser] = useState(null);
 
   // fetch user view preference
   useEffect(() => {

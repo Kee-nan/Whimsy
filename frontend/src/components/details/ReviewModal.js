@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Card, Row, Col } from 'react-bootstrap';
+import { Modal, Form, Card, Row, Col } from 'react-bootstrap';
 
 
 const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
