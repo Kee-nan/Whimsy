@@ -117,7 +117,7 @@ const FriendProfileCard = ({
         }
       }
     });
-  }, [friendCompletedList, MEDIA_COLORS]);
+  }, [friendCompletedList]);
 
   const totalItems = friendCompletedList.length + friendCurrentList.length + friendFuturesList.length;
 

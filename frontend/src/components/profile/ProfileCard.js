@@ -204,7 +204,7 @@ const UserProfileCard = ({ user, setUser }) => {
         }
       }
     });
-  }, [completed, MEDIA_COLORS]);
+  }, [completed]);
   
   const totalItems = lists.futures.length + lists.current.length + lists.completed.length;
 
