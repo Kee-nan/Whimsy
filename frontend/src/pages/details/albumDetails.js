@@ -6,7 +6,7 @@ import DetailPage from '../templates/DetailPage';
  *  Search for Album with backend call
  */
 const fetchAlbumDetails = async (id) => {
-  const response = await axios.get(`/api/search/albums/${id}`);
+  const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/search/albums/${id}`);
   console.log("Album Details Response:", response);
   return response;
 };

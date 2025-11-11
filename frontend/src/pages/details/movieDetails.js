@@ -6,7 +6,7 @@ import axios from 'axios';
  *  Search for Album with backend call
  */
 const fetchMovieDetails = async (id) => {
-  const response = await axios.get(`/api/search/movies/${id}`);
+  const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/search/movies/${id}`);
   return response
 };
 
