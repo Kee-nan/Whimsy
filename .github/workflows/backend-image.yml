@@ -16,7 +16,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/whimsy-backend
+      IMAGE_NAME: ghcr.io/kee-nan/whimsy-backend
 
     steps:
       - name: Checkout
