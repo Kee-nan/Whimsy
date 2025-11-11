@@ -9,7 +9,7 @@ import { Card } from 'react-bootstrap';
  */
 const searchAlbums = async (key, page = 1, limit = 15) => {
   try {
-    const response = await axios.get(`/api/search/albums`, {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/search/albums`, {
       params: { q: key, page, limit },
     });
 

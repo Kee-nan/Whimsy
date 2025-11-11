@@ -8,7 +8,7 @@ import { Card } from 'react-bootstrap';
  */
 const searchGames = async (key, page = 1, pageSize = 15) => {
   try {
-    const response = await axios.get(`/api/search/games`, {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/search/games`, {
       params: { q: key, page, page_size: pageSize },
     });
 
