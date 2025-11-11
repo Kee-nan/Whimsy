@@ -1,5 +1,5 @@
 // src/components/profile/FriendProfileCard.js
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Image } from 'react-bootstrap';
 import '../../styles/profilepage.css';
 import '../../styles/modal.css';
@@ -117,7 +117,7 @@ const FriendProfileCard = ({
         }
       }
     });
-  }, [friendCompletedList]);
+  }, [friendCompletedList, MEDIA_COLORS]);
 
   const totalItems = friendCompletedList.length + friendCurrentList.length + friendFuturesList.length;
 

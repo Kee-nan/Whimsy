@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropdownButton, Dropdown, FormControl, Container, Form, Button } from 'react-bootstrap';
+import { DropdownButton, Dropdown, FormControl, Container, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 const FriendSearchAndDropdowns = ({

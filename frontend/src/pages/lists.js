@@ -16,7 +16,6 @@ const Lists = () => {
   const [loading, setLoading] = useState(true);
 
   const [isTableView, setIsTableView] = useState(false);
-  const [user, setUser] = useState(null);
 
   const [page, setPage] = useState(1);
   const pageSize = 30;
@@ -71,7 +70,7 @@ const Lists = () => {
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
   /**
    * FILTER DETAILS 

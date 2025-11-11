@@ -44,8 +44,6 @@ const UserProfileCard = ({ user, setUser }) => {
   // Keep local copy of favorites so we can pass down
   const [userFavorites, setUserFavorites] = useState(Array(8).fill(null));
 
-  const [completedCounts, setCompletedCounts] = useState([]);
-
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [viewSetting, setViewSetting] = useState("card"); // or "table"
 
@@ -77,8 +75,6 @@ const UserProfileCard = ({ user, setUser }) => {
   });
   const { completed } = lists;
   
-  // Initialized as an empty array for Review Data
-  const [ReviewData, setReviewData] = useState([]);
   
   // Function to Sort the completed list into media types for the chart
   const countCompletedMediaTypes = (completedList) => {
@@ -200,7 +196,7 @@ const UserProfileCard = ({ user, setUser }) => {
         }
       }
     });
-  }, [completed]);
+  }, [completed, MEDIA_COLORS]);
   
   const totalItems = lists.futures.length + lists.current.length + lists.completed.length;
 

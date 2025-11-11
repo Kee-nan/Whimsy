@@ -1,6 +1,6 @@
 // src/components/CSVImportModal.js
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Spinner, Table } from 'react-bootstrap';
+import { Modal, Form, Spinner, Table } from 'react-bootstrap';
 import Papa from 'papaparse';
 import axios from 'axios';
 

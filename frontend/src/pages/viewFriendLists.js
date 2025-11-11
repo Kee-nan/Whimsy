@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Modal, Button } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 import FriendListCard from '../components/friends/FriendListCard';
 import FriendSearchAndDropdowns from '../components/friends/FriendListFilter';
