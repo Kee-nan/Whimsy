@@ -7,7 +7,7 @@ import { Card } from 'react-bootstrap';
  */
 const searchMovies = async (key) => {
   try {
-    const response = await fetch(`/api/search/movies?q=${encodeURIComponent(key)}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/search/movies?q=${encodeURIComponent(key)}`, {
       method: 'GET',
     });
 

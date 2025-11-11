@@ -25,7 +25,7 @@ const FriendPageCard = () => {
     const token = localStorage.getItem('user_token');
 
     const fetchFriends = async () => {
-      const response = await fetch('/api/friends/friends', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/friends`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       if (response.ok) {
@@ -170,7 +170,7 @@ const FriendPageCard = () => {
 
   const handleDeny = async (id) => {
     const token = localStorage.getItem('user_token');
-    const response = await fetch('/api/friends/declineRequest', {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/declineRequest`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
