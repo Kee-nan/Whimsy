@@ -1,0 +1,74 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: whimsy_backend
+    ports:
+      - "5000:5000"
+    environment:
+    - PORT=5000
+    - MONGO_URI=${MONGO_URI}
+    - GOOGLE_BOOKS_KEY=${GOOGLE_BOOKS_KEY}
+    - OTHER_API_KEY=${OTHER_API_KEY}
+    - REDIRECT_URI=${REDIRECT_URI}
+    - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+    - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+    - RAWG_API_KEY=${RAWG_API_KEY}
+    - TMDB_API_KEY=${TMDB_API_KEY}
+    - TMDB_ACCESS_TOKEN=${TMDB_ACCESS_TOKEN}
+    env_file:
+      - .env
+    depends_on: []
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: whimsy_frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - backend
+
+
+
+
+
+
+
+
+# version: "3.8"
+# services:
+#   backend:
+#     build:
+#       context: ./backend
+#     container_name: whimsy_backend
+#     ports:
+#       - "5000:5000"
+#     environment:
+#       - PORT=5000
+#       - MONGO_URI=${MONGO_URI}
+#       - GOOGLE_BOOKS_KEY=${GOOGLE_BOOKS_KEY}
+#       - OTHER_API_KEY=${OTHER_API_KEY}
+#     env_file:
+#       - .env
+#     depends_on: []
+#     # if you want to be able to attach a debugger or dev volume, add volumes for dev mode
+#     # volumes:
+#     #  - ./backend:/usr/src/app
+#     # command: npm run dev
+
+#   frontend:
+#     build:
+#       context: ./frontend
+#     container_name: whimsy_frontend
+#     ports:
+#       - "3000:80"
+#     environment:
+#       - API_BASE_URL=${API_BASE_URL} # optional if your frontend reads this at runtime (see note)
+#     env_file:
+#       - .env
+#     depends_on:
+#       - backend
