@@ -41,8 +41,7 @@ router.get('/search', authenticateToken, async (req, res) => {
     // Perform case-insensitive partial match on username
     const users = await User.find({
       username: { $regex: query, $options: 'i' },
-      _id: { $ne: userId }, // Exclude self
-      _id: { $nin: user.friends }, // Optional: exclude current friends
+      _id: { $ne: userId, $nin: user.friends }, // Exclude self and current friends
     })
       .select('username') // Limit returned fields
       .limit(10); // Limit number of results

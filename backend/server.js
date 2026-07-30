@@ -35,13 +35,10 @@ app.use(cors());
 app.use(express.json());
 
 // Use route files
-//app.use('/auth/spotify', spotifyRoutes);
-//app.use('/api/spotify', spotifyRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/list', listRoutes);
 app.use('/api/review', reviewRoutes);
 app.use('/api/search', searchRoutes);
-//app.use('/auth/igdb', igdbAuthRoutes);
 app.use('/api/friends', friendRoutes);
 
 // Start server

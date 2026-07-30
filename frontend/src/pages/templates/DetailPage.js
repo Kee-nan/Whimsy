@@ -51,7 +51,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
 
     try {
       const userToken = localStorage.getItem('user_token');
-      const rev = await fetch(`/api/review/get?mediaType=${mediaType}&id=${id}`, {
+      const rev = await fetch(`${process.env.REACT_APP_API_URL}/api/review/get?mediaType=${mediaType}&id=${id}`, {
         headers: {
           'Content-Type':'application/json',
           'Authorization': `Bearer ${userToken}`

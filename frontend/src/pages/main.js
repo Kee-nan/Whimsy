@@ -112,7 +112,7 @@ const MainPage = () => {
                   />
                   <Card.Body className="homepage-card-body">
                     <Card.Title className="homepage-card-title">Cinema</Card.Title>
-                    <Card.Subtitle className="homepage-card-subtitle">TMDB</Card.Subtitle>
+                    <Card.Subtitle className="homepage-card-subtitle">Powered by TMDB</Card.Subtitle>
                     <Card.Text className="homepage-card-text">
                       Cinema, as an art form and entertainment medium, has undergone remarkable evolution since its inception in the late 19th century. From the silent films of early cinema to the advent of sound and color, and now to the digital and streaming revolutions, movies have continuously adapted to new technologies and storytelling techniques. Cinema has become a global language, reflecting and shaping cultures through its narrative and visual artistry. Platforms like TMDB offer a comprehensive resource for discovering and exploring the vast array of films, from classic masterpieces to contemporary blockbusters. TMDB provides insights into movie details, reviews, and more, enriching your cinematic experience.
                     </Card.Text>
@@ -164,7 +164,7 @@ const MainPage = () => {
           <Row className="justify-content-center">
             <Col md={6} className="text-center">
               <p>&copy; 2024 WHIMSY. All rights reserved.</p>
-              <p>Developed by Lil Keen the Freak. Special thanks to the joyous fox.</p>
+              <p>Developed by Keenan</p>
             </Col>
           </Row>
         </Container>
