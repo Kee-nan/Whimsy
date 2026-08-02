@@ -1,14 +1,29 @@
 const pool = require('../pool');
 
 async function sendRequest(requesterId, addresseeId) {
+  const existing = await pool.query(
+    `SELECT * FROM friendships
+     WHERE (requester_id = $1 AND addressee_id = $2)
+        OR (requester_id = $2 AND addressee_id = $1)`,
+    [requesterId, addresseeId]
+  );
+
+  if (existing.rows.length > 0) {
+    const row = existing.rows[0];
+    if (row.status === 'accepted') return { alreadyFriends: true };
+    if (row.status === 'pending') return { alreadyPending: true };
+    // declined → fall through and allow a fresh request below
+  }
+
   const result = await pool.query(
     `INSERT INTO friendships (requester_id, addressee_id, status)
      VALUES ($1, $2, 'pending')
-     ON CONFLICT (requester_id, addressee_id) DO NOTHING
+     ON CONFLICT (requester_id, addressee_id)
+     DO UPDATE SET status = 'pending', updated_at = now()
      RETURNING *`,
     [requesterId, addresseeId]
   );
-  return result.rows[0] || null;
+  return { row: result.rows[0] };
 }
 
 async function getPendingForUser(userId) {
@@ -75,14 +90,13 @@ async function areFriends(userId, otherUserId) {
 }
 
 async function searchUsers(query, excludeUserId) {
-  // fixes audit bug #13 — this is one real WHERE clause with both conditions, not two colliding keys
   const result = await pool.query(
     `SELECT id, username FROM users
      WHERE username ILIKE $1 AND id != $2
        AND id NOT IN (
          SELECT CASE WHEN requester_id = $2 THEN addressee_id ELSE requester_id END
          FROM friendships
-         WHERE (requester_id = $2 OR addressee_id = $2) AND status = 'accepted'
+         WHERE (requester_id = $2 OR addressee_id = $2) AND status IN ('accepted', 'pending')
        )
      LIMIT 10`,
     [`%${query}%`, excludeUserId]

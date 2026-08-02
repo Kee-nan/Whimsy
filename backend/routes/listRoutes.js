@@ -11,7 +11,13 @@ router.get('/lists', authenticateToken, async (req, res) => {
     const rows = await listEntriesQ.getAllForUser(req.user.id);
     const shaped = (status) => rows
       .filter(r => r.status === status)
-      .map(r => ({ id: r.media_item_id, media: r.media_type, title: r.title, image: r.image_url }));
+      .map(r => ({
+        id: `${r.media_type}/${r.external_id}`,   // composite — matches routing convention
+        mediaItemId: r.media_item_id,              // internal PK, for future backend joins
+        media: r.media_type,
+        title: r.title,
+        image: r.image_url,
+      }));
     res.json({
       completed: shaped('completed'),
       current: shaped('current'),
@@ -19,7 +25,7 @@ router.get('/lists', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error fetching lists');
+    res.status(500).json({ message: 'Error fetching lists' });
   }
 });
 
@@ -27,9 +33,18 @@ router.get('/lists', authenticateToken, async (req, res) => {
 // makes the "does it already exist" branch unnecessary.
 router.post('/upsert', authenticateToken, async (req, res) => {
   try {
-    const { media } = req.body; // { id: externalId, media: mediaType, title, image, listType }
+    const { media } = req.body;
+    // Handles both conventions in the wild: composite "movie/12345" (DetailCard flow)
+    // and raw "12345" (CSV import flow) — split only if a slash is present.
+    const externalId = media.id.includes('/')
+      ? media.id.split('/').slice(1).join('/')
+      : media.id;
+
     const mediaItem = await mediaItemsQ.upsertMediaItem({
-      mediaType: media.media, externalId: media.id, title: media.title, imageUrl: media.image,
+      mediaType: media.media,
+      externalId,
+      title: media.title,
+      imageUrl: media.image,
     });
     await listEntriesQ.upsertEntry(req.user.id, mediaItem.id, media.listType);
     res.status(200).json({ message: 'List updated' });
@@ -41,8 +56,10 @@ router.post('/upsert', authenticateToken, async (req, res) => {
 
 router.delete('/delete', authenticateToken, async (req, res) => {
   try {
-    const { mediaId, mediaType } = req.body; // needs both now — see frontend note below
-    const mediaItem = await mediaItemsQ.findByTypeAndExternalId(mediaType, mediaId);
+    const { mediaId } = req.body; // composite "mediaType/externalId", as the frontend already sends
+    const [mediaType, ...rest] = mediaId.split('/');
+    const externalId = rest.join('/');
+    const mediaItem = await mediaItemsQ.findByTypeAndExternalId(mediaType, externalId);
     if (mediaItem) await listEntriesQ.deleteEntry(req.user.id, mediaItem.id);
     res.status(200).json({ message: 'Media removed from list' });
   } catch (error) {
@@ -55,11 +72,16 @@ router.get('/reviews', authenticateToken, async (req, res) => {
   try {
     const rows = await reviewsQ.getAllForUser(req.user.id);
     res.json(rows.map(r => ({
-      id: r.media_item_id, image: r.image_url, rating: r.rating, review: r.review_text, title: r.title,
+      id: `${r.media_type}/${r.external_id}`,
+      mediaItemId: r.media_item_id,
+      image: r.image_url,
+      rating: r.rating,
+      review: r.review_text,
+      title: r.title,
     })));
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error fetching current list');
+    res.status(500).json({ message: 'Error fetching reviews' });
   }
 });
 

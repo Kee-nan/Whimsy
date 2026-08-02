@@ -5,15 +5,27 @@ const authenticateToken = require('../middleware/authenticateToken');
 const friendshipsQ = require('../db/queries/friendships');
 const users = require('../db/queries/users');
 
+const listEntriesQ = require('../db/queries/listEntries');
+const favoritesQ = require('../db/queries/favorites');
+const reviewsQ = require('../db/queries/reviews');
+
 router.post('/send', authenticateToken, async (req, res) => {
   try {
     const { receiverUsername } = req.body;
     const receiver = await users.findByUsername(receiverUsername);
     if (!receiver) return res.status(404).json({ message: 'User not found' });
-    await friendshipsQ.sendRequest(req.user.id, receiver.id);
+    if (receiver.id === req.user.id) {
+      return res.status(400).json({ message: "You can't send a friend request to yourself" });
+    }
+
+    const result = await friendshipsQ.sendRequest(req.user.id, receiver.id);
+    if (result.alreadyFriends) return res.status(409).json({ message: 'You are already friends' });
+    if (result.alreadyPending) return res.status(409).json({ message: 'A request is already pending' });
+
     res.status(200).json({ message: 'Friend request sent' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -51,6 +63,55 @@ router.get('/friends', authenticateToken, async (req, res) => {
 router.delete('/delete/:friendId', authenticateToken, async (req, res) => {
   await friendshipsQ.remove(req.user.id, parseInt(req.params.friendId, 10));
   res.status(200).json({ message: 'Friend removed successfully' });
+});
+
+router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {
+  try {
+    const friendId = parseInt(req.params.friendId, 10);
+    const isFriend = await friendshipsQ.areFriends(req.user.id, friendId);
+    if (!isFriend) return res.status(403).json({ message: 'Not friends with this user' });
+
+    const friend = await users.findById(friendId);
+    if (!friend) return res.status(404).json({ message: 'User not found' });
+
+    const listRows = await listEntriesQ.getAllForUser(friendId);
+    const lists = listRows.map(r => ({
+      id: `${r.media_type}/${r.external_id}`,
+      media: r.media_type,
+      title: r.title,
+      image: r.image_url,
+      listType: r.status,   // matches viewFriendLists.js's expected field name
+    }));
+
+    const favRows = await favoritesQ.getForUser(friendId);
+    const favorites = favRows.map(r => ({
+      id: `${r.media_type}/${r.external_id}`,
+      media: r.media_type,
+      title: r.title,
+      image: r.image_url,
+    }));
+
+    const reviewRows = await reviewsQ.getAllForUser(friendId);
+    const reviews = reviewRows.map(r => ({
+      id: `${r.media_type}/${r.external_id}`,
+      rating: r.rating,
+      review: r.review_text,
+      title: r.title,
+      image: r.image_url,
+    }));
+
+    res.json({
+      username: friend.username,
+      bio: friend.bio,
+      view_setting: friend.view_setting,
+      lists,
+      favorites,
+      reviews,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching friend lists' });
+  }
 });
 
 module.exports = router;

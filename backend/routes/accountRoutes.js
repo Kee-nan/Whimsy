@@ -90,11 +90,14 @@ const mediaItemsQ = require('../db/queries/mediaItems');
 
 router.get('/favorites', authenticateToken, async (req, res) => {
   const rows = await favoritesQ.getForUser(req.user.id);
-  // rebuild the 8-slot array shape the frontend already expects
   const slots = Array(8).fill(null);
   for (const row of rows) {
     slots[row.slot_index] = {
-      id: row.media_item_id, media: row.media_type, title: row.title, image: row.image_url,
+      id: `${row.media_type}/${row.external_id}`,
+      mediaItemId: row.media_item_id,
+      media: row.media_type,
+      title: row.title,
+      image: row.image_url,
     };
   }
   res.json(slots);
