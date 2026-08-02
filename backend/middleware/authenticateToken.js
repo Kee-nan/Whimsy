@@ -11,13 +11,13 @@ const authenticateToken = (req, res, next) => {
     return res.sendStatus(401); // Unauthorized if no token is provided
   }
 
+  // backend/middleware/authenticateToken.js
   jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
     if (err) {
       console.error('Token verification failed:', err);
-      return res.sendStatus(403); // Forbidden if token verification fails
+      return res.sendStatus(403);
     }
-    req.user = { _id: decodedToken.userId };
-    // console.log('User authenticated:', req.user);
+    req.user = { id: decodedToken.userId }; // renamed from _id to id to match Postgres convention
     next();
   });
 };

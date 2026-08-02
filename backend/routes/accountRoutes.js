@@ -1,86 +1,43 @@
-// \routes\accountRoutes.js
 const express = require('express');
-const router = express.Router(); 
-const User = require('../models/user');
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
+const router = express.Router();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const users = require('../db/queries/users');
 const authenticateToken = require('../middleware/authenticateToken');
 
-// Environment config
-dotenv.config();
-
-const JWT_SECRET = process.env.JWT_SECRET;
-
-/**
- *  Login Endpoint
- */
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ username }); // Find the Username via querey
+    const user = await users.findByUsername(username);
+    if (!user) return res.status(401).send('Username does not exist');
 
-    if (!user) return res.status(401).send('Username does not exist'); //Return error if cant find user
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+    if (!isMatch) return res.status(401).send('Password does not match this User');
 
-    // Compare the hashed password with the provided password
-    const isMatch = await bcrypt.compare(password, user.password); // Decryption step
-    if (!isMatch) return res.status(401).send('Password does not match this User'); // Wrong password
-
-    const user_token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '5h' }); // Given user token for their details
+    const user_token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '5h' });
     const decoded = jwt.decode(user_token);
 
-
-    res.json({ 
-      user_token,
-      expiresAt: decoded.exp * 1000 // Convert to milliseconds
-    });
+    res.json({ user_token, expiresAt: decoded.exp * 1000 });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error logging in'); //Other error catching
+    res.status(500).send('Error logging in');
   }
 });
 
-
-/**
- *  Account creation endpoint
- */
 router.post('/create', async (req, res) => {
   try {
     const { firstName, lastName, username, email, password } = req.body;
 
-    // Check if username or email already exists
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-
-    // Check for previous accounts with same Username or Email
-    if (existingUser) {
-      if (existingUser.username === username) {
+    const existing = await users.findByUsernameOrEmail(username, email);
+    if (existing) {
+      if (existing.username.toLowerCase() === username.toLowerCase()) {
         return res.status(400).send('Error Creating Account: Username already exists');
       }
-      if (existingUser.email === email) {
-        return res.status(400).send('Error Creating Account: Email already exists');
-      }
+      return res.status(400).send('Error Creating Account: Email already exists');
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Default User structure
-    const newUser = new User({
-      firstName,
-      lastName,
-      username,
-      email,
-      password: hashedPassword,
-      completed: [],
-      current: [],
-      futures: [],
-      favorites: [],
-      reviews: [],
-      view_setting: "table",
-      bio: 'Default Bio',
-    });
-
-    await newUser.save();
+    const passwordHash = await bcrypt.hash(password, 10);
+    await users.createUser({ firstName, lastName, username, email, passwordHash });
     res.status(201).send('Account created successfully');
   } catch (error) {
     console.error(error);
@@ -88,133 +45,85 @@ router.post('/create', async (req, res) => {
   }
 });
 
-
-
-/**
- *  =Get User Details
- */
 router.get('/user', authenticateToken, async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.json({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-      email: user.email,
-      view_setting: user.view_setting,
-      bio: user.bio
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error fetching user details' });
-  }
+  const user = await users.findById(req.user.id);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+  res.json({
+    firstName: user.first_name,
+    lastName: user.last_name,
+    username: user.username,
+    email: user.email,
+    view_setting: user.view_setting,
+    bio: user.bio,
+  });
 });
 
-/**
- *  Update User Details
- */
 router.put('/user', authenticateToken, async (req, res) => {
   try {
     const { firstName, lastName, username, email, bio } = req.body;
-
-    // Check if username or email already exists for another user
-    const existingUser = await User.findOne({ 
-      $or: [{ username }, { email }],
-      _id: { $ne: req.user._id } // Exclude the current user from the check
-    });
-
-    if (existingUser) {
-      if (existingUser.username === username) {
+    const collision = await users.findUsernameOrEmailCollision(username, email, req.user.id);
+    if (collision) {
+      if (collision.username.toLowerCase() === username.toLowerCase()) {
         return res.status(400).json({ message: 'Username already exists' });
       }
-      if (existingUser.email === email) {
-        return res.status(400).json({ message: 'Email already exists' });
-      }
+      return res.status(400).json({ message: 'Email already exists' });
     }
-
-    const updateData = {
-      firstName,
-      lastName,
-      username,
-      email,
-      bio, 
-    };
-
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, updateData, { new: true });
-
-    res.json(updatedUser);
+    const updated = await users.updateProfile(req.user.id, { firstName, lastName, username, email, bio });
+    res.json(updated);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error updating user details' });
   }
 });
 
-/**
- *  Get favorites list
- */
-router.get('/favorites', authenticateToken, async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    res.json(user.favorites); // assuming favorites is an array of media items
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error fetching favorites' });
+router.patch('/user/view-setting', authenticateToken, async (req, res) => {
+  const { view_setting } = req.body;
+  if (!['card', 'table'].includes(view_setting)) {
+    return res.status(400).json({ message: 'Invalid view_setting value' });
   }
+  const updated = await users.updateViewSetting(req.user.id, view_setting);
+  res.json({ message: 'View setting updated', view_setting: updated.view_setting });
 });
 
-// PATCH update favorites (replace entire array with the provided one)
-// Expecting body: { favorites: [ /* array of media objects */ ] }
+const favoritesQ = require('../db/queries/favorites');
+const mediaItemsQ = require('../db/queries/mediaItems');
+
+router.get('/favorites', authenticateToken, async (req, res) => {
+  const rows = await favoritesQ.getForUser(req.user.id);
+  // rebuild the 8-slot array shape the frontend already expects
+  const slots = Array(8).fill(null);
+  for (const row of rows) {
+    slots[row.slot_index] = {
+      id: row.media_item_id, media: row.media_type, title: row.title, image: row.image_url,
+    };
+  }
+  res.json(slots);
+});
+
 router.patch('/favorites', authenticateToken, async (req, res) => {
   try {
-    const newFavorites = req.body.favorites;
-    if (!Array.isArray(newFavorites) || newFavorites.length > 8) {
+    const incoming = req.body.favorites; // array of length 8, entries are media objects or null
+    if (!Array.isArray(incoming) || incoming.length > 8) {
       return res.status(400).json({ message: 'Favorites must be an array of at most 8 items.' });
     }
-    // Optional: you can validate each object structure here (e.g. has id, title, image, listType, etc.)
-
-    const updated = await User.findByIdAndUpdate(
-      req.user._id,
-      { favorites: newFavorites },
-      { new: true, select: 'favorites' }
-    );
-    res.json({ favorites: updated.favorites });
+    const slotIds = [];
+    for (const item of incoming) {
+      if (!item) { slotIds.push(null); continue; }
+      const mediaItem = await mediaItemsQ.upsertMediaItem({
+        mediaType: item.media, externalId: item.id, title: item.title, imageUrl: item.image,
+      });
+      slotIds.push(mediaItem.id);
+    }
+    await favoritesQ.replaceAll(req.user.id, slotIds);
+    const rows = await favoritesQ.getForUser(req.user.id);
+    res.json({ favorites: rows });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error updating favorites' });
   }
 });
 
-// PATCH view_setting
-router.patch('/user/view-setting', authenticateToken, async (req, res) => {
-  try {
-    const { view_setting } = req.body;
-
-    if (!['card', 'table'].includes(view_setting)) {
-      return res.status(400).json({ message: 'Invalid view_setting value' });
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user._id,
-      { view_setting },
-      { new: true }
-    );
-
-    res.json({ message: 'View setting updated', view_setting: updatedUser.view_setting });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error updating view setting' });
-  }
-});
-
-
-
 module.exports = router;
-
 
 
 

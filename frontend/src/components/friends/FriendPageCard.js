@@ -36,7 +36,7 @@ const FriendPageCard = () => {
     };
 
     const fetchFriendRequests = async () => {
-      const response = await fetch('/api/friends/pending', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/pending`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       if (response.ok) {
@@ -65,7 +65,7 @@ const FriendPageCard = () => {
 
   const handleConfirmDelete = async () => {
     const token = localStorage.getItem('user_token');
-    const response = await fetch(`/api/friends/delete/${selectedFriend.id}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/delete/${selectedFriend.id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -108,7 +108,7 @@ const FriendPageCard = () => {
     }
 
     const token = localStorage.getItem('user_token');
-    const response = await fetch(`/api/friends/search?query=${query}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/search?query=${query}`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
 
@@ -121,7 +121,7 @@ const FriendPageCard = () => {
   const handleSendRequest = async (receiverUsername) => {
     const token = localStorage.getItem('user_token');
     try {
-      const response = await fetch('/api/friends/send', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ const FriendPageCard = () => {
    */
   const handleAccept = async (id) => {
     const token = localStorage.getItem('user_token');
-    const response = await fetch('/api/friends/acceptRequest', {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/acceptRequest`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -6,7 +6,7 @@ import axios from 'axios';
 
 // per‑media endpoint definitions outside component so they are stable
 const apiEndpoints = {
-  album:  { url: '/api/spotify/search',      param: 'q', extract: data => data },
+  album:  { url: '/api/search/albums',      param: 'q', extract: data => data },
   anime:  { url: 'https://api.jikan.moe/v4/anime', param: 'q', extract: data => data.data },
   book:   { url: 'https://www.googleapis.com/books/v1/volumes', param: 'q', extract: data => data.items || [] },
   game:   { url: '/api/search/games',        param: 'q', extract: data => data.results || [] },

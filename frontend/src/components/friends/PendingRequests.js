@@ -14,7 +14,7 @@ const PendingFriendRequests = () => {
       }
 
       try {
-        const response = await fetch('/api/friends/pending', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/pending`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${user_token}`,
@@ -62,7 +62,7 @@ const PendingFriendRequests = () => {
   const handleDeny = async (id) => {
     const user_token = localStorage.getItem('user_token');
     try {
-      const response = await fetch('/api/friends/declineRequest', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/declineRequest`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
