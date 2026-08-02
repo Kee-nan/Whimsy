@@ -1,91 +1,49 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
 const authenticateToken = require('../middleware/authenticateToken');
+const reviewsQ = require('../db/queries/reviews');
+const mediaItemsQ = require('../db/queries/mediaItems');
 
-// Add a new review to the Database
 router.post('/add', authenticateToken, async (req, res) => {
-  const { reviewData } = req.body;
-  const userId = req.user._id; 
-
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Check if a review with the same id already exists
-    const reviewIndex = user.reviews.findIndex(review => review.id === reviewData.id);
-    if (reviewIndex !== -1) {
-      // If it exists, remove the old review
-      user.reviews.splice(reviewIndex, 1);
-    }
-
-    // Add the new review
-    user.reviews.push(reviewData);
-    await user.save();
-
+    const { reviewData } = req.body; // { id, image, rating, review, title } — id is "mediaType/externalId"
+    const [mediaType, externalId] = reviewData.id.split('/');
+    const mediaItem = await mediaItemsQ.upsertMediaItem({
+      mediaType, externalId, title: reviewData.title, imageUrl: reviewData.image,
+    });
+    await reviewsQ.upsertReview(req.user.id, mediaItem.id, reviewData.rating, reviewData.review);
     res.status(200).json({ message: 'Review added/updated successfully!' });
   } catch (error) {
-    console.error('Error adding/updating review:', error); // Log the error for debugging
-    res.status(500).json({ message: 'Error adding/updating review', error });
+    console.error('Error adding/updating review:', error);
+    res.status(500).json({ message: 'Error adding/updating review', error: error.message });
   }
 });
 
-
-// Get reviews for a specific media item (using GET with query parameters)
 router.get('/get', authenticateToken, async (req, res) => {
-  const { mediaType, id } = req.query;
-  const mediaId = `${mediaType}/${id}`;
-  const userId = req.user._id; // Assuming you attach user object in authenticateToken
-
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      console.log('User not found');
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const review = user.reviews.find(review => review.id === mediaId);
-    if (!review) {
-      console.log('Review not found for mediaId:', mediaId);
-      return res.status(404).json({ message: 'Review not found' });
-    }
-
-    res.status(200).json({ review });
+    const { mediaType, id } = req.query;
+    const mediaItem = await mediaItemsQ.findByTypeAndExternalId(mediaType, id);
+    if (!mediaItem) return res.status(404).json({ message: 'Review not found' });
+    const review = await reviewsQ.getOne(req.user.id, mediaItem.id);
+    if (!review) return res.status(404).json({ message: 'Review not found' });
+    res.status(200).json({ review: { rating: review.rating, review: review.review_text } });
   } catch (error) {
     console.error('Error fetching review:', error);
-    res.status(500).json({ message: 'Error fetching review', error });
+    res.status(500).json({ message: 'Error fetching review', error: error.message });
   }
 });
 
-// Route to delete a review
 router.delete('/delete', authenticateToken, async (req, res) => {
-  const userId = req.user._id; // Assuming you attach user object in authenticateToken
-  const { mediaType, id } = req.query;
-  const mediaId = `${mediaType}/${id}`;
-
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      console.log('User not found');
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const initialReviewCount = user.reviews.length;
-    user.reviews = user.reviews.filter(review => review.id !== mediaId);
-
-    if (user.reviews.length === initialReviewCount) {
-      console.log('No review found to delete for mediaId:', mediaId);
-      return res.status(404).json({ message: 'Review not found' });
-    }
-
-    await user.save();
-    console.log('Review deleted successfully for mediaId:', mediaId);
+    const { mediaType, id } = req.query;
+    const mediaItem = await mediaItemsQ.findByTypeAndExternalId(mediaType, id);
+    if (!mediaItem) return res.status(404).json({ message: 'Review not found' });
+    const deleted = await reviewsQ.deleteReview(req.user.id, mediaItem.id);
+    if (!deleted) return res.status(404).json({ message: 'Review not found' });
     res.status(200).json({ message: 'Review deleted successfully' });
   } catch (error) {
     console.error('Error deleting review:', error);
-    res.status(500).json({ message: 'Error deleting review', error });
+    res.status(500).json({ message: 'Error deleting review', error: error.message });
   }
 });
 
