@@ -302,5 +302,19 @@
 }
 
 
+.pie-chart-filter {
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.pie-chart-filter:focus {
+  outline: none;
+  border-color: #84308d;
+}
+
 
 

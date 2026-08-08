@@ -1,69 +1,37 @@
-// albumDetails.js
-import axios from 'axios';
+// frontend/src/pages/details/albumDetails.js
 import DetailPage from '../templates/DetailPage';
+import { createFetchDetails } from '../../utils/mediaSearch';
 
-/**
- *  Search for Album with backend call
- */
-const fetchAlbumDetails = async (id) => {
-  const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/search/albums/${id}`);
-  console.log("Album Details Response:", response);
-  return response;
-};
+const fetchAlbumDetails = createFetchDetails('album');
 
-/**
- *  Extract the specific details for the media
- */
 const extractAlbumDetails = (album) => {
-  if (!album) {
-    console.error("Album is undefined in extractAlbumDetails!");
-    return { title: 'Unknown Album', image: 'placeholder.jpg', details: <p>Error loading album.</p> };
-  }
-
-  console.log("Extracting album details from:", album);
-
-  // Html structure of the information about the album I want to display:
+  if (!album) return { title: 'Unknown Album', image: 'placeholder.jpg', details: <p>Error loading album.</p> };
   return {
     image: album.images?.[0]?.url || 'placeholder.jpg',
     title: album.name || 'Untitled',
     details: [
-      <p key="artists"><strong>Artist(s):</strong> {album.artists?.map(artist => artist.name).join(', ')} produced with {album.label}</p>,
+      <p key="artists"><strong>Artist(s):</strong> {album.artists?.map(a => a.name).join(', ')} produced with {album.label}</p>,
       <p key="release"><strong>Release Date:</strong> {album.release_date}</p>,
       <p key="genres"><strong>Genres:</strong> {album.genres?.join(', ') || 'N/A'}</p>,
-      <p key="spotify"><strong>Spotify URL:</strong> <a href={album.external_urls?.spotify} target="_blank" rel="noopener noreferrer">View on Spotify</a></p>
+      <p key="spotify"><strong>Spotify URL:</strong> <a href={album.external_urls?.spotify} target="_blank" rel="noopener noreferrer">View on Spotify</a></p>,
     ],
     summary: (
       <div>
         <h4>Track List:</h4>
         <ul>
-          {(album.tracks?.items || []).map((track, index) => (
-            <li key={track.id || index}>
-              {index + 1}. {track.name} - {track.artists.map(artist => artist.name).join(', ')}
-            </li>
+          {(album.tracks?.items || []).map((track, i) => (
+            <li key={track.id || i}>{i + 1}. {track.name} - {track.artists.map(a => a.name).join(', ')}</li>
           ))}
         </ul>
       </div>
-    )
+    ),
   };
 };
 
-/**
- *  Put out the data to then detail page
- */
-const AlbumDetail = () => {
-  
-  return (
-    <DetailPage
-      fetchDetails={fetchAlbumDetails}
-      extractDetails={extractAlbumDetails}
-      mediaType="album"
-      tokenRequired={false} 
-    />
-  );
-};
-
+const AlbumDetail = () => (
+  <DetailPage fetchDetails={fetchAlbumDetails} extractDetails={extractAlbumDetails} mediaType="album" tokenRequired={false} />
+);
 export default AlbumDetail;
-
 
 
 

@@ -126,6 +126,17 @@ router.patch('/favorites', authenticateToken, async (req, res) => {
   }
 });
 
+router.patch('/bio', authenticateToken, async (req, res) => {
+  try {
+    const { bio } = req.body;
+    const updated = await users.updateBio(req.user.id, bio ?? '');
+    res.json({ bio: updated.bio });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating bio' });
+  }
+});
+
 module.exports = router;
 
 

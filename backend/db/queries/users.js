@@ -58,7 +58,16 @@ async function findUsernameOrEmailCollision(username, email, excludeUserId) {
   return result.rows[0] || null;
 }
 
+async function updateBio(id, bio) {
+  const result = await pool.query(
+    `UPDATE users SET bio = $1, updated_at = now() WHERE id = $2 RETURNING id, bio`,
+    [bio, id]
+  );
+  return result.rows[0];
+}
+
 module.exports = {
   createUser, findByUsername, findByUsernameOrEmail,
   findById, updateProfile, updateViewSetting, findUsernameOrEmailCollision,
+  updateBio, 
 };

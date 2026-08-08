@@ -1,45 +1,25 @@
-
-// src/pages/searchs/AnimeDetail.js
-import axios from 'axios';
+// frontend/src/pages/details/animeDetails.js
 import DetailPage from '../templates/DetailPage';
+import { createFetchDetails } from '../../utils/mediaSearch';
 
-/**
- *  Search for Album with backend call
- */
-const fetchAnimeDetails = async (id) => {
-  return await axios.get(`https://api.jikan.moe/v4/anime/${id}/full`);
-};
+const fetchAnimeDetails = createFetchDetails('anime');
 
-/**
- *  Extract the specific details for the media
- */
 const extractAnimeDetails = (data) => {
   const anime = data.data;
   return {
     image: anime.images.jpg.image_url || 'placeholder.jpg',
-    title: anime.title, // Ensure title is included
+    title: anime.title,
     details: [
       <p><strong>Episodes:</strong> {anime.episodes}</p>,
       <p><strong>Status:</strong> {anime.status}</p>,
       <p><strong>Released in:</strong> {anime.year}</p>,
-      <p><strong>Genres/Themes:</strong> {anime.genres?.map(genre => genre.name).join(', ')} {anime.themes?.map(theme => theme.name).join(', ')} </p>,
+      <p><strong>Genres/Themes:</strong> {anime.genres?.map(g => g.name).join(', ')} {anime.themes?.map(t => t.name).join(', ')}</p>,
     ],
-    summary: <p> {anime.background}  {anime.synopsis} </p>
+    summary: <p>{anime.background} {anime.synopsis}</p>,
   };
 };
 
-/**
- *  Put out the data to then detail page
- */
-const AnimeDetail = () => {
-  return (
-    <DetailPage
-      fetchDetails={fetchAnimeDetails}
-      extractDetails={extractAnimeDetails} // Corrected prop name
-      mediaType="anime"
-      tokenRequired={false} // No token required
-    />
-  );
-};
-
+const AnimeDetail = () => (
+  <DetailPage fetchDetails={fetchAnimeDetails} extractDetails={extractAnimeDetails} mediaType="anime" tokenRequired={false} />
+);
 export default AnimeDetail;

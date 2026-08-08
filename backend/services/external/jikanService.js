@@ -16,7 +16,7 @@ function makeJikanService(resourcePath) {
     },
     async getById(id) {
       const response = await axios.get(`${BASE_URL}/${resourcePath}/${id}/full`);
-      return response.data.data;
+      return response.data; // keep Jikan's { data: {...} } wrapper — extractAnimeDetails expects it
     },
   };
 }

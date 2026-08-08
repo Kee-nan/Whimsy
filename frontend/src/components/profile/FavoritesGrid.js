@@ -1,28 +1,31 @@
-// src/components/FavoritesGrid.js
 import React from 'react';
 import '../../styles/profilepage.css';
 
-const FavoritesGrid = ({ onEditClick, favorites }) => {
-  // Ensure we always have an array of 8 slots (fill empty ones with nulls)
+/**
+ * Shared favorites grid for both the logged-in user's own profile
+ * (editable) and a friend's read-only profile (editable=false hides
+ * the Edit button and nothing else changes).
+ */
+const FavoritesGrid = ({ favorites, editable = false, onEditClick }) => {
   const slots = Array(8).fill(null).map((_, i) => favorites?.[i] || null);
 
   return (
     <div className="favorites-box">
       <div className="favorites-header">
-        <h4>Favorites</h4>
-        <button className="smallButton" onClick={onEditClick}>
-          Edit
-        </button>
+        <h4>{favorites?.some(Boolean) ? 'Favorites' : 'No Favorites Yet'}</h4>
+        {editable && (
+          <button className="smallButton" onClick={onEditClick}>Edit</button>
+        )}
       </div>
 
       <div className="favorites-grid">
         {slots.map((item, index) => (
           <div key={index} className="favorite-tile">
             <img
-              src={(item && item.image) || 'https://via.placeholder.com/80x100'}
-              alt={(item && item.title) || `Slot ${index + 1}`}
+              src={item?.image || 'https://via.placeholder.com/80x100'}
+              alt={item?.title || `Slot ${index + 1}`}
             />
-            <p className="favorite-title">{(item && item.title) || '-'}</p>
+            <p className="favorite-title">{item?.title || '-'}</p>
           </div>
         ))}
       </div>
@@ -31,4 +34,3 @@ const FavoritesGrid = ({ onEditClick, favorites }) => {
 };
 
 export default FavoritesGrid;
-

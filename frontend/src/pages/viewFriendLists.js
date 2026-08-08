@@ -6,6 +6,7 @@ import { Container, Row, Col, Modal } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 import FriendListCard from '../components/friends/FriendListCard';
 import FriendSearchAndDropdowns from '../components/friends/FriendListFilter';
+import ProfileCard from '../components/profile/ProfileCard';
 import FriendProfileCard from '../components/friends/FriendProfileCard';
 import { Spinner } from 'react-bootstrap';
 
@@ -165,14 +166,13 @@ const ViewFriendLists = () => {
 
       <Container>
 
-          <FriendProfileCard
-            friendBio={bio}
-            friendUsername={username}
-            friendCompletedList={completedList}
-            friendCurrentList={currentListData}
-            friendFuturesList={futuresList}
-            friendFavorites={FavoritesData}
-          />
+        <ProfileCard
+          username={username}
+          bio={bio}
+          lists={{ completed: completedList, current: currentListData, futures: futuresList }}
+          favorites={FavoritesData}
+          editable={false}
+        />
 
         <FriendSearchAndDropdowns
           currentList={currentList}

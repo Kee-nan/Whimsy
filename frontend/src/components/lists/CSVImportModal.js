@@ -6,13 +6,13 @@ import axios from 'axios';
 
 // per‑media endpoint definitions outside component so they are stable
 const apiEndpoints = {
-  album:  { url: '/api/search/albums',      param: 'q', extract: data => data },
-  anime:  { url: 'https://api.jikan.moe/v4/anime', param: 'q', extract: data => data.data },
-  book:   { url: 'https://www.googleapis.com/books/v1/volumes', param: 'q', extract: data => data.items || [] },
-  game:   { url: '/api/search/games',        param: 'q', extract: data => data.results || [] },
-  manga:  { url: 'https://api.jikan.moe/v4/manga', param: 'q', extract: data => data.data },
-  movie:  { url: '/api/search/movies',       param: 'q', extract: data => data.results || [] },
-  show:   { url: 'https://api.tvmaze.com/search/shows', param: 'q', extract: data => data.map(r => r.show) },
+  album: { url: `${process.env.REACT_APP_API_URL}/api/search/album`, param: 'q', extract: data => data.results || [] },
+  anime: { url: `${process.env.REACT_APP_API_URL}/api/search/anime`, param: 'q', extract: data => data.results || [] },
+  book:  { url: `${process.env.REACT_APP_API_URL}/api/search/book`,  param: 'q', extract: data => data.results || [] },
+  game:  { url: `${process.env.REACT_APP_API_URL}/api/search/game`,  param: 'q', extract: data => data.results || [] },
+  manga: { url: `${process.env.REACT_APP_API_URL}/api/search/manga`, param: 'q', extract: data => data.results || [] },
+  movie: { url: `${process.env.REACT_APP_API_URL}/api/search/movie`, param: 'q', extract: data => data.results || [] },
+  show:  { url: `${process.env.REACT_APP_API_URL}/api/search/show`,  param: 'q', extract: data => data.results || [] },
 };
 
 function normalizeResult(result, mediaType) {

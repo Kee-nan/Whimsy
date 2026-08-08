@@ -1,46 +1,25 @@
-// src/pages/details/MovieDetail.js
+// frontend/src/pages/details/movieDetails.js
 import DetailPage from '../templates/DetailPage';
-import axios from 'axios';
+import { createFetchDetails } from '../../utils/mediaSearch';
 
-/**
- *  Search for Album with backend call
- */
-const fetchMovieDetails = async (id) => {
-  const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/search/movies/${id}`);
-  return response
-};
+const fetchMovieDetails = createFetchDetails('movie');
 
-/**
- *  Extract the specific details for the media
- */
 const extractMovieDetails = (data) => {
-  if (!data) return null; // ⬅ guard
-
+  if (!data) return null;
   return {
     image: `https://image.tmdb.org/t/p/w500${data.poster_path}`,
     title: data.title,
     details: [
       <p key="release"><strong>Release Date:</strong> {data.release_date}</p>,
-      <p key="genres"><strong>Genres:</strong> {data.genres?.map(genre => genre.name).join(', ')}</p>,
+      <p key="genres"><strong>Genres:</strong> {data.genres?.map(g => g.name).join(', ')}</p>,
     ],
-    summary: data.overview
+    summary: data.overview,
   };
 };
 
-/**
- *  Put out the data to then detail page
- */
-const MovieDetail = () => {
-  return (
-    <DetailPage
-      fetchDetails={fetchMovieDetails}
-      extractDetails={extractMovieDetails}
-      mediaType="movie"
-      tokenRequired={false} // No token required for movies
-    />
-  );
-};
-
+const MovieDetail = () => (
+  <DetailPage fetchDetails={fetchMovieDetails} extractDetails={extractMovieDetails} mediaType="movie" tokenRequired={false} />
+);
 export default MovieDetail;
 
 
