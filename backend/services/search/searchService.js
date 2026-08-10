@@ -1,7 +1,7 @@
 const tmdb = require('../external/tmdbService');
 const rawg = require('../external/rawgService');
 const spotify = require('../external/spotifyService');
-const { anime, manga } = require('../external/jikanService');
+const { anime, manga } = require('../external/tenraiService');
 const tvmaze = require('../external/tvmazeService');
 const googleBooks = require('../external/googleBooksService');
 

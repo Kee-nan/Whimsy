@@ -316,5 +316,35 @@
   border-color: #84308d;
 }
 
+.activity-feed-box {
+  width: 100%;
+  padding: 1rem;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.activity-feed-empty { color: #999; text-align: center; }
+
+.activity-feed-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.activity-feed-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background-color: #1e1e1e;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.activity-feed-row:hover { background-color: #333; }
+
+.activity-feed-thumb { width: 40px; height: 55px; object-fit: cover; border-radius: 4px; }
+
+.activity-feed-text { display: flex; flex-direction: column; flex: 1; }
+.activity-feed-title { font-weight: bold; color: #fff; }
+.activity-feed-action { font-size: 0.85rem; color: #ccc; }
+.activity-feed-time { font-size: 0.8rem; color: #999; white-space: nowrap; }
+
 
 

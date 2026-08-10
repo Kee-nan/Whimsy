@@ -10,6 +10,8 @@ const listRoutes = require('./routes/listRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const friendRoutes = require('./routes/friendRoutes');
+const activityRoutes = require('./routes/activityRoutes');
+
 const pool = require('./db/pool');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -30,6 +32,8 @@ pool.query('SELECT NOW()')
 
 app.use(cors());
 app.use(express.json());
+
+app.use('/api/activity', activityRoutes);
 
 app.use(
   helmet({

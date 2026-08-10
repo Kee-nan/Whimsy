@@ -12,6 +12,14 @@ async function getAllForUser(userId) {
   return result.rows;
 }
 
+async function getEntry(userId, mediaItemId) {
+  const result = await pool.query(
+    `SELECT * FROM list_entries WHERE user_id = $1 AND media_item_id = $2`,
+    [userId, mediaItemId]
+  );
+  return result.rows[0] || null;
+}
+
 async function upsertEntry(userId, mediaItemId, status) {
   const result = await pool.query(
     `INSERT INTO list_entries (user_id, media_item_id, status)

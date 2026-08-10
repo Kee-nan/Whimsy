@@ -4,6 +4,7 @@ import '../../styles/profilepage.css';
 import '../../styles/modal.css';
 import FavoritesGrid from './FavoritesGrid';
 import MediaPieChart from './MediaPieChart';
+import ActivityFeed from './ActivityFeed';
 
 /**
  * Shared profile card for both the logged-in user's own profile and a
@@ -23,6 +24,7 @@ const ProfileCard = ({
   onSignOut,         // () => void — required if editable
   onOpenSettings,    // () => void — required if editable
   profilePicture,    // URL of the profile picture
+  activity             // array of recent activity items
 }) => {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioDraft, setBioDraft] = useState(bio || '');
@@ -124,6 +126,11 @@ const ProfileCard = ({
 
         <FavoritesGrid favorites={favorites} editable={editable} onEditClick={onEditFavorites} />
       </div>
+
+       <ActivityFeed
+          activity={activity}
+          title={editable ? 'Your Recent Activity' : `${username}'s Recent Activity`}
+        />
     </div>
   );
 };

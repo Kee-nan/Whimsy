@@ -21,19 +21,22 @@ const Profile = () => {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showFavsModal, setShowFavsModal] = useState(false);
   const [viewSetting, setViewSetting] = useState('card');
+  const [activity, setActivity] = useState([]);
 
   const fetchAll = useCallback(async () => {
     if (checkTokenExpiration(navigate)) return;
     try {
-      const [userRes, listsRes, favsRes] = await Promise.all([
+      const [userRes, listsRes, favsRes, activityRes] = await Promise.all([
         axios.get(`${process.env.REACT_APP_API_URL}/api/accounts/user`, { headers: authHeaders() }),
         axios.get(`${process.env.REACT_APP_API_URL}/api/list/lists`, { headers: authHeaders() }),
         axios.get(`${process.env.REACT_APP_API_URL}/api/accounts/favorites`, { headers: authHeaders() }),
+        axios.get(`${process.env.REACT_APP_API_URL}/api/activity/me`, { headers: authHeaders() }),
       ]);
       setUser(userRes.data);
       setViewSetting(userRes.data.view_setting || 'card');
       setLists(listsRes.data);
       setFavorites(favsRes.data);
+      setActivity(activityRes.data);
     } catch (err) {
       console.error('Error loading profile:', err);
     }
@@ -94,6 +97,7 @@ const Profile = () => {
           onSignOut={handleSignOut}
           onOpenSettings={() => setShowSettingsModal(true)}
           profilePicture={user.profilePicture ? `${process.env.REACT_APP_API_URL}${user.profilePicture}` : null}
+          activity={activity}
         />
       </Container>
 

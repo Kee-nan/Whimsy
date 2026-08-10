@@ -7,7 +7,6 @@ import AppNavbar from '../components/Navbar';
 import FriendListCard from '../components/friends/FriendListCard';
 import FriendSearchAndDropdowns from '../components/friends/FriendListFilter';
 import ProfileCard from '../components/profile/ProfileCard';
-import FriendProfileCard from '../components/friends/FriendProfileCard';
 import { Spinner } from 'react-bootstrap';
 
 
@@ -43,6 +42,8 @@ const ViewFriendLists = () => {
 
   const [isTableView, setIsTableView] = useState(false);
 
+  const [friendActivity, setFriendActivity] = useState([]);
+
   useEffect(() => {
     const fetchFriendData = async () => {
       const userToken = localStorage.getItem('user_token');
@@ -62,6 +63,11 @@ const ViewFriendLists = () => {
         if (!response.ok) {
           throw new Error(`Failed to fetch friend data: ${response.statusText}`);
         }
+
+        const activityRes = await fetch(`${process.env.REACT_APP_API_URL}/api/activity/user/${id}`, {
+          headers: { Authorization: `Bearer ${userToken}` },
+        });
+        if (activityRes.ok) setFriendActivity(await activityRes.json());
 
         const data = await response.json();
         // Subdivide the lists
@@ -177,6 +183,7 @@ const ViewFriendLists = () => {
           favorites={FavoritesData}
           editable={false}
           profilePicture={profilePicture}
+          activity={friendActivity}
         />
 
         <FriendSearchAndDropdowns

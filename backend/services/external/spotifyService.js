@@ -1,80 +1,80 @@
-// backend/spotifyService.js
-const axios = require('axios');
+const httpClient = require('./httpClient');
+const withRetry = require('./withRetry');
 
-// Caching the token and its expiration time to avoid requesting it on every API call
 let cachedToken = null;
 let tokenExpiresAt = null;
 
-
-// fetches an app-level access token using Spotify's Client Credentials Flow.
-// The token is cached until it expires to reduce the number of auth requests.
 async function getAppAccessToken() {
   const now = Date.now();
-  if (cachedToken && tokenExpiresAt && now < tokenExpiresAt) {
+  // 5s safety buffer so we never use a token that expires mid-request
+  if (cachedToken && tokenExpiresAt && now < tokenExpiresAt - 5000) {
     return cachedToken;
   }
 
-  // Make POST request to Spotify API to get a new token
-  const response = await axios.post('https://accounts.spotify.com/api/token', null, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64'),
-    },
-    params: {
-      grant_type: 'client_credentials',
-    },
-  });
+  if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
+    const err = new Error('Spotify credentials are not configured');
+    err.status = 500;
+    throw err;
+  }
 
-  // Save token and calculate expiration timestamp
+  // FIX: grant_type must be sent in the request BODY (form-urlencoded),
+  // not as a query param — this was the root cause of intermittent
+  // token failures.
+  const response = await httpClient.post(
+    'https://accounts.spotify.com/api/token',
+    new URLSearchParams({ grant_type: 'client_credentials' }).toString(),
+    {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: 'Basic ' + Buffer.from(
+          `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+        ).toString('base64'),
+      },
+    }
+  );
+
   cachedToken = response.data.access_token;
   tokenExpiresAt = now + response.data.expires_in * 1000;
-
   return cachedToken;
 }
 
+async function search(query, page = 1, limit = 15) {
+  return withRetry(async () => {
+    const token = await getAppAccessToken();
+    const offset = (page - 1) * limit;
+    const response = await httpClient.get('https://api.spotify.com/v1/search', {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { q: query, type: 'album', limit, offset },
+    });
 
-// Given a query string it searches albums on spotify
-async function searchAlbums(query, limit = 15, offset = 0) {
-  const token = await getAppAccessToken();
-  const response = await axios.get('https://api.spotify.com/v1/search', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params: {
-      q: query,
-      type: 'album',
-      limit,
-      offset,
-    },
+    const albums = response.data.albums;
+    // FIX: normalize to the shape every other adapter returns, instead
+    // of leaking Spotify's raw response shape to the frontend.
+    return {
+      results: albums.items || [],
+      page: Number(page),
+      totalPages: Math.ceil((albums.total || 0) / limit),
+      totalResults: albums.total || 0,
+    };
   });
-  return response.data;
 }
 
+async function getById(albumId) {
+  return withRetry(async () => {
+    const token = await getAppAccessToken();
+    const albumResponse = await httpClient.get(`https://api.spotify.com/v1/albums/${albumId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const album = albumResponse.data;
 
+    const tracksResponse = await httpClient.get(
+      `https://api.spotify.com/v1/albums/${albumId}/tracks?limit=50`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    album.tracks.items = tracksResponse.data.items;
 
-// Fetches full album details including a separate request for track list.
-async function getAlbumDetails(albumId) {
-  const accessToken = await getAppAccessToken(); // however you fetch the token
-
-  // Fetch album metadata
-  const albumResponse = await axios.get(`https://api.spotify.com/v1/albums/${albumId}`, {
-    headers: { Authorization: `Bearer ${accessToken}` }
+    return album;
   });
-  const album = albumResponse.data;
+}
 
-  // Fetch tracks separately to ensure `items` is present
-  const tracksResponse = await axios.get(`https://api.spotify.com/v1/albums/${albumId}/tracks?limit=50`, {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  });
-
-  // Combine track data into the album object
-  album.tracks.items = tracksResponse.data.items;
-
-  return album;
-};
-
-// Export the service functions
-module.exports = {
-  search: (query, page = 1, limit = 15) => searchAlbums(query, limit, (page - 1) * limit),
-  getById: getAlbumDetails,
-};
+module.exports = { search, getById };
