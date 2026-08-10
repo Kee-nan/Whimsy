@@ -93,6 +93,7 @@ const Profile = () => {
           onEditFavorites={() => setShowFavsModal(true)}
           onSignOut={handleSignOut}
           onOpenSettings={() => setShowSettingsModal(true)}
+          profilePicture={user.profilePicture ? `${process.env.REACT_APP_API_URL}${user.profilePicture}` : null}
         />
       </Container>
 
@@ -103,6 +104,7 @@ const Profile = () => {
         updateUser={updateUser}
         viewSetting={viewSetting}
         setViewSetting={setViewSetting}
+        onProfilePictureUpdated={(newPath) => setUser((prev) => ({ ...prev, profilePicture: newPath }))}
       />
 
       <FavoritesModal

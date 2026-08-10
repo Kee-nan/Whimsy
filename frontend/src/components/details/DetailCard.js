@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import '../../styles/detailpage.css';
+import FriendActivityList from './FriendActivityList';
 
-const DetailCard = ({ image, title, details, summary, type, mediaId, userLists, onAddToList, onReview, onBack, review, onEdit, onDelete }) => {
+const DetailCard = ({ image, title, details, summary, type, mediaId, userLists, onAddToList, onReview, onBack, review, onEdit, onDelete, stats }) => {
   let imageClass = 'anime-image';
 
   
@@ -74,11 +75,20 @@ const DetailCard = ({ image, title, details, summary, type, mediaId, userLists, 
         <div className="summary-box">{summary}</div>
 
         {/* 3x1 Stats Grid */}
+        {/* 3x1 Stats Grid — now using real data instead of hardcoded 0s */}
         <div className="stats-grid">
-          {( [<p>Global Rating: 0</p>, <p>Friend Rating: 0</p> , <p>Your Rating: {review ? review.rating : "n/a"} </p>]).map((stat, idx) => (
-            <div key={idx} className="stat-cell">{stat}</div>
-          ))}
+          <div className="stat-cell">
+            Global Rating: {stats?.global?.average != null ? `${stats.global.average}/30 (${stats.global.count})` : 'No ratings yet'}
+          </div>
+          <div className="stat-cell">
+            Friend Rating: {stats?.friends?.average != null ? `${stats.friends.average}/30 (${stats.friends.count})` : 'No friend ratings yet'}
+          </div>
+          <div className="stat-cell">
+            Your Rating: {review ? review.rating : 'n/a'}
+          </div>
         </div>
+
+        <FriendActivityList friendActivity={stats?.friendActivity} />
 
         {/* Review Box */}
         <div className="review-box">

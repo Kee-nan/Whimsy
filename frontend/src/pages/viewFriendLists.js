@@ -10,6 +10,7 @@ import ProfileCard from '../components/profile/ProfileCard';
 import FriendProfileCard from '../components/friends/FriendProfileCard';
 import { Spinner } from 'react-bootstrap';
 
+
 /**
  *  Main homepage
  *  Just has basic information about all of the media and details about the website.
@@ -24,6 +25,8 @@ const ViewFriendLists = () => {
 
   const[bio, setBio] = useState('')
   const[username, setUsername] = useState('')
+
+  const[profilePicture, setProfilePicture] = useState(null)
 
   const [currentList, setCurrentList] = useState('current');
   const [currentMedia, setCurrentMedia] = useState('All');
@@ -70,6 +73,7 @@ const ViewFriendLists = () => {
         setBio(data.bio || []);
         setUsername(data.username || []);
         setIsTableView(data.view_setting === 'table');
+        setProfilePicture(data.profilePicture ? `${process.env.REACT_APP_API_URL}${data.profilePicture}` : null);
 
       } catch (error) {
         console.error('Error fetching friend data:', error);
@@ -172,6 +176,7 @@ const ViewFriendLists = () => {
           lists={{ completed: completedList, current: currentListData, futures: futuresList }}
           favorites={FavoritesData}
           editable={false}
+          profilePicture={profilePicture}
         />
 
         <FriendSearchAndDropdowns

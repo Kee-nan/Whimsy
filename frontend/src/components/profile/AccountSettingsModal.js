@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
+import { Modal, Button, Form, Row, Col, Dropdown, Image } from 'react-bootstrap';
 import '../../styles/modal.css'; // <- Make sure this path is correct
 
-const AccountSettingsModal = ({ show, handleClose, user, updateUser, viewSetting, setViewSetting }) => {
+const AccountSettingsModal = ({ show, handleClose, user, updateUser, viewSetting, setViewSetting, onProfilePictureUpdated }) => {
   const [editableFields, setEditableFields] = useState({});
   const [formData, setFormData] = useState({ ...user });
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   useEffect(() => {
     setFormData({ ...user });
@@ -24,6 +27,37 @@ const AccountSettingsModal = ({ show, handleClose, user, updateUser, viewSetting
     handleClose();
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    setPreviewUrl(file ? URL.createObjectURL(file) : null);
+  };
+
+  const handleUploadPicture = async () => {
+    if (!selectedFile) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+      const token = localStorage.getItem('user_token');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/profile-picture`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      onProfilePictureUpdated(data.profilePicture); // bubbles up to profile.js
+      setSelectedFile(null);
+      setPreviewUrl(null);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to upload profile picture.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <Modal
       show={show}
@@ -38,6 +72,19 @@ const AccountSettingsModal = ({ show, handleClose, user, updateUser, viewSetting
       </Modal.Header>
 
       <Modal.Body>
+        <div className="mb-4 text-center">
+          <Image
+            src={previewUrl || (formData.profilePicture ? `${process.env.REACT_APP_API_URL}${formData.profilePicture}` : 'https://via.placeholder.com/120')}
+            roundedCircle
+            width="120"
+            height="120"
+            style={{ objectFit: 'cover', marginBottom: '0.75rem' }}
+          />
+          <Form.Control type="file" accept="image/*" onChange={handleFileChange} className="mb-2" />
+          <button className="primaryButton" onClick={handleUploadPicture} disabled={!selectedFile || uploading}>
+            {uploading ? 'Uploading...' : 'Upload New Picture'}
+          </button>
+        </div>
         <Row>
           {/* Left Column: User Info */}
           <Col md={6}>

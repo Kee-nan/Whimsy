@@ -10,6 +10,8 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [stats, setStats] = useState(null);
+
   // API data Initialization
   const [details, setDetails] = useState(null);
   const [review, setReview] = useState(null);
@@ -63,6 +65,17 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
       }
     } catch (err) {
       console.error('Error fetching review:', err);
+    }
+
+    try {
+      const userToken = localStorage.getItem('user_token');
+      const statsRes = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/review/stats?mediaType=${mediaType}&id=${id}`,
+        { headers: { Authorization: `Bearer ${userToken}` } }
+      );
+      if (statsRes.ok) setStats(await statsRes.json());
+    } catch (err) {
+      console.error('Error fetching media stats:', err);
     }
   }, [id, fetchDetails, extractDetails, mediaType, tokenRequired]);
 
@@ -170,6 +183,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
         review={review}
         onEdit={handleReview}
         onDelete={handleDelete}
+        stats={stats}
       />
 
       <ReviewModal

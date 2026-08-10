@@ -5,12 +5,6 @@ const { anime, manga } = require('../external/jikanService');
 const tvmaze = require('../external/tvmazeService');
 const googleBooks = require('../external/googleBooksService');
 
-/**
- * Single source of truth mapping a mediaType string to the adapter that
- * knows how to search/fetch it. Adding a new media type in the future is
- * a one-line addition here plus one new adapter file — nothing else in
- * the routing layer changes.
- */
 const ADAPTERS = {
   movie: tmdb,
   game: rawg,
@@ -23,8 +17,12 @@ const ADAPTERS = {
 
 function getAdapter(mediaType) {
   const adapter = ADAPTERS[mediaType];
-  if (!adapter) {
-    const err = new Error(`Unsupported media type: ${mediaType}`);
+  // This check is what would have caught the book bug immediately with a
+  // clear message, instead of a cryptic "search is not a function" crash.
+  if (!adapter || typeof adapter.search !== 'function' || typeof adapter.getById !== 'function') {
+    const err = new Error(
+      `No valid adapter registered for media type "${mediaType}". Available: ${Object.keys(ADAPTERS).join(', ')}`
+    );
     err.status = 400;
     throw err;
   }

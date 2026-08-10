@@ -103,6 +103,7 @@ router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {
     res.json({
       username: friend.username,
       bio: friend.bio,
+      profilePicture: friend.profile_picture_url,
       view_setting: friend.view_setting,
       lists,
       favorites,

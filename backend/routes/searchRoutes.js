@@ -16,9 +16,12 @@ router.get('/:mediaType', async (req, res) => {
     const data = await searchService.search(mediaType, q, Number(page), Number(limit));
     res.json(data);
   } catch (error) {
-    const status = error.status || 500;
     console.error(`Error searching ${mediaType}:`, error.message);
-    res.status(status).json({ message: `Failed to search ${mediaType}` });
+    // Propagate the real status when we have one (e.g. upstream 4xx),
+    // otherwise use 502 Bad Gateway — accurately says "the upstream
+    // service failed," which is distinct from "our server crashed."
+    const status = error.status || (error.response?.status && error.response.status < 500 ? error.response.status : 502);
+    res.status(status).json({ message: `Failed to search ${mediaType}. The upstream service may be temporarily unavailable.` });
   }
 });
 
@@ -33,9 +36,12 @@ router.get('/:mediaType/:id', async (req, res) => {
     const data = await searchService.getById(mediaType, id);
     res.json(data);
   } catch (error) {
-    const status = error.status || 500;
-    console.error(`Error fetching ${mediaType} ${id}:`, error.message);
-    res.status(status).json({ message: `Failed to fetch ${mediaType} details` });
+    console.error(`Error searching ${mediaType}:`, error.message);
+    // Propagate the real status when we have one (e.g. upstream 4xx),
+    // otherwise use 502 Bad Gateway — accurately says "the upstream
+    // service failed," which is distinct from "our server crashed."
+    const status = error.status || (error.response?.status && error.response.status < 500 ? error.response.status : 502);
+    res.status(status).json({ message: `Failed to fetch ${mediaType} details. The upstream service may be temporarily unavailable.` });
   }
 });
 

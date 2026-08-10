@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const users = require('../db/queries/users');
 const authenticateToken = require('../middleware/authenticateToken');
+const upload = require('../middleware/upload');
 
 router.post('/login', async (req, res) => {
   try {
@@ -55,6 +56,7 @@ router.get('/user', authenticateToken, async (req, res) => {
     email: user.email,
     view_setting: user.view_setting,
     bio: user.bio,
+    profilePicture: user.profile_picture_url
   });
 });
 
@@ -134,6 +136,18 @@ router.patch('/bio', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error updating bio' });
+  }
+});
+
+router.post('/profile-picture', authenticateToken, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: 'No image file provided' });
+    const relativeUrl = `/uploads/profile-pictures/${req.file.filename}`;
+    const updated = await users.updateProfilePicture(req.user.id, relativeUrl);
+    res.json({ profilePicture: updated.profile_picture_url });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error uploading profile picture' });
   }
 });
 

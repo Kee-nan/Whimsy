@@ -22,6 +22,7 @@ const ProfileCard = ({
   onEditFavorites,   // () => void — required if editable
   onSignOut,         // () => void — required if editable
   onOpenSettings,    // () => void — required if editable
+  profilePicture,    // URL of the profile picture
 }) => {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioDraft, setBioDraft] = useState(bio || '');
@@ -51,7 +52,7 @@ const ProfileCard = ({
       <div className="profile-header bordered">
         <div className="profile-left">
           <Image
-            src="https://via.placeholder.com/150"
+            src={profilePicture || 'https://via.placeholder.com/150'}
             roundedCircle
             width="150"
             height="150"
