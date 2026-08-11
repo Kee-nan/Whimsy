@@ -11,6 +11,7 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const friendRoutes = require('./routes/friendRoutes');
 const activityRoutes = require('./routes/activityRoutes');
+const customListRoutes = require('./routes/customListRoutes');
 
 const pool = require('./db/pool');
 const errorHandler = require('./middleware/errorHandler');
@@ -34,6 +35,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/activity', activityRoutes);
+app.use('/api/custom-lists', customListRoutes);
 
 app.use(
   helmet({
