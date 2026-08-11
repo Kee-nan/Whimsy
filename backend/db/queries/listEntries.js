@@ -39,4 +39,4 @@ async function deleteEntry(userId, mediaItemId) {
   );
 }
 
-module.exports = { getAllForUser, upsertEntry, deleteEntry };
+module.exports = { getAllForUser, upsertEntry, deleteEntry, getEntry };

@@ -24,11 +24,17 @@ const DetailCard = ({
   const [selected, setSelected] = useState(getInitial());
   useEffect(() => { setSelected(getInitial()); }, [getInitial]);
 
-  const handleChange = (newType) => {
+  const handleChange = async (newType) => {
     if (newType === selected) return;
-    setSelected(newType);
+    const previous = selected;
+    setSelected(newType); // optimistic UI update
+
     const mediaObj = { id: mediaId, media: type, title, image, listType: newType };
-    onAddToList(newType, mediaId, mediaObj);
+    const success = await onAddToList(newType, mediaId, mediaObj);
+
+    if (!success) {
+      setSelected(previous); // revert since the write actually failed
+    }
   };
 
   const buttonLabel = selected === 'none'

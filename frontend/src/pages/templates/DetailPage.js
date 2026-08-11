@@ -75,16 +75,32 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     const token = localStorage.getItem('user_token');
     const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 
-    if (listType === 'none') {
-      await fetch(`${process.env.REACT_APP_API_URL}/api/list/delete`, {
-        method: 'DELETE', headers, body: JSON.stringify({ mediaId }),
-      });
-    } else {
-      await fetch(`${process.env.REACT_APP_API_URL}/api/list/upsert`, {
-        method: 'POST', headers, body: JSON.stringify({ media: mediaObj }),
-      });
+    try {
+      let response;
+      if (listType === 'none') {
+        response = await fetch(`${process.env.REACT_APP_API_URL}/api/list/delete`, {
+          method: 'DELETE', headers, body: JSON.stringify({ mediaId }),
+        });
+      } else {
+        response = await fetch(`${process.env.REACT_APP_API_URL}/api/list/upsert`, {
+          method: 'POST', headers, body: JSON.stringify({ media: mediaObj }),
+        });
+      }
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}));
+        throw new Error(errorBody.message || 'Failed to update list');
+      }
+
+      // Only resync (and thus let the dropdown re-derive its selection) once
+      // we know the write actually succeeded.
+      await fetchUserLists();
+      return true;
+    } catch (error) {
+      console.error('Error updating list:', error);
+      alert(`Could not update your list: ${error.message}`);
+      return false;
     }
-    fetchUserLists();
   };
 
   const handleReview = () => setModalVisible(true);

@@ -40,17 +40,25 @@ router.post('/upsert', authenticateToken, async (req, res) => {
     const existing = await listEntriesQ.getEntry(req.user.id, mediaItem.id);
     await listEntriesQ.upsertEntry(req.user.id, mediaItem.id, media.listType);
 
-    if (!existing) {
-      await activityLogQ.logActivity(req.user.id, 'list_add', mediaItem.id, { status: media.listType });
-    } else if (existing.status !== media.listType) {
-      await activityLogQ.logActivity(req.user.id, 'list_status_change', mediaItem.id, {
-        from: existing.status, to: media.listType,
-      });
+    // Activity logging is a secondary, best-effort feature. A failure here
+    // (missing table, bad constraint, whatever) must NEVER prevent the
+    // primary list update from succeeding — this is what broke "add to
+    // list" entirely last time a logging-dependent migration was missed.
+    try {
+      if (!existing) {
+        await activityLogQ.logActivity(req.user.id, 'list_add', mediaItem.id, { status: media.listType });
+      } else if (existing.status !== media.listType) {
+        await activityLogQ.logActivity(req.user.id, 'list_status_change', mediaItem.id, {
+          from: existing.status, to: media.listType,
+        });
+      }
+    } catch (activityErr) {
+      console.error('Non-fatal: failed to log activity for list upsert:', activityErr.message);
     }
 
     res.status(200).json({ message: 'List updated' });
   } catch (error) {
-    console.error(error);
+    console.error('Error updating list:', error);
     res.status(500).json({ message: 'Failed to update list' });
   }
 });

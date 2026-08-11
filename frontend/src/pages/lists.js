@@ -144,32 +144,37 @@ const Lists = () => {
    * Import and Export Buttons
    */
   const handleExportCSV = () => {
-    const allItems = [...lists.completed, ...lists.current, ...lists.futures];
-  
+    // FIX: attach the status while combining, since it's only implied by
+    // which array an item came from and gets lost once they're merged.
+    const allItems = [
+      ...lists.completed.map(item => ({ ...item, listType: 'completed' })),
+      ...lists.current.map(item => ({ ...item, listType: 'current' })),
+      ...lists.futures.map(item => ({ ...item, listType: 'futures' })),
+    ];
+
     if (allItems.length === 0) {
       alert("No list items to export.");
       return;
     }
-  
+
     const headers = ['id', 'media', 'title', 'image', 'listType', 'rating'];
     const csvRows = [headers.join(',')];
-  
+
     for (const item of allItems) {
       const review = ReviewData.find(r => r.id === item.id);
       const rating = review ? review.rating : '-';
-  
+
       const row = headers.map(header => {
         if (header === 'rating') return `"${rating}"`;
         const value = item[header] || '';
         return `"${String(value).replace(/"/g, '""')}"`;
       }).join(',');
-  
+
       csvRows.push(row);
     }
-  
+
     const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
-  
     const link = document.createElement('a');
     link.href = url;
     link.download = 'my_media_lists.csv';

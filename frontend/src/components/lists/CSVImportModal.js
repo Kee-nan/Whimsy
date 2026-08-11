@@ -1,18 +1,18 @@
-// src/components/CSVImportModal.js
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Spinner, Table } from 'react-bootstrap';
 import Papa from 'papaparse';
 import axios from 'axios';
 
-// per‑media endpoint definitions outside component so they are stable
+const API_BASE = process.env.REACT_APP_API_URL;
+
 const apiEndpoints = {
-  album: { url: `${process.env.REACT_APP_API_URL}/api/search/album`, param: 'q', extract: data => data.results || [] },
-  anime: { url: `${process.env.REACT_APP_API_URL}/api/search/anime`, param: 'q', extract: data => data.results || [] },
-  book:  { url: `${process.env.REACT_APP_API_URL}/api/search/book`,  param: 'q', extract: data => data.results || [] },
-  game:  { url: `${process.env.REACT_APP_API_URL}/api/search/game`,  param: 'q', extract: data => data.results || [] },
-  manga: { url: `${process.env.REACT_APP_API_URL}/api/search/manga`, param: 'q', extract: data => data.results || [] },
-  movie: { url: `${process.env.REACT_APP_API_URL}/api/search/movie`, param: 'q', extract: data => data.results || [] },
-  show:  { url: `${process.env.REACT_APP_API_URL}/api/search/show`,  param: 'q', extract: data => data.results || [] },
+  album: { url: `${API_BASE}/api/search/album`, param: 'q', extract: data => data.results || [] },
+  anime: { url: `${API_BASE}/api/search/anime`, param: 'q', extract: data => data.results || [] },
+  book:  { url: `${API_BASE}/api/search/book`,  param: 'q', extract: data => data.results || [] },
+  game:  { url: `${API_BASE}/api/search/game`,  param: 'q', extract: data => data.results || [] },
+  manga: { url: `${API_BASE}/api/search/manga`, param: 'q', extract: data => data.results || [] },
+  movie: { url: `${API_BASE}/api/search/movie`, param: 'q', extract: data => data.results || [] },
+  show:  { url: `${API_BASE}/api/search/show`,  param: 'q', extract: data => data.results || [] },
 };
 
 function normalizeResult(result, mediaType) {
@@ -41,7 +41,6 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // parse CSV file
   const handleFile = e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -54,7 +53,6 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
     });
   };
 
-  // fetch top‑5 hits whenever rows change
   useEffect(() => {
     if (!rows.length) return;
     (async () => {
@@ -87,9 +85,20 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
 
     const token = localStorage.getItem('user_token');
     const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-    await Promise.all(toAdd.map(item => axios.post('/api/list/upsert', { media: item }, { headers })));
 
-    onImportDone(toAdd.length);
+    // FIX: this was missing the REACT_APP_API_URL prefix, so it silently
+    // hit the frontend's own origin instead of the backend under any
+    // split-host deployment (and would 404 there instead of importing).
+    const results = await Promise.allSettled(
+      toAdd.map(item => axios.post(`${API_BASE}/api/list/upsert`, { media: item }, { headers }))
+    );
+
+    const failures = results.filter(r => r.status === 'rejected').length;
+    if (failures > 0) {
+      alert(`${toAdd.length - failures} of ${toAdd.length} items imported. ${failures} failed — check the console for details.`);
+    }
+
+    onImportDone(toAdd.length - failures);
     onHide();
   };
 
@@ -121,8 +130,7 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
                     <td>
                       {norm?.image
                         ? <img src={norm.image} alt={norm.title} className="modal-table-img" />
-                        : <span style={{ color: '#aaa' }}>No image</span>
-                      }
+                        : <span style={{ color: '#aaa' }}>No image</span>}
                     </td>
                     <td>{c.row.media}</td>
                     <td>{c.row.title}</td>
@@ -133,8 +141,7 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
                               const optNorm = normalizeResult(h, c.row.media);
                               return <option key={i} value={i}>{optNorm?.title} ({optNorm?.id})</option>;
                             })
-                          : <option value={-1}>No matches</option>
-                        }
+                          : <option value={-1}>No matches</option>}
                       </Form.Select>
                     </td>
                   </tr>
@@ -149,10 +156,8 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
         <button className="primaryButton" onClick={handleConfirm} disabled={!candidates.length}>Confirm & Add Completed</button>
       </Modal.Footer>
     </Modal>
-
   );
 }
-
 
 
 

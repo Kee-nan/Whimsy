@@ -8,7 +8,7 @@ const activityLogQ = require('../db/queries/activityLog');
 
 router.post('/add', authenticateToken, async (req, res) => {
   try {
-    const { reviewData } = req.body; // { id, image, rating, review, title } — id is "mediaType/externalId"
+    const { reviewData } = req.body;
     const [mediaType, ...rest] = reviewData.id.split('/');
     const externalId = rest.join('/');
 
@@ -19,12 +19,16 @@ router.post('/add', authenticateToken, async (req, res) => {
     const existingReview = await reviewsQ.getOne(req.user.id, mediaItem.id);
     await reviewsQ.upsertReview(req.user.id, mediaItem.id, reviewData.rating, reviewData.review);
 
-    await activityLogQ.logActivity(
-      req.user.id,
-      existingReview ? 'review_update' : 'review_add',
-      mediaItem.id,
-      { rating: reviewData.rating }
-    );
+    try {
+      await activityLogQ.logActivity(
+        req.user.id,
+        existingReview ? 'review_update' : 'review_add',
+        mediaItem.id,
+        { rating: reviewData.rating }
+      );
+    } catch (activityErr) {
+      console.error('Non-fatal: failed to log activity for review:', activityErr.message);
+    }
 
     res.status(200).json({ message: 'Review added/updated successfully!' });
   } catch (error) {
