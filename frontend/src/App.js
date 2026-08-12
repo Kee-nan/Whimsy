@@ -9,6 +9,7 @@ import ViewFriendLists from './pages/viewFriendLists';
 import Friend from './pages/friend';
 import CustomLists from './pages/customLists';
 import CustomListDetail from './pages/customListDetail';
+import Global from './pages/global';
 
 import LoginPage from './pages/login';
 import CreateAccountPage from './pages/accountCreation';
@@ -51,6 +52,7 @@ const App = () => {
         <Route path="/lists" element={<PrivateRoute element={<Lists />} />} />
         <Route path="/friend" element={<PrivateRoute element={<Friend />} />} />
         <Route path="/lists/:username/:id" element={<ViewFriendLists />} />
+        <Route path="/global" element={<PrivateRoute element={<Global />} />} />
 
         <Route path="/lists/custom" element={<PrivateRoute element={<CustomLists />} />} />
         <Route path="/lists/custom/:listId" element={<PrivateRoute element={<CustomListDetail />} />} />
@@ -62,6 +64,7 @@ const App = () => {
         <Route path="/show" element={<PrivateRoute element={<Shows />} />} />
         <Route path="/book" element={<PrivateRoute element={<Books />} />} />
         <Route path="/game" element={<PrivateRoute element={<Games />} />} />
+        
 
         <Route path="/anime/:id" element={<PrivateRoute element={<AnimeDetail />} />} />
         <Route path="/manga/:id" element={<PrivateRoute element={<MangaDetail />} />} />

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import '../../styles/detailpage.css';
 import FriendActivityList from './FriendActivityList';
+import CustomListSelector from '../lists/CustomListSelector';
 
 const DetailCard = ({
   image, title, details, summary, type, mediaId, userLists,
@@ -99,6 +100,7 @@ const DetailCard = ({
             <Dropdown.Divider />
             <Dropdown.Item onClick={() => handleChange('none')}>None</Dropdown.Item>
           </DropdownButton>
+          <CustomListSelector mediaId={mediaId} mediaType={type} title={title} image={image} />
           <button className="btn btn-outline-light" onClick={onReview}>Reviews</button>
           <button className="btn btn-outline-light" onClick={onEdit}>Edit Review</button>
           <button className="btn btn-outline-light" onClick={onDelete}>Delete Review</button>

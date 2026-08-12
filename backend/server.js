@@ -12,6 +12,7 @@ const searchRoutes = require('./routes/searchRoutes');
 const friendRoutes = require('./routes/friendRoutes');
 const activityRoutes = require('./routes/activityRoutes');
 const customListRoutes = require('./routes/customListRoutes');
+const globalRoutes = require('./routes/globalRoutes');
 
 const pool = require('./db/pool');
 const errorHandler = require('./middleware/errorHandler');
@@ -57,6 +58,7 @@ app.use('/api/list', listRoutes);
 app.use('/api/review', reviewRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/friends', friendRoutes);
+app.use('/api/global', globalRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

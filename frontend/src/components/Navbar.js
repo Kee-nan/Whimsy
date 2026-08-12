@@ -28,6 +28,7 @@ const AppNavbar = () => {
             <Nav.Link as={Link} to="/lists" className="nav-link-button">Lists</Nav.Link>
             <Nav.Link as={Link} to="/lists/custom" className="nav-link-button">Custom</Nav.Link>
             <Nav.Link as={Link} to="/friend" className="nav-link-button">Friends</Nav.Link>
+            <Nav.Link as={Link} to="/global" className="nav-link-button">Global</Nav.Link>
           </Nav>
         </Container>
 
