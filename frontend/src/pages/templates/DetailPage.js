@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import AppNavbar from '../../components/Navbar';
 import DetailCard from '../../components/details/DetailCard';
 import ReviewModal from '../../components/details/ReviewModal';
+import ReviewsListCard from '../../components/details/ReviewsListCard';
 
 const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) => {
   const { id } = useParams();
@@ -70,6 +71,18 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     fetchMediaDetails();
     fetchUserLists();
   }, [fetchMediaDetails]);
+
+  const [currentUsername, setCurrentUsername] = useState('');
+  useEffect(() => {
+    const fetchMe = async () => {
+      const token = localStorage.getItem('user_token');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/user`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) setCurrentUsername((await res.json()).username);
+    };
+    fetchMe();
+  }, []);
 
   const handleAddToList = async (listType, mediaId, mediaObj) => {
     const token = localStorage.getItem('user_token');
@@ -157,6 +170,8 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
         onDelete={handleDelete}
         stats={stats}
       />
+
+      <ReviewsListCard mediaType={mediaType} externalId={id} currentUsername={currentUsername} />
       <ReviewModal
         show={modalVisible}
         onClose={handleCloseModal}

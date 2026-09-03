@@ -5,6 +5,7 @@ const reviewsQ = require('../db/queries/reviews');
 const mediaItemsQ = require('../db/queries/mediaItems');
 const mediaStatsQ = require('../db/queries/mediaStats');
 const activityLogQ = require('../db/queries/activityLog');
+const reviewLikesQ = require('../db/queries/reviewLikes');
 
 router.post('/add', authenticateToken, async (req, res) => {
   try {
@@ -34,6 +35,35 @@ router.post('/add', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Error adding/updating review:', error);
     res.status(500).json({ message: 'Error adding/updating review', error: error.message });
+  }
+});
+
+router.get('/list', authenticateToken, async (req, res) => {
+  try {
+    const { mediaType, id, page = 1, limit = 10 } = req.query;
+    if (!mediaType || !id) return res.status(400).json({ message: 'mediaType and id are required' });
+
+    const mediaItem = await mediaItemsQ.findByTypeAndExternalId(mediaType, id);
+    if (!mediaItem) {
+      return res.json({ reviews: [], page: 1, totalPages: 0, totalCount: 0 });
+    }
+
+    const result = await reviewsQ.getPaginatedForMedia(mediaItem.id, req.user.id, Number(page), Number(limit));
+    res.json(result);
+  } catch (error) {
+    console.error('Error fetching review list:', error);
+    res.status(500).json({ message: 'Failed to fetch reviews' });
+  }
+});
+
+router.post('/:reviewId/like', authenticateToken, async (req, res) => {
+  try {
+    const reviewId = parseInt(req.params.reviewId, 10);
+    const result = await reviewLikesQ.toggleLike(reviewId, req.user.id);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to toggle like' });
   }
 });
 
