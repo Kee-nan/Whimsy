@@ -5,18 +5,19 @@ import AppNavbar from '../components/Navbar';
 
 const MEDALS = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
+
 const Global = () => {
   const [topRated, setTopRated] = useState([]);
   const [mediaFilter, setMediaFilter] = useState('All');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [source, setSource] = useState('whimsy');
 
   useEffect(() => {
     const fetchTopRated = async () => {
       setLoading(true);
       const token = localStorage.getItem('user_token');
-      const query = mediaFilter !== 'All' ? `?mediaType=${mediaFilter}` : '';
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/global/top-rated${query}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/global/top-rated?source=${source}${mediaFilter !== 'All' ? `&mediaType=${mediaFilter}` : ''}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) setTopRated(await res.json());
@@ -40,6 +41,10 @@ const Global = () => {
             <option value="book">Books</option>
             <option value="game">Games</option>
             <option value="album">Albums</option>
+          </Form.Select>
+          <Form.Select style={{ width: '200px' }} value={source} onChange={(e) => setSource(e.target.value)}>
+            <option value="whimsy">Whimsy Community Ratings</option>
+            <option value="external">Source Website Ratings</option>
           </Form.Select>
         </div>
 
