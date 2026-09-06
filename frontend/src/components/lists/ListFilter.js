@@ -1,34 +1,37 @@
 import React from 'react';
-import { DropdownButton, Dropdown, FormControl, Container, Form, Button } from 'react-bootstrap';
+import { Dropdown, FormControl, Container, Form } from 'react-bootstrap';
 import axios from 'axios';
+import MultiCheckDropdown from './MultiCheckDropdown';
+
+const MEDIA_OPTIONS = [
+  { key: 'movie', label: 'Movie' }, { key: 'show', label: 'Show' },
+  { key: 'anime', label: 'Anime' }, { key: 'manga', label: 'Manga' },
+  { key: 'book', label: 'Book' }, { key: 'game', label: 'Game' },
+  { key: 'album', label: 'Album' },
+];
+
+const STATUS_OPTIONS = [
+  { key: 'current', label: 'Current' },
+  { key: 'completed', label: 'Completed' },
+  { key: 'futures', label: 'Futures' },
+];
 
 const SearchAndDropdowns = ({
-  currentList,
-  currentMedia,
-  searchTerm,
-  onListChange,
-  onMediaChange,
-  onSearchChange,
-  capitalizeFirstLetter,
-  isTableView,
-  setIsTableView,
-  onExportClick,
-  onImportClick,
+  selectedStatuses, onStatusChange,
+  selectedMediaTypes, onMediaChange, mediaMultiMode, onToggleMediaMultiMode,
+  tagOptions, selectedTags, onTagsChange,
+  searchTerm, onSearchChange,
+  isTableView, setIsTableView,
+  onExportClick, onImportClick,
+  columnOptions, visibleColumns, onToggleColumn,
 }) => {
-
   const handleViewChange = async (viewType) => {
     setIsTableView(viewType === 'table');
-
     try {
       const user_token = localStorage.getItem('user_token');
       await axios.patch(`${process.env.REACT_APP_API_URL}/api/accounts/user/view-setting`, {
         view_setting: viewType,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user_token}`,
-        }
-      });
+      }, { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user_token}` } });
     } catch (error) {
       console.error('Error updating view setting:', error);
     }
@@ -37,9 +40,7 @@ const SearchAndDropdowns = ({
   return (
     <div className="whimsy-search-bar py-3">
       <Container>
-        <Form className="whimsy-search-form">
-          
-          {/* View Dropdown */}
+        <Form className="whimsy-search-form d-flex align-items-center gap-2 flex-wrap">
           <Dropdown>
             <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn-outline">
               {isTableView ? 'Table View' : 'Card View'}
@@ -50,57 +51,43 @@ const SearchAndDropdowns = ({
             </Dropdown.Menu>
           </Dropdown>
 
-          {/* Filter for List */}
-          <DropdownButton
-            id="media-dropdown"
-            title={currentList === 'completed' ? 'Completed' : currentList === 'futures' ? 'Futures' : 'Current'}
-            className="whimsy-dropdown-list"
-          >
-            <Dropdown.Item onClick={() => onListChange('completed')}>Completed</Dropdown.Item>
-            <Dropdown.Item onClick={() => onListChange('current')}>Current</Dropdown.Item>
-            <Dropdown.Item onClick={() => onListChange('futures')}>Futures</Dropdown.Item>
-          </DropdownButton>
+          <MultiCheckDropdown
+            label="List Status" options={STATUS_OPTIONS}
+            selected={selectedStatuses} onChange={onStatusChange}
+            mode="multi" includeAllOption
+          />
 
-          {/* Filter for media classification */}
-          <DropdownButton
-            id="media-dropdown"
-            title={capitalizeFirstLetter(currentMedia)}
-            className="whimsy-dropdown-media"
-          >
-            <Dropdown.Item onClick={() => onMediaChange('All')}>All</Dropdown.Item>
-            <Dropdown.Item onClick={() => onMediaChange('anime')}>Anime</Dropdown.Item>
-            <Dropdown.Item onClick={() => onMediaChange('album')}>Album</Dropdown.Item>
-            <Dropdown.Item onClick={() => onMediaChange('show')}>Show</Dropdown.Item>
-            <Dropdown.Item onClick={() => onMediaChange('book')}>Book</Dropdown.Item>
-            <Dropdown.Item onClick={() => onMediaChange('movie')}>Movie</Dropdown.Item>
-            <Dropdown.Item onClick={() => onMediaChange('manga')}>Manga</Dropdown.Item>
-            <Dropdown.Item onClick={() => onMediaChange('game')}>Game</Dropdown.Item>
-          </DropdownButton>
+          <MultiCheckDropdown
+            label="Media Type" options={MEDIA_OPTIONS}
+            selected={selectedMediaTypes} onChange={onMediaChange}
+            mode="toggle" multiMode={mediaMultiMode} onToggleMultiMode={onToggleMediaMultiMode}
+            includeAllOption
+          />
 
-          {/* Search input */}
+          <MultiCheckDropdown
+            label="Tags" options={tagOptions}
+            selected={selectedTags} onChange={onTagsChange}
+            mode="multi" includeAllOption
+          />
+
           <FormControl
             className="whimsy-form-control"
             placeholder="Search by title"
             aria-label="Search by title"
-            aria-describedby="basic-addon2"
             value={searchTerm}
             onChange={onSearchChange}
           />
 
-          {/* Import and Export Buttons */}
-          <Button
-            className="whimsy-btn-outline"
-            onClick={onImportClick}
-          >
-            Import
-          </Button>
+          <button className="whimsy-btn-outline" type="button" onClick={onImportClick}>Import</button>
+          <button className="whimsy-btn-outline" type="button" onClick={onExportClick}>Export</button>
 
-          <Button
-            className="whimsy-btn-outline"
-            onClick={onExportClick}
-          >
-            Export
-          </Button>
+          {isTableView && (
+            <MultiCheckDropdown
+              label="Edit Columns" options={columnOptions}
+              selected={visibleColumns} onChange={onToggleColumn}
+              mode="multi"
+            />
+          )}
         </Form>
       </Container>
     </div>

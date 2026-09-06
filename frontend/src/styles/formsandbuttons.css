@@ -107,3 +107,8 @@
   overflow: hidden;
 }
 
+.whimsy-form-control {
+  flex: 1 1 260px;
+  min-width: 220px;
+  width: auto;
+}

@@ -38,3 +38,43 @@
   vertical-align: middle;
   text-align: center;
 }
+
+.friend-avatar-stack { display: flex; align-items: center; }
+
+.friend-avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #1b1a1b;
+  object-fit: cover;
+}
+
+.friend-avatar-overflow {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #555;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  border: 2px solid #1b1a1b;
+}
+
+.friend-stack-empty { color: #666; }
+
+.friend-avatar-stack { display: flex; align-items: center; }
+.friend-avatar-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #1b1a1b; object-fit: cover; }
+.friend-avatar-overflow { width: 32px; height: 32px; border-radius: 50%; background-color: #555; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; border: 2px solid #1b1a1b; }
+.friend-stack-empty { color: #666; }
+
+.tag-chip {
+  background-color: #343334;
+  border: 1px solid #555;
+  color: #ddd;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+}
+.tag-chip-more { color: #999; font-size: 0.75rem; }

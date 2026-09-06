@@ -15,6 +15,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
   const [userLists, setUserLists] = useState([]);
   const [stats, setStats] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loggedAt, setLoggedAt] = useState(null);
 
   const {
     searchKey = '', searchResults = [],
@@ -27,7 +28,14 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
     const res = await fetch(`${process.env.REACT_APP_API_URL}/api/list/lists`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    if (res.ok) setUserLists(await res.json());
+    if (res.ok) {
+      const data = await res.json();
+      setUserLists(data);
+      const compositeId = `${mediaType}/${id}`;
+      const allItems = [...(data.completed || []), ...(data.current || []), ...(data.futures || [])];
+      const entry = allItems.find(i => i.id === compositeId);
+      setLoggedAt(entry ? entry.loggedAt : null);
+    }
   };
 
   const fetchMediaDetails = useCallback(async () => {
@@ -143,7 +151,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
 
   const handleBack = () => {
     if (location.state?.origin === 'search') {
-      navigate(`/${mediaType}`, { state: { searchKey, searchResults, origin } });
+      navigate(`/search/${mediaType}`, { state: { searchKey, searchResults, origin } }); // was `/${mediaType}`
     } else if (location.state?.origin === 'list') {
       navigate('/lists', { state: { currentList, currentMedia, searchTerm, origin } });
     } else {
@@ -169,6 +177,8 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
         onEdit={handleReview}
         onDelete={handleDelete}
         stats={stats}
+        loggedAt={loggedAt}
+        onLoggedAtSaved={setLoggedAt}
       />
 
       <ReviewsListCard mediaType={mediaType} externalId={id} currentUsername={currentUsername} />

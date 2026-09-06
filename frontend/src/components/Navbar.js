@@ -14,13 +14,7 @@ const AppNavbar = () => {
           <Navbar.Brand as={Link} to="/homepage">WHIMSY</Navbar.Brand>
           
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/album" className="nav-link-button">Albums</Nav.Link>
-            <Nav.Link as={Link} to="/anime" className="nav-link-button">Anime</Nav.Link>
-            <Nav.Link as={Link} to="/book" className="nav-link-button">Books</Nav.Link>
-            <Nav.Link as={Link} to="/manga" className="nav-link-button">Manga</Nav.Link>
-            <Nav.Link as={Link} to="/movie" className="nav-link-button">Movies</Nav.Link>
-            <Nav.Link as={Link} to="/show" className="nav-link-button">Shows</Nav.Link>
-            <Nav.Link as={Link} to="/game" className="nav-link-button">Games</Nav.Link>
+            <Nav.Link as={Link} to="/search" className="nav-link-button">Search</Nav.Link>
           </Nav>
 
           <Nav>

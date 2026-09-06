@@ -4,27 +4,17 @@ import '../styles/formsandbuttons.css';
 import axios from 'axios';
 
 const SearchBar = ({
-  placeholder,
-  searchFunction,
-  clearFunction,
-  searchKey,
-  setSearchKey,
-  isTableView,
-  setIsTableView
+  placeholder, searchFunction, clearFunction,
+  searchKey, setSearchKey, isTableView, setIsTableView,
+  mediaTypeSelector, // NEW — media-type tab buttons, rendered inline
 }) => {
   const handleViewChange = async (viewType) => {
     setIsTableView(viewType === 'table');
-
     try {
       const user_token = localStorage.getItem('user_token');
       await axios.patch(`${process.env.REACT_APP_API_URL}/api/accounts/user/view-setting`, {
         view_setting: viewType,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user_token}`,
-        }
-      });
+      }, { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user_token}` } });
     } catch (error) {
       console.error('Error updating view setting:', error);
     }
@@ -33,12 +23,12 @@ const SearchBar = ({
   return (
     <div className="whimsy-search-bar py-3">
       <Container>
-        <Form className="whimsy-search-form d-flex align-items-center gap-2" onSubmit={searchFunction}>
-          <button type="submit" className="whimsy-btn-outline">Search</button>
-          <button type="button" onClick={clearFunction} className="whimsy-btn-outline">Clear</button>
-
+        <Form className="whimsy-search-form d-flex align-items-center gap-2 flex-wrap" onSubmit={searchFunction}>
+          
+          <button type="submit" className="whimsy-btn">Search</button>
+          <button type="button" onClick={clearFunction} className="whimsy-btn whimsy-btn-ghost">Clear</button>
           <Dropdown>
-            <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn-outline">
+            <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn whimsy-btn-ghost">
               {isTableView ? 'Table View' : 'Card View'}
             </Dropdown.Toggle>
             <Dropdown.Menu>
@@ -46,7 +36,6 @@ const SearchBar = ({
               <Dropdown.Item onClick={() => handleViewChange('table')}>Table View</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-
           <FormControl
             className="whimsy-form-control"
             type="search"
@@ -55,12 +44,12 @@ const SearchBar = ({
             value={searchKey}
             onChange={(e) => setSearchKey(e.target.value)}
           />
+          {mediaTypeSelector && <div className="unified-search-tabs">{mediaTypeSelector}</div>}
         </Form>
       </Container>
     </div>
   );
 };
-
 
 export default SearchBar;
 

@@ -45,6 +45,28 @@ router.get('/for-media', authenticateToken, async (req, res) => {
   }
 });
 
+/**
+ * GET /api/custom-lists/tags-map
+ * Returns { "movie/12345": [{id, name}], ... } — every custom list
+ * (tag) the user has created, keyed by which media items are in it.
+ * Powers both the Tags filter and the Tags column on the Lists page.
+ */
+router.get('/tags-map', authenticateToken, async (req, res) => {
+  try {
+    const rows = await customListsQ.getTagsMapForUser(req.user.id);
+    const map = {};
+    for (const row of rows) {
+      const compositeId = `${row.media_type}/${row.external_id}`;
+      if (!map[compositeId]) map[compositeId] = [];
+      map[compositeId].push({ id: row.list_id, name: row.list_name });
+    }
+    res.json(map);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch tags map' });
+  }
+});
+
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { name, description, isRanked = false, visibility = 'public' } = req.body;

@@ -120,8 +120,21 @@ async function getListsWithMembership(userId, mediaItemId) {
   return result.rows;
 }
 
+async function getTagsMapForUser(userId) {
+  const result = await pool.query(
+    `SELECT mi.media_type, mi.external_id, cl.id AS list_id, cl.name AS list_name
+     FROM custom_list_items cli
+     JOIN custom_lists cl ON cl.id = cli.custom_list_id
+     JOIN media_items mi ON mi.id = cli.media_item_id
+     WHERE cl.user_id = $1
+     ORDER BY cl.name`,
+    [userId]
+  );
+  return result.rows;
+}
+
 module.exports = {
   createList, getAllForUser, getById, getItems,
   addItem, removeItem, reorderItems, updateList, deleteList,
-  getListsWithMembership,
+  getListsWithMembership, getTagsMapForUser,
 };

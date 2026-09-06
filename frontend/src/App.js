@@ -15,13 +15,7 @@ import LoginPage from './pages/login';
 import CreateAccountPage from './pages/accountCreation';
 
 // Search Pages
-import Movies from './pages/searchs/movies';
-import Anime from './pages/searchs/anime';
-import Manga from './pages/searchs/manga';
-import Albums from './pages/searchs/albums';
-import Shows from './pages/searchs/shows';
-import Books from './pages/searchs/books';
-import Games from './pages/searchs/games';
+import SearchHub from './pages/searchHub';
 
 // Detail Pages
 import AnimeDetail from './pages/details/animeDetails';
@@ -57,13 +51,8 @@ const App = () => {
         <Route path="/lists/custom" element={<PrivateRoute element={<CustomLists />} />} />
         <Route path="/lists/custom/:listId" element={<PrivateRoute element={<CustomListDetail />} />} />
 
-        <Route path="/movie" element={<PrivateRoute element={<Movies />} />} />
-        <Route path="/anime" element={<PrivateRoute element={<Anime />} />} />
-        <Route path="/manga" element={<PrivateRoute element={<Manga />} />} />
-        <Route path="/album" element={<PrivateRoute element={<Albums />} />} />
-        <Route path="/show" element={<PrivateRoute element={<Shows />} />} />
-        <Route path="/book" element={<PrivateRoute element={<Books />} />} />
-        <Route path="/game" element={<PrivateRoute element={<Games />} />} />
+        <Route path="/search" element={<PrivateRoute element={<SearchHub />} />} />
+        <Route path="/search/:mediaType" element={<PrivateRoute element={<SearchHub />} />} />
         
 
         <Route path="/anime/:id" element={<PrivateRoute element={<AnimeDetail />} />} />

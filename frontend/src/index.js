@@ -11,6 +11,7 @@ import './styles/detailpage.css';
 import './styles/list.css';
 import './styles/homepage.css';
 import './styles/ratingScale.css';
+import './styles/searchhub.css';
 
 
 
