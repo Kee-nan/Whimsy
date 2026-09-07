@@ -1,80 +1,67 @@
-/* Applies to all custom tables */
-.whimsy-table-container {
-  padding: 1rem;
-  display: flex;
-  justify-content: center;
-}
+.whimsy-table-container { padding: 1rem; display: flex; justify-content: center; }
 
 .whimsy-table-wrapper {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
+  border-radius: 12px;
+  overflow: hidden; /* clips corners so the header radius reads cleanly */
+  border: 1px solid #3a2f42;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .whimsy-table {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 0;
+  color: #eee;
+  background-color: #1e1a29;
 }
 
-.whimsy-table img {
-  width: 60px;
-  height: auto;
-  border-radius: 5px;
-}
+.whimsy-table img { width: 60px; height: auto; border-radius: 5px; }
 
 .whimsy-table thead th {
-  background-color: #343a40; /* dark background */
+  background: var(--base-gray);
   color: white;
   text-align: center;
+  padding: 0.85rem 0.75rem;
+  font-weight: 600;
+  border: none;
+  user-select: none;
 }
 
-.whimsy-table tbody tr:hover {
-  background-color: #f1f1f1;
-  cursor: pointer;
-}
+.whimsy-table thead tr:first-child th:first-child { border-top-left-radius: 12px; }
+.whimsy-table thead tr:first-child th:last-child { border-top-right-radius: 12px; }
 
-.whimsy-table td,
-.whimsy-table th {
+.sortable-header { cursor: pointer; }
+.sortable-header:hover { color: #f0d9f5; }
+.whimsy-table-sort-icon { margin-left: 0.3rem; font-size: 0.75rem; }
+
+/* Dark-mode grey striping, replacing Bootstrap's default white stripes */
+.whimsy-table.table-striped > tbody > tr:nth-of-type(odd) > * { background-color: #241f2e; color: #eee; }
+.whimsy-table.table-striped > tbody > tr:nth-of-type(even) > * { background-color: #1b1723; color: #eee; }
+
+
+.whimsy-table td, .whimsy-table th {
   padding: 0.75rem;
   vertical-align: middle;
   text-align: center;
+  border-color: #332b3d;
 }
 
-.friend-avatar-stack { display: flex; align-items: center; }
-
-.friend-avatar-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid #1b1a1b;
-  object-fit: cover;
+.whimsy-group-header td {
+  background-color: #2a2438 !important;
+  color: #a8c1d6;
+  font-weight: bold;
+  text-align: left !important;
+  padding-left: 1rem;
+  cursor: default;
 }
 
-.friend-avatar-overflow {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: #555;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  border: 2px solid #1b1a1b;
-}
-
-.friend-stack-empty { color: #666; }
-
-.friend-avatar-stack { display: flex; align-items: center; }
+/* Friend avatar stack + tags chip (used inside table cells) */
+.friend-avatar-stack { display: flex; align-items: center; justify-content: center; }
 .friend-avatar-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #1b1a1b; object-fit: cover; }
 .friend-avatar-overflow { width: 32px; height: 32px; border-radius: 50%; background-color: #555; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; border: 2px solid #1b1a1b; }
 .friend-stack-empty { color: #666; }
 
-.tag-chip {
-  background-color: #343334;
-  border: 1px solid #555;
-  color: #ddd;
-  padding: 0.15rem 0.5rem;
-  border-radius: 10px;
-  font-size: 0.8rem;
-}
+.tag-chip { background-color: #343334; border: 1px solid #555; color: #ddd; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.8rem; }
 .tag-chip-more { color: #999; font-size: 0.75rem; }

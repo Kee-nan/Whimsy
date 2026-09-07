@@ -2,17 +2,18 @@ import React, { useState, useMemo } from 'react';
 import '../styles/ratingScale.css';
 
 const TIERS = [
-  { max: 2,  label: 'Abysmal',     description: 'A disaster. Avoid at all costs.',              color: '#8b0000' },
-  { max: 5,  label: 'Horrible',         description: "Didn't work for me at all.",                    color: '#c0392b' },
-  { max: 8, label: 'Bad',        description: 'Below average, with noticeable flaws.',          color: '#d35400' },
-  { max: 10, label: 'Poor',        description: 'Below average, with noticeable flaws.',          color: '#d35400' },
-  { max: 13, label: 'Meh',     description: 'Decent — nothing special, nothing bad.',         color: '#cc890d' },
-  { max: 16, label: 'Average',        description: 'Solidly enjoyable, worth your time.',            color: '#f1c40f' },
-  { max: 19, label: 'Good',       description: 'Really impressed — I recommend this.',           color: '#27ae60' },
-  { max: 22, label: 'Great',   description: 'Nearly perfect. A genuine standout.',             color: '#29b9a6ff' },
-  { max: 25, label: 'Excellent',   description: 'Nearly perfect. A genuine standout.',             color: '#126eacff' },
-  { max: 29, label: 'Outstanding',   description: 'Nearly perfect. A genuine standout.',             color: '#4829b9ff' },
-  { max: 30, label: 'Masterpiece', description: 'One of the best. An all-time favorite.',          color: '#84308d' },
+  { max: 2,  label: 'Abysmal',     description: 'A complete disaster with nothing to redeem it.',              color: '#5a0505' },
+  { max: 5,  label: 'Horrible',         description: "Deeply disappointing and difficult to find enjoyment in.",                    color: '#bd2918' },
+  { max: 8, label: 'Bad',        description: 'Significantly flawed and rarely delivers on its potential.',          color: '#b95c04' },
+  { max: 11, label: 'Poor',        description: 'Below average, with noticeable flaws.',          color: '#e9b91a' },
+  { max: 14, label: 'Subpar',     description: 'Not bad, but its weaknesses certainly outweigh its strengths.',         color: '#e9bf04' },
+  { max: 15, label: 'Average',        description: 'A perfectly ordinary experience that meets the basic expectations.',            color: '#e6ff04' },
+  { max: 18, label: 'Good',       description: 'An enjoyable experience with qualities worth appreciating.',           color: '#1fdd68' },
+  { max: 21, label: 'Great',   description: 'Highly enjoyable and memorable. Worth reccomending',             color: 'rgb(13, 141, 30)' },
+  { max: 24, label: 'Excellent',   description: 'An exceptional experience that definitely shines out of the ordinary.',             color: 'rgb(13, 193, 199)' },
+  { max: 27, label: 'Incredible',   description: 'An extraordinary experience that leaves a lasting impression.',             color: 'rgb(41, 99, 223)' },
+  { max: 29, label: 'Outstanding',   description: 'An exceptional achievement that comes remarkably close to perfection.',             color: 'rgb(50, 35, 184)' },
+  { max: 30, label: 'Masterpiece', description: 'A virtually flawless work that stands among the very best.',          color: '#831b8f' },
 ];
 
 const getTier = (value) => TIERS.find((t) => value <= t.max) || TIERS[TIERS.length - 1];

@@ -45,29 +45,39 @@ const CustomLists = () => {
       <Container className="mt-5">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2 style={{ color: 'white' }}>My Lists</h2>
-          <button className="primaryButton" onClick={() => setShowCreate(true)}>+ New List</button>
+          <button className="whimsy-btn" onClick={() => setShowCreate(true)}>+ New List</button>
         </div>
 
-        <div className="row">
-          {lists.map((list) => (
-            <div className="col-md-4 mb-4" key={list.id}>
-              <div className="homepage-card custom-list-card" onClick={() => navigate(`/lists/custom/${list.id}`)}>
-                {list.cover_image && <img src={list.cover_image} alt="" className="custom-list-cover" />}
-                <div style={{ padding: '1rem' }}>
-                  <h4 style={{ color: 'white' }}>{list.name}</h4>
-                  <p style={{ color: '#ccc' }}>{list.description || 'No description'}</p>
-                  <div className="custom-list-badges">
-                    <span className="list-badge">{list.is_ranked ? 'Ranked' : 'Unranked'}</span>
-                    <span className="list-badge">{visibilityLabel(list.visibility)}</span>
-                  </div>
-                  <p style={{ color: '#999', margin: '0.5rem 0 0' }}>
-                    {list.item_count} item{list.item_count !== '1' ? 's' : ''}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-          {lists.length === 0 && <p style={{ color: '#999' }}>You haven't created any lists yet.</p>}
+        <div className="whimsy-table-container">
+          <div className="whimsy-table-wrapper">
+            <table className="table whimsy-table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Tag Title</th>
+                  <th>Type</th>
+                  <th>Visibility</th>
+                  <th># Items</th>
+                  <th>Description</th>
+                  <th>Created</th>
+                  <th>Last Edited</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lists.map((list) => (
+                  <tr key={list.id} onClick={() => navigate(`/lists/custom/${list.id}`)}>
+                    <td style={{ textAlign: 'left', fontWeight: 'bold' }}>{list.name}</td>
+                    <td>{list.is_ranked ? 'Ranked' : 'Unranked'}</td>
+                    <td>{visibilityLabel(list.visibility)}</td>
+                    <td>{list.item_count}</td>
+                    <td style={{ textAlign: 'left', color: '#bbb' }}>{list.description || '—'}</td>
+                    <td>{new Date(list.created_at).toLocaleDateString()}</td>
+                    <td>{new Date(list.updated_at).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {lists.length === 0 && <p style={{ color: '#999', textAlign: 'center', padding: '2rem' }}>You haven't created any lists yet.</p>}
         </div>
       </Container>
 
@@ -95,8 +105,8 @@ const CustomLists = () => {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <button className="secondaryButton" onClick={() => setShowCreate(false)}>Cancel</button>
-          <button className="primaryButton" onClick={handleCreate}>Create</button>
+          <button className="whimsy-btn whimsy-btn-ghost" onClick={() => setShowCreate(false)}>Cancel</button>
+          <button className="whimsy-btn" onClick={handleCreate}>Create</button>
         </Modal.Footer>
       </Modal>
     </>

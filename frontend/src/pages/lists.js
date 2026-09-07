@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { Container, Spinner } from 'react-bootstrap';
+import { Container, Spinner, Dropdown, Form } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 import ListCard from '../components/lists/ListCard';
 import FriendAvatarStack from '../components/lists/FriendAvatarStack';
@@ -29,13 +29,14 @@ const COLUMN_DEFINITIONS = [
 
 const DEFAULT_VISIBLE_COLUMNS = ['media', 'status', 'yourRating', 'friendRating', 'globalRating', 'loggedAt', 'friendsWithItem', 'tags'];
 const COLUMN_STORAGE_KEY = 'whimsy_list_columns_v2';
+const PAGE_SIZE = 50;
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
 const loadColumnPrefs = () => {
   try {
     const saved = localStorage.getItem(COLUMN_STORAGE_KEY);
     if (saved) return JSON.parse(saved);
-  } catch { /* corrupt storage — fall through */ }
+  } catch { /* corrupt storage — fall through to defaults */ }
   return DEFAULT_VISIBLE_COLUMNS;
 };
 
@@ -50,7 +51,6 @@ const Lists = () => {
   const [loading, setLoading] = useState(true);
   const [isTableView, setIsTableView] = useState(false);
   const [page, setPage] = useState(1);
-  const pageSize = 30;
   const [importModalShow, setImportModalShow] = useState(false);
 
   const [lists, setLists] = useState({ completed: [], futures: [], current: [] });
@@ -65,6 +65,15 @@ const Lists = () => {
   const [mediaMultiMode, setMediaMultiMode] = useState(false);
   const [selectedTags, setSelectedTags] = useState(['All']);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // sorting + grouping (table view only)
+  const [sortColumn, setSortColumn] = useState('loggedAt');
+  const [sortDir, setSortDir] = useState('desc');
+  const [groupBy, setGroupBy] = useState('none'); // 'none' | 'media' | 'status'
+
+  // extra quick filters
+  const [ratedOnly, setRatedOnly] = useState(false);
+  const [friendsLoggedOnly, setFriendsLoggedOnly] = useState(false);
 
   const fetchAll = useCallback(async () => {
     if (checkTokenExpiration(navigate)) return;
@@ -113,8 +122,12 @@ const Lists = () => {
     !searchTerm || (title && title.toLowerCase().includes(searchTerm.toLowerCase())),
   [searchTerm]);
 
-  // Card view now shows a union of every selected status bucket, since a
-  // user can check more than one status at once.
+  const matchesQuickFilters = useCallback((item) => {
+    if (ratedOnly && item.yourRating == null) return false;
+    if (friendsLoggedOnly && (!item.friendsWithItem || item.friendsWithItem.length === 0)) return false;
+    return true;
+  }, [ratedOnly, friendsLoggedOnly]);
+
   const combinedCardItems = useMemo(() => ([
     ...lists.completed.map((i) => ({ ...i, status: 'completed' })),
     ...lists.current.map((i) => ({ ...i, status: 'current' })),
@@ -126,19 +139,61 @@ const Lists = () => {
   ), [combinedCardItems, matchesStatus, matchesMedia, matchesTags, matchesSearch]);
 
   const filteredDetailed = useMemo(() => detailedItems.filter((item) =>
-    matchesStatus(item.status) && matchesMedia(item.media) && matchesTags(item.id) && matchesSearch(item.title)
-  ), [detailedItems, matchesStatus, matchesMedia, matchesTags, matchesSearch]);
+    matchesStatus(item.status) && matchesMedia(item.media) && matchesTags(item.id) &&
+    matchesSearch(item.title) && matchesQuickFilters(item)
+  ), [detailedItems, matchesStatus, matchesMedia, matchesTags, matchesSearch, matchesQuickFilters]);
 
-  const totalItems = (isTableView ? filteredDetailed : filteredCardItems).length;
-  const lastVisiblePage = Math.ceil(totalItems / pageSize) || 1;
-  const paginatedCardItems = filteredCardItems.slice((page - 1) * pageSize, page * pageSize);
-  const paginatedDetailed = filteredDetailed.slice((page - 1) * pageSize, page * pageSize);
+  const getSortValue = useCallback((item, key) => {
+    switch (key) {
+      case 'title': return (item.title || '').toLowerCase();
+      case 'media': return item.media;
+      case 'status': return item.status;
+      case 'yourRating': return item.yourRating ?? -1;
+      case 'friendRating': return item.friendRating ?? -1;
+      case 'globalRating': return item.globalRating ?? -1;
+      case 'externalRating': return item.externalRating ?? -1;
+      case 'loggedAt': return item.loggedAt ? new Date(item.loggedAt).getTime() : 0;
+      case 'friendsWithItem': return (item.friendsWithItem || []).length;
+      case 'tags': return (tagsByItemId[item.id] || []).map((t) => t.name).sort().join(',');
+      default: return item[key] ?? 0;
+    }
+  }, [tagsByItemId]);
 
-  useEffect(() => { setPage(1); }, [selectedStatuses, selectedMediaTypes, selectedTags, searchTerm, location.state, isTableView]);
+  const groupValue = useCallback((item) => (groupBy === 'media' ? item.media : groupBy === 'status' ? item.status : null), [groupBy]);
+
+  const sortedDetailed = useMemo(() => {
+    const arr = [...filteredDetailed];
+    arr.sort((a, b) => {
+      if (groupBy !== 'none') {
+        const ga = groupValue(a), gb = groupValue(b);
+        if (ga !== gb) return ga < gb ? -1 : 1; // groups always sort alphabetically
+      }
+      const va = getSortValue(a, sortColumn);
+      const vb = getSortValue(b, sortColumn);
+      if (va < vb) return sortDir === 'asc' ? -1 : 1;
+      if (va > vb) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return arr;
+  }, [filteredDetailed, sortColumn, sortDir, groupBy, groupValue, getSortValue]);
+
+  const totalItems = (isTableView ? sortedDetailed : filteredCardItems).length;
+  const lastVisiblePage = Math.ceil(totalItems / PAGE_SIZE) || 1;
+  const paginatedCardItems = filteredCardItems.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const paginatedDetailed = sortedDetailed.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [selectedStatuses, selectedMediaTypes, selectedTags, searchTerm, ratedOnly, friendsLoggedOnly, groupBy, location.state, isTableView]);
 
   const handleNavigate = (id) => navigate(`/${id}`, {
     state: { currentList: selectedStatuses, currentMedia: selectedMediaTypes, searchTerm, origin: 'list' },
   });
+
+  const handleSort = (key) => {
+    if (sortColumn === key) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    else { setSortColumn(key); setSortDir('asc'); }
+  };
+
+  const sortIndicator = (key) => (sortColumn === key ? <span className="whimsy-table-sort-icon">{sortDir === 'asc' ? '▲' : '▼'}</span> : null);
 
   const handleExportCSV = () => {
     const allItems = [
@@ -179,12 +234,7 @@ const Lists = () => {
       case 'loggedAt': return item.loggedAt ? new Date(item.loggedAt).toLocaleDateString() : '—';
       case 'friendsWithItem': return <FriendAvatarStack friends={item.friendsWithItem} />;
       case 'tags': return <TagsCell tags={tagsByItemId[item.id]} />;
-      case 'siteCompletedCount': return item.siteCompletedCount;
-      case 'siteWatchlistCount': return item.siteWatchlistCount;
-      case 'siteCurrentCount': return item.siteCurrentCount;
-      case 'siteFavoritedCount': return item.siteFavoritedCount;
-      case 'siteWrittenReviewCount': return item.siteWrittenReviewCount;
-      default: return null;
+      default: return item[key];
     }
   };
 
@@ -204,13 +254,33 @@ const Lists = () => {
         columnOptions={COLUMN_DEFINITIONS} visibleColumns={visibleColumns} onToggleColumn={handleColumnChange}
       />
 
-      <CSVImportModal
-        show={importModalShow}
-        onHide={() => setImportModalShow(false)}
-        onImportDone={(count) => { setImportModalShow(false); fetchAll(); }}
-      />
+      <CSVImportModal show={importModalShow} onHide={() => setImportModalShow(false)} onImportDone={() => { setImportModalShow(false); fetchAll(); }} />
 
-      <Container className="mt-5">
+      {isTableView && (
+        <Container>
+          <div className="d-flex justify-content-between align-items-center my-2 flex-wrap gap-2">
+            <div className="d-flex gap-3 flex-wrap">
+              <Form.Check type="checkbox" label="Rated only" checked={ratedOnly} onChange={(e) => setRatedOnly(e.target.checked)} />
+              <Form.Check type="checkbox" label="Friends have logged this" checked={friendsLoggedOnly} onChange={(e) => setFriendsLoggedOnly(e.target.checked)} />
+            </div>
+            <div className="d-flex align-items-center gap-2">
+              <span style={{ color: '#999', fontSize: '0.9rem' }}>Group by:</span>
+              <Dropdown>
+                <Dropdown.Toggle variant="secondary" size="sm">
+                  {groupBy === 'none' ? 'None' : groupBy === 'media' ? 'Media Type' : 'List Status'}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => setGroupBy('none')}>None</Dropdown.Item>
+                  <Dropdown.Item onClick={() => setGroupBy('media')}>Media Type</Dropdown.Item>
+                  <Dropdown.Item onClick={() => setGroupBy('status')}>List Status</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </div>
+        </Container>
+      )}
+
+      <Container className="mt-3">
         <div style={{ minHeight: '300px', position: 'relative' }}>
           {loading ? (
             <div className="d-flex justify-content-center align-items-center h-100"><Spinner animation="border" variant="primary" /></div>
@@ -220,22 +290,44 @@ const Lists = () => {
                 <table className="table whimsy-table table-striped table-hover">
                   <thead>
                     <tr>
-                      <th>Image</th><th>Title</th>
-                      {activeColumns.map((c) => <th key={c.key}>{c.label}</th>)}
+                      <th>Image</th>
+                      <th onClick={() => handleSort('title')} className="sortable-header">Title {sortIndicator('title')}</th>
+                      {activeColumns.map((c) => (
+                        <th key={c.key} onClick={() => handleSort(c.key)} className="sortable-header">
+                          {c.label} {sortIndicator(c.key)}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedDetailed.map((item) => (
-                      <tr key={item.id} onClick={() => handleNavigate(item.id)}>
-                        <td><img src={item.image} alt={item.title} style={{ width: '50px' }} /></td>
-                        <td>{item.title}</td>
-                        {activeColumns.map((c) => (
-                          <td key={c.key} onClick={(c.key === 'friendsWithItem' || c.key === 'tags') ? (e) => e.stopPropagation() : undefined}>
-                            {renderCell(c.key, item)}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
+                    {(() => {
+                      let lastGroup;
+                      return paginatedDetailed.map((item) => {
+                        const g = groupValue(item);
+                        const showHeader = groupBy !== 'none' && g !== lastGroup;
+                        lastGroup = g;
+                        return (
+                          <React.Fragment key={item.id}>
+                            {showHeader && (
+                              <tr className="whimsy-group-header">
+                                <td colSpan={2 + activeColumns.length}>
+                                  {cap(g)} ({sortedDetailed.filter((x) => groupValue(x) === g).length})
+                                </td>
+                              </tr>
+                            )}
+                            <tr onClick={() => handleNavigate(item.id)}>
+                              <td><img src={item.image} alt={item.title} style={{ width: '50px' }} /></td>
+                              <td>{item.title}</td>
+                              {activeColumns.map((c) => (
+                                <td key={c.key} onClick={(c.key === 'friendsWithItem' || c.key === 'tags') ? (e) => e.stopPropagation() : undefined}>
+                                  {renderCell(c.key, item)}
+                                </td>
+                              ))}
+                            </tr>
+                          </React.Fragment>
+                        );
+                      });
+                    })()}
                   </tbody>
                 </table>
               </div>
@@ -255,9 +347,9 @@ const Lists = () => {
 
         {totalItems > 0 && (
           <div className="d-flex justify-content-center my-3">
-            <button className="btn btn-secondary mx-2" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>← Prev</button>
+            <button className="whimsy-btn whimsy-btn-ghost mx-2" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>← Prev</button>
             <span className="align-self-center">Page {page} of {lastVisiblePage}</span>
-            <button className="btn btn-secondary mx-2" disabled={page >= lastVisiblePage} onClick={() => setPage((p) => Math.min(lastVisiblePage, p + 1))}>Next →</button>
+            <button className="whimsy-btn whimsy-btn-ghost mx-2" disabled={page >= lastVisiblePage} onClick={() => setPage((p) => Math.min(lastVisiblePage, p + 1))}>Next →</button>
           </div>
         )}
       </Container>
@@ -266,8 +358,6 @@ const Lists = () => {
 };
 
 export default Lists;
-
-
 
 
 
