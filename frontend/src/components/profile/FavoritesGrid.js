@@ -22,10 +22,11 @@ const FavoritesGrid = ({ favorites, editable = false, onEditClick }) => {
         {slots.map((item, index) => (
           <div key={index} className="favorite-tile">
             <img
-              src={item?.image || 'https://via.placeholder.com/80x100'}
-              alt={item?.title || `Slot ${index + 1}`}
+              src={(item && item.image) || 'https://via.placeholder.com/80x100'}
+              alt={(item && item.title) || `Slot ${index + 1}`}
+              className="favorite-tile-img"  // NEW class, styled below
             />
-            <p className="favorite-title">{item?.title || '-'}</p>
+            <p className="favorite-title-bold">{(item && item.title) || '-'}</p>
           </div>
         ))}
       </div>

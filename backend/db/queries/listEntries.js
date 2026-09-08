@@ -120,4 +120,40 @@ async function getAllForUserWithStats(userId) {
   return result.rows;
 }
 
-module.exports = { getAllForUser, getEntry, upsertEntry, updateLoggedAt, deleteEntry, getAllForUserWithStats };
+/**
+ * Same shape family as getAllForUserWithStats, but scoped to a single
+ * target user's own rating/tags/logged date — used for the "view a
+ * friend's list" table, where columns show THAT friend's data
+ * (their rating, their tags, when they logged it) rather than
+ * aggregate friend-group stats.
+ */
+async function getDetailedForUser(targetUserId) {
+  const result = await pool.query(
+    `WITH global_ratings AS (
+       SELECT media_item_id, AVG(rating)::numeric(10,2) AS avg_rating, COUNT(*) AS rating_count
+       FROM reviews GROUP BY media_item_id
+     ),
+     target_tags AS (
+       SELECT cli.media_item_id, json_agg(json_build_object('id', cl.id, 'name', cl.name)) AS tags
+       FROM custom_list_items cli JOIN custom_lists cl ON cl.id = cli.custom_list_id
+       WHERE cl.user_id = $1
+       GROUP BY cli.media_item_id
+     )
+     SELECT le.status, le.logged_at,
+            mi.id AS media_item_id, mi.media_type, mi.external_id, mi.title, mi.image_url,
+            mi.external_rating, mi.external_rating_count,
+            gr.avg_rating AS global_rating, gr.rating_count AS global_rating_count,
+            r.rating AS target_rating,
+            COALESCE(tt.tags, '[]'::json) AS tags
+     FROM list_entries le
+     JOIN media_items mi ON mi.id = le.media_item_id
+     LEFT JOIN global_ratings gr ON gr.media_item_id = mi.id
+     LEFT JOIN reviews r ON r.media_item_id = mi.id AND r.user_id = $1
+     LEFT JOIN target_tags tt ON tt.media_item_id = mi.id
+     WHERE le.user_id = $1`,
+    [targetUserId]
+  );
+  return result.rows;
+}
+
+module.exports = { getAllForUser, getEntry, upsertEntry, updateLoggedAt, deleteEntry, getAllForUserWithStats, getDetailedForUser };

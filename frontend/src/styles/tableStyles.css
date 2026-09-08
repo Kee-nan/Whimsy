@@ -20,7 +20,7 @@
 .whimsy-table img { width: 60px; height: auto; border-radius: 5px; }
 
 .whimsy-table thead th {
-  background: var(--base-gray);
+  background: var(--base-gradient);
   color: white;
   text-align: center;
   padding: 0.85rem 0.75rem;
@@ -37,8 +37,8 @@
 .whimsy-table-sort-icon { margin-left: 0.3rem; font-size: 0.75rem; }
 
 /* Dark-mode grey striping, replacing Bootstrap's default white stripes */
-.whimsy-table.table-striped > tbody > tr:nth-of-type(odd) > * { background-color: #241f2e; color: #eee; }
-.whimsy-table.table-striped > tbody > tr:nth-of-type(even) > * { background-color: #1b1723; color: #eee; }
+.whimsy-table.table-striped > tbody > tr:nth-of-type(odd) > * { background-color: #1c1c1c; color: #eee; }
+.whimsy-table.table-striped > tbody > tr:nth-of-type(even) > * { background-color: #2a2a2a; color: #eee; }
 
 
 .whimsy-table td, .whimsy-table th {

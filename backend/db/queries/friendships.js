@@ -27,11 +27,9 @@ async function sendRequest(requesterId, addresseeId) {
 }
 
 async function getPendingForUser(userId) {
-  // requests where I am the addressee and status is still pending
   const result = await pool.query(
-    `SELECT f.id AS friendship_id, u.id, u.username
-     FROM friendships f
-     JOIN users u ON u.id = f.requester_id
+    `SELECT f.id AS friendship_id, u.id, u.username, u.profile_picture_url
+     FROM friendships f JOIN users u ON u.id = f.requester_id
      WHERE f.addressee_id = $1 AND f.status = 'pending'`,
     [userId]
   );
@@ -60,9 +58,8 @@ async function decline(friendshipId, userId) {
 }
 
 async function getAcceptedForUser(userId) {
-  // friendships are directional rows but "accepted" means mutual — union both directions
   const result = await pool.query(
-    `SELECT u.id, u.username FROM friendships f
+    `SELECT u.id, u.username, u.profile_picture_url FROM friendships f
      JOIN users u ON u.id = CASE WHEN f.requester_id = $1 THEN f.addressee_id ELSE f.requester_id END
      WHERE (f.requester_id = $1 OR f.addressee_id = $1) AND f.status = 'accepted'`,
     [userId]
@@ -91,12 +88,11 @@ async function areFriends(userId, otherUserId) {
 
 async function searchUsers(query, excludeUserId) {
   const result = await pool.query(
-    `SELECT id, username FROM users
+    `SELECT id, username, profile_picture_url FROM users
      WHERE username ILIKE $1 AND id != $2
        AND id NOT IN (
          SELECT CASE WHEN requester_id = $2 THEN addressee_id ELSE requester_id END
-         FROM friendships
-         WHERE (requester_id = $2 OR addressee_id = $2) AND status IN ('accepted', 'pending')
+         FROM friendships WHERE (requester_id = $2 OR addressee_id = $2) AND status IN ('accepted','pending')
        )
      LIMIT 10`,
     [`%${query}%`, excludeUserId]

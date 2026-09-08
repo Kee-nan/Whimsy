@@ -3,14 +3,19 @@ const router = express.Router();
 const authenticateToken = require('../middleware/authenticateToken');
 const globalStatsQ = require('../db/queries/globalStats');
 
-// backend/routes/globalRoutes.js
 router.get('/top-rated', authenticateToken, async (req, res) => {
   try {
-    const { mediaType, source = 'whimsy' } = req.query; // 'whimsy' or 'external'
-    const rows = source === 'external'
-      ? await globalStatsQ.getExternalTopRated(100, mediaType || null)
-      : await globalStatsQ.getGlobalTopRated(100, mediaType || null);
-    res.json(rows);
+    const { mediaType, sortBy = 'whimsy' } = req.query;
+    const rows = await globalStatsQ.getTopRated({ limit: 100, mediaType: mediaType || null, sortBy });
+    res.json(rows.map((r, idx) => ({
+      rank: idx + 1,
+      id: `${r.media_type}/${r.external_id}`,
+      media: r.media_type, title: r.title, image: r.image_url,
+      whimsyRating: r.whimsy_rating != null ? parseFloat(r.whimsy_rating) : null,
+      whimsyRatingCount: parseInt(r.whimsy_rating_count || 0, 10),
+      externalRating: r.external_rating != null ? parseFloat(r.external_rating) : null,
+      externalRatingCount: r.external_rating_count,
+    })));
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to fetch global rankings' });

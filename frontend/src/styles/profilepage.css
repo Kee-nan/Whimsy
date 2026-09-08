@@ -307,7 +307,7 @@
   color: white;
   border: 1px solid #555;
   border-radius: 6px;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.25rem;
   font-size: 0.9rem;
 }
 
@@ -371,4 +371,42 @@
   height: 120px;
   object-fit: cover;
   display: block;
+}
+
+.profile-container.wide { max-width: 1600px; margin: 1rem auto; }
+
+/* Shared panel look — mirrors the detail page's dark rounded cards,
+   replacing the old dashed .bordered outline entirely. */
+.profile-panel {
+  background-color: #2a2a2a;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+.bordered { border: none !important; } /* neutralizes any remaining .bordered usages */
+
+.profile-chart-card { min-height: 460px; }
+.pie-chart-canvas-wrapper { position: relative; height: 400px; }
+
+.profile-bottom-row {
+  display: flex;
+  gap: 1.5rem;
+  align-items: stretch; /* forces stat-bar-box and favorites-box to equal height */
+}
+.profile-bottom-row .stat-bar-box { flex: 0 0 260px; display: flex; flex-direction: column; }
+.profile-bottom-row .favorites-box { flex: 1; }
+
+.favorite-tile-img {
+  width: 90px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+.favorite-title-bold {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 0.4rem;
 }

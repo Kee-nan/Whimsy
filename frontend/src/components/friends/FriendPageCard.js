@@ -14,6 +14,8 @@ const FriendPageCard = () => {
   const [friendRequests, setFriendRequests] = useState([]);
   const [message, setMessage] = useState('');
 
+  const avatarUrl = (pic) => (pic ? `${process.env.REACT_APP_API_URL}${pic}` : 'https://via.placeholder.com/40');
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
 
@@ -208,13 +210,11 @@ const FriendPageCard = () => {
         <div className="scroll-box">
           {filteredFriends.length > 0 ? (
             filteredFriends.map(friend => (
-              <div key={friend.id} className="friend-row">
-                <span>{friend.username}</span>
-                <div>
-                  <button onClick={() => handleDeleteClick(friend)} className="secondaryButton">Delete</button>
-                  <button onClick={() => handleViewList(friend.username, friend.id)} className="primaryButton">View</button>
-                </div>
-              </div>
+              <div key={friend.id} className="friend-row-shaded" onClick={() => handleViewList(friend.username, friend.id)}>
+                <img src={avatarUrl(friend.profile_picture_url)} alt={friend.username} className="friend-row-avatar" />
+                <span className="friend-row-name">{friend.username}</span>
+                <button className="whimsy-btn whimsy-btn-ghost" onClick={(e) => { e.stopPropagation(); handleDeleteClick(friend); }}>Delete</button>
+            </div>
             ))
           ) : (
             <p>No friends found.</p>
@@ -237,10 +237,11 @@ const FriendPageCard = () => {
           <div className="scroll-box">
             {globalResults.length > 0 ? (
               globalResults.map(user => (
-                <div key={user.id} className="friend-row">
-                  <span>{user.username}</span>
-                  <button className="primaryButton" onClick={() => handleSendRequest(user.username)}>Add</button>
-                </div>
+                <div key={user.id} className="friend-row-shaded">
+                  <img src={avatarUrl(user.profile_picture_url)} alt={user.username} className="friend-row-avatar" />
+                  <span className="friend-row-name">{user.username}</span>
+                  <button className="whimsy-btn" onClick={() => handleSendRequest(user.username)}>Add</button>
+              </div>
               ))
             ) : (
               <p>Search to find users.</p>
@@ -254,11 +255,12 @@ const FriendPageCard = () => {
           <div className="scroll-box">
             {friendRequests.length > 0 ? (
               friendRequests.map(req => (
-                <div key={req.id} className="friend-row">
-                  <span>{req.username}</span>
+                <div key={req.id} className="friend-row-shaded">
+                  <img src={avatarUrl(req.profilePicture)} alt={req.username} className="friend-row-avatar" />
+                  <span className="friend-row-name">{req.username}</span>
                   <div>
-                    <button className="primaryButton" onClick={() => handleAccept(req.id)}>Accept</button>
-                    <button className="secondaryButton" onClick={() => handleDeny(req.id)}>Deny</button>
+                    <button className="whimsy-btn" onClick={() => handleAccept(req.id)}>Accept</button>
+                    <button className="whimsy-btn whimsy-btn-ghost" onClick={() => handleDeny(req.id)}>Deny</button>
                   </div>
                 </div>
               ))

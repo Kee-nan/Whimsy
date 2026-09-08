@@ -68,6 +68,7 @@ const MediaPieChart = ({ lists }) => {
 
     if (!canvasRef.current || total === 0) return;
 
+    // Only the chart-construction block changes — everything above it (imports, useState, filter logic) stays the same.
     chartRef.current = new ChartJS(canvasRef.current, {
       type: 'pie',
       data: {
@@ -75,33 +76,31 @@ const MediaPieChart = ({ lists }) => {
         datasets: [{
           data: mediaTypes.map((t) => counts[t]),
           backgroundColor: mediaTypes.map((t) => MEDIA_COLORS[t] || '#999'),
-          borderColor: '#1c1c1c',
-          borderWidth: 2,
+          borderColor: '#17131f',
+          borderWidth: 3,
+          hoverOffset: 26,       // pushes the slice outward on hover — the "bulge"
+          hoverBorderWidth: 4,
         }],
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { animateScale: true, duration: 400 },
         plugins: {
-          legend: {
-            position: 'right',
-            labels: { color: '#ddd' },
-          },
+          legend: { position: 'right', labels: { color: '#ddd', font: { size: 14 }, boxWidth: 15, padding: 10 } },
           tooltip: {
             callbacks: {
-              label: (ctx) => {
-                const count = ctx.raw;
-                const pct = ((count / total) * 100).toFixed(1);
-                return `${ctx.label}: ${count} (${pct}%)`;
-              },
+              label: (ctx) => `${ctx.label}: ${ctx.raw} (${((ctx.raw / total) * 100).toFixed(1)}%)`,
             },
           },
           datalabels: {
             color: '#fff',
-            font: { weight: 'bold', size: 11 },
+            font: { weight: 'bold', size: 13 },
             textAlign: 'center',
             formatter: (value, ctx) => {
-              const label = ctx.chart.data.labels[ctx.dataIndex];
+              const lbl = ctx.chart.data.labels[ctx.dataIndex];
               const pct = ((value / total) * 100).toFixed(1);
-              return `${label}\n${value} (${pct}%)`;
+              return `${lbl}\n${value} (${pct}%)`;
             },
           },
         },

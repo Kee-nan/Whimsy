@@ -3,80 +3,98 @@ import { Container, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import AppNavbar from '../components/Navbar';
 
-const MEDALS = { 1: '🥇', 2: '🥈', 3: '🥉' };
-
+const PAGE_SIZE = 25;
 
 const Global = () => {
-  const [topRated, setTopRated] = useState([]);
+  const [rows, setRows] = useState([]);
   const [mediaFilter, setMediaFilter] = useState('All');
+  const [sortBy, setSortBy] = useState('whimsy');
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [source, setSource] = useState('whimsy');
 
   useEffect(() => {
     const fetchTopRated = async () => {
       setLoading(true);
       const token = localStorage.getItem('user_token');
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/global/top-rated?source=${source}${mediaFilter !== 'All' ? `&mediaType=${mediaFilter}` : ''}`, {
+      const params = new URLSearchParams({ sortBy });
+      if (mediaFilter !== 'All') params.append('mediaType', mediaFilter);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/global/top-rated?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.ok) setTopRated(await res.json());
+      if (res.ok) setRows(await res.json());
       setLoading(false);
+      setPage(1);
     };
     fetchTopRated();
-  }, [mediaFilter]);
+  }, [mediaFilter, sortBy]);
+
+  const totalPages = Math.ceil(rows.length / PAGE_SIZE) || 1;
+  const paginated = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const handleSortClick = (col) => setSortBy(col); // clicking a header switches the ORDER BY column
 
   return (
     <>
       <AppNavbar />
-      <Container className="mt-5" style={{ color: 'white' }}>
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2>Global Leaderboard</h2>
-          <Form.Select style={{ width: '180px' }} value={mediaFilter} onChange={(e) => setMediaFilter(e.target.value)}>
-            <option value="All">All Types</option>
-            <option value="movie">Movies</option>
-            <option value="show">Shows</option>
-            <option value="anime">Anime</option>
-            <option value="manga">Manga</option>
-            <option value="book">Books</option>
-            <option value="game">Games</option>
-            <option value="album">Albums</option>
-          </Form.Select>
-          <Form.Select style={{ width: '200px' }} value={source} onChange={(e) => setSource(e.target.value)}>
-            <option value="whimsy">Whimsy Community Ratings</option>
-            <option value="external">Source Website Ratings</option>
-          </Form.Select>
+      <div className="whimsy-search-bar py-3">
+        <Container>
+          <Form className="whimsy-search-form d-flex align-items-center gap-2 flex-wrap">
+            <h4 style={{ color: 'white', margin: 0 }}>Global Leaderboard — Top 100</h4>
+            <Form.Select style={{ width: '180px' }} value={mediaFilter} onChange={(e) => setMediaFilter(e.target.value)}>
+              <option value="All">All Types</option>
+              <option value="movie">Movies</option><option value="show">Shows</option>
+              <option value="anime">Anime</option><option value="manga">Manga</option>
+              <option value="book">Books</option><option value="game">Games</option><option value="album">Albums</option>
+            </Form.Select>
+          </Form>
+        </Container>
+      </div>
+
+      <Container className="mt-4">
+        <div className="whimsy-table-container">
+          <div className="whimsy-table-wrapper">
+            <table className="table whimsy-table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Rank</th><th>Image</th><th>Title</th><th>Type</th>
+                  <th className="sortable-header" onClick={() => handleSortClick('whimsy')}>
+                    Whimsy Rating {sortBy === 'whimsy' && '▼'}
+                  </th>
+                  <th className="sortable-header" onClick={() => handleSortClick('external')}>
+                    Source Rating {sortBy === 'external' && '▼'}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr><td colSpan={6} style={{ color: '#999', padding: '2rem' }}>Loading...</td></tr>
+                ) : paginated.length === 0 ? (
+                  <tr><td colSpan={6} style={{ color: '#999', padding: '2rem' }}>No rated media yet.</td></tr>
+                ) : (
+                  paginated.map((item) => (
+                    <tr key={item.id} onClick={() => navigate(`/${item.media}/${item.id.split('/').slice(1).join('/')}`)}>
+                      <td>{item.rank <= 3 ? ['🥇','🥈','🥉'][item.rank - 1] : `#${item.rank}`}</td>
+                      <td><img src={item.image} alt={item.title} style={{ width: '50px' }} /></td>
+                      <td>{item.title}</td>
+                      <td>{item.media}</td>
+                      <td>{item.whimsyRating != null ? `${item.whimsyRating}/30 (${item.whimsyRatingCount})` : '—'}</td>
+                      <td>{item.externalRating != null ? `${item.externalRating}/30` : '—'}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div className="global-leaderboard-card">
-          <div className="global-leaderboard-header">
-            <span>Rank</span><span>Title</span><span>Type</span><span>Avg Rating</span><span># Reviews</span>
+        {rows.length > 0 && (
+          <div className="d-flex justify-content-center my-3">
+            <button className="whimsy-btn whimsy-btn-ghost mx-2" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>← Prev</button>
+            <span className="align-self-center">Page {page} of {totalPages}</span>
+            <button className="whimsy-btn whimsy-btn-ghost mx-2" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>Next →</button>
           </div>
-          <div className="global-leaderboard-scroll">
-            {loading ? (
-              <p style={{ color: '#999', padding: '1rem' }}>Loading...</p>
-            ) : topRated.length === 0 ? (
-              <p style={{ color: '#999', padding: '1rem' }}>No rated media yet — be the first to leave a review!</p>
-            ) : (
-              topRated.map((item) => (
-                <div
-                  key={item.id}
-                  className="global-leaderboard-row"
-                  onClick={() => navigate(`/${item.media}/${item.id.split('/').slice(1).join('/')}`)}
-                >
-                  <span className="rank-cell">{MEDALS[item.rank] || `#${item.rank}`}</span>
-                  <span className="title-cell">
-                    <img src={item.image} alt={item.title} className="leaderboard-thumb" />
-                    {item.title}
-                  </span>
-                  <span className="type-cell">{item.media}</span>
-                  <span className="rating-cell">{item.averageRating}/30</span>
-                  <span className="count-cell">{item.reviewCount}</span>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        )}
       </Container>
     </>
   );

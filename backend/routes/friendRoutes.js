@@ -4,6 +4,7 @@ const router = express.Router();
 const authenticateToken = require('../middleware/authenticateToken');
 const friendshipsQ = require('../db/queries/friendships');
 const users = require('../db/queries/users');
+const listEntriesQ = require('../db/queries/listEntries');
 
 const listEntriesQ = require('../db/queries/listEntries');
 const favoritesQ = require('../db/queries/favorites');
@@ -38,7 +39,7 @@ router.get('/search', authenticateToken, async (req, res) => {
 
 router.get('/pending', authenticateToken, async (req, res) => {
   const requests = await friendshipsQ.getPendingForUser(req.user.id);
-  res.json(requests.map(r => ({ id: r.friendship_id, username: r.username })));
+  res.json(requests.map((r) => ({ id: r.friendship_id, username: r.username, profilePicture: r.profile_picture_url })));
 });
 
 router.post('/acceptRequest', authenticateToken, async (req, res) => {
@@ -112,6 +113,35 @@ router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error fetching friend lists' });
+  }
+});
+
+router.get('/:friendId/lists/detailed', authenticateToken, async (req, res) => {
+  try {
+    const friendId = parseInt(req.params.friendId, 10);
+    const isFriend = await friendshipsQ.areFriends(req.user.id, friendId);
+    if (!isFriend) return res.status(403).json({ message: 'Not friends with this user' });
+
+    const friend = await users.findById(friendId);
+    if (!friend) return res.status(404).json({ message: 'User not found' });
+
+    const rows = await listEntriesQ.getDetailedForUser(friendId);
+    res.json({
+      username: friend.username,
+      items: rows.map((r) => ({
+        id: `${r.media_type}/${r.external_id}`,
+        media: r.media_type, title: r.title, image: r.image_url, status: r.status,
+        loggedAt: r.logged_at,
+        friendRating: r.target_rating,
+        globalRating: r.global_rating != null ? parseFloat(r.global_rating) : null,
+        globalRatingCount: parseInt(r.global_rating_count || 0, 10),
+        externalRating: r.external_rating != null ? parseFloat(r.external_rating) : null,
+        tags: r.tags,
+      })),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch friend list' });
   }
 });
 

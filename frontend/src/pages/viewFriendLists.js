@@ -8,6 +8,7 @@ import FriendListCard from '../components/friends/FriendListCard';
 import FriendSearchAndDropdowns from '../components/friends/FriendListFilter';
 import ProfileCard from '../components/profile/ProfileCard';
 import { Spinner } from 'react-bootstrap';
+import FriendListTable from '../components/friends/FriendListTable';
 
 
 /**
@@ -21,6 +22,7 @@ const ViewFriendLists = () => {
   const [currentListData, setCurrentListData] = useState([]); 
   const [FavoritesData, setFavoritesData] = useState([]); 
   const [reviews, setReviews] = useState([]);
+  const [viewMode, setViewMode] = useState('profile'); // 'profile' | 'list'
 
   const[bio, setBio] = useState('')
   const[username, setUsername] = useState('')
@@ -175,6 +177,19 @@ const ViewFriendLists = () => {
       <AppNavbar />
 
       <Container>
+        <div className="d-flex gap-2 my-3">
+          <button className={`whimsy-btn ${viewMode === 'profile' ? '' : 'whimsy-btn-ghost'}`} onClick={() => setViewMode('profile')}>Profile</button>
+          <button className={`whimsy-btn ${viewMode === 'list' ? '' : 'whimsy-btn-ghost'}`} onClick={() => setViewMode('list')}>Lists</button>
+        </div>
+
+        {viewMode === 'profile' ? (
+          <ProfileCard friendBio={bio} friendUsername={username} /* ...existing profile props... */ editable={false} />
+        ) : (
+          <FriendListTable friendId={id} friendUsername={username} />
+        )}
+      </Container>
+
+      <Container>
 
         <ProfileCard
           username={username}
@@ -184,18 +199,6 @@ const ViewFriendLists = () => {
           editable={false}
           profilePicture={profilePicture}
           activity={friendActivity}
-        />
-
-        <FriendSearchAndDropdowns
-          currentList={currentList}
-          currentMedia={currentMedia}
-          searchTerm={searchTerm}
-          onListChange={handleSelectList}
-          onMediaChange={handleSelectMedia}
-          onSearchChange={handleSearchChange}
-          capitalizeFirstLetter={capitalizeFirstLetter}
-          isTableView={isTableView}
-          setIsTableView={setIsTableView}
         />
 
         <Container className="mt-5">

@@ -130,4 +130,11 @@ router.delete('/delete', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/distribution', authenticateToken, async (req, res) => {
+  const rows = await reviewsQ.getRatingDistribution(req.user.id);
+  const counts = Array(31).fill(0);
+  rows.forEach((r) => { counts[r.rating] = parseInt(r.count, 10); });
+  res.json(counts);
+});
+
 module.exports = router;

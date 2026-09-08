@@ -83,4 +83,12 @@ async function getPaginatedForMedia(mediaItemId, requestingUserId, page = 1, lim
   };
 }
 
-module.exports = { getAllForUser, getOne, upsertReview, deleteReview, getPaginatedForMedia };
+async function getRatingDistribution(userId) {
+  const result = await pool.query(
+    `SELECT rating, COUNT(*) AS count FROM reviews WHERE user_id = $1 GROUP BY rating`,
+    [userId]
+  );
+  return result.rows;
+}
+
+module.exports = { getAllForUser, getOne, upsertReview, deleteReview, getPaginatedForMedia, getRatingDistribution};

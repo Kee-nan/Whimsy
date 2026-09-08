@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Form } from 'react-bootstrap';
+
 import '../../styles/profilepage.css';
 import '../../styles/modal.css';
+
 import FavoritesGrid from './FavoritesGrid';
 import MediaPieChart from './MediaPieChart';
 import ActivityFeed from './ActivityFeed';
+import RatingDistributionChart from './RatingDistributionChart';
 
 /**
  * Shared profile card for both the logged-in user's own profile and a
- * friend's read-only profile. `editable` toggles all mutation UI: bio
- * editing, favorites editing, account settings, and sign out. When
- * editable=false this renders a fully read-only view of someone else's
- * profile — no separate FriendProfileCard component needed.
+ * friend's read-only profile.
+ *
+ * `editable` controls whether the user can:
+ * - edit their bio
+ * - edit their favorites
+ * - access account settings
+ * - sign out
+ *
+ * When editable=false, the profile is rendered as a read-only view.
  */
 const ProfileCard = ({
   username,
   bio,
-  lists,            // { completed: [], current: [], futures: [] }
-  favorites,        // array of up to 8 items (or null slots)
+  lists,
+  favorites,
   editable = false,
-  onUpdateBio,       // async (newBio) => void — required if editable
-  onEditFavorites,   // () => void — required if editable
-  onSignOut,         // () => void — required if editable
-  onOpenSettings,    // () => void — required if editable
-  profilePicture,    // URL of the profile picture
-  activity             // array of recent activity items
+  onUpdateBio,
+  onEditFavorites,
+  onSignOut,
+  onOpenSettings,
+  profilePicture,
+  activity,
 }) => {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioDraft, setBioDraft] = useState(bio || '');
@@ -34,7 +42,10 @@ const ProfileCard = ({
   }, [bio]);
 
   const handleSaveBio = async () => {
-    await onUpdateBio(bioDraft);
+    if (onUpdateBio) {
+      await onUpdateBio(bioDraft);
+    }
+
     setIsEditingBio(false);
   };
 
@@ -49,9 +60,12 @@ const ProfileCard = ({
     (lists.futures?.length || 0);
 
   return (
-    <div className="profile-container">
-      {/* Top Row */}
-      <div className="profile-header bordered">
+    <div className="profile-container wide">
+
+      {/* =========================================================
+          PROFILE HEADER
+          ========================================================= */}
+      <div className="profile-header profile-panel">
         <div className="profile-left">
           <Image
             src={profilePicture || 'https://via.placeholder.com/150'}
@@ -59,30 +73,63 @@ const ProfileCard = ({
             width="150"
             height="150"
             className="profile-picture"
+            alt={`${username}'s profile`}
           />
         </div>
+
         <div className="profile-center">
-          <h1 className="profile-username">{username}'s Profile</h1>
+          <h1 className="profile-username">
+            {username}'s Profile
+          </h1>
         </div>
+
         <div className="profile-right vertical-buttons">
           {editable && (
             <>
-              <button className="primaryButton" onClick={onSignOut}>Sign Out</button>
-              <button className="secondaryButton" onClick={onOpenSettings}>Account Details</button>
+              <button
+                type="button"
+                className="whimsy-btn whimsy-btn-ghost"
+                onClick={onSignOut}
+              >
+                Sign Out
+              </button>
+
+              <button
+                type="button"
+                className="whimsy-btn"
+                onClick={onOpenSettings}
+              >
+                Account Details
+              </button>
             </>
           )}
         </div>
       </div>
 
-      {/* Middle Row */}
+
+      {/* =========================================================
+          MIDDLE ROW
+          ========================================================= */}
       <div className="profile-middle">
-        <div className="profile-bio-card bio-card bordered">
+
+        {/* -------------------------
+            BIO
+            ------------------------- */}
+        <div className="profile-bio-card bio-card profile-panel">
           <div className="bio-header">
             <h4>Bio:</h4>
+
             {editable && !isEditingBio && (
-              <button className="smallButton" onClick={() => setIsEditingBio(true)}>Edit Bio</button>
+              <button
+                type="button"
+                className="smallButton"
+                onClick={() => setIsEditingBio(true)}
+              >
+                Edit Bio
+              </button>
             )}
           </div>
+
           {isEditingBio ? (
             <>
               <Form.Control
@@ -92,47 +139,141 @@ const ProfileCard = ({
                 onChange={(e) => setBioDraft(e.target.value)}
                 className="mb-2 bio-textarea"
               />
+
               <div className="button-group">
-                <button className="primaryButton" onClick={handleSaveBio}>Save</button>
-                <button className="secondaryButton" onClick={handleCancelBio}>Cancel</button>
+                <button
+                  type="button"
+                  className="primaryButton"
+                  onClick={handleSaveBio}
+                >
+                  Save
+                </button>
+
+                <button
+                  type="button"
+                  className="secondaryButton"
+                  onClick={handleCancelBio}
+                >
+                  Cancel
+                </button>
               </div>
             </>
           ) : (
             <div className="bio-content">
-              <p>{bio || "This user hasn't written a bio yet."}</p>
+              <p>
+                {bio || "This user hasn't written a bio yet."}
+              </p>
             </div>
           )}
         </div>
 
+
+        {/* -------------------------
+            MEDIA BREAKDOWN
+            ------------------------- */}
         <MediaPieChart lists={lists} />
       </div>
 
-      {/* Bottom Row */}
-      <div className="profile-bottom bordered">
-        <div className="stat-bar-box">
+
+      {/* =========================================================
+          BOTTOM ROW
+          ========================================================= */}
+      <div className="profile-bottom-row">
+
+        {/* -------------------------
+            LIST STATS
+            ------------------------- */}
+        <div className="stat-bar-box profile-panel">
           <div className="stat-list">
-            <div className="stat-list-header">List Stats</div>
-            <div><strong>Futures:</strong> {lists.futures?.length || 0}</div>
-            <div><strong>Current:</strong> {lists.current?.length || 0}</div>
-            <div><strong>Completed:</strong> {lists.completed?.length || 0}</div>
-            <div><strong>Total:</strong> {totalItems}</div>
+            <div className="stat-list-header">
+              List Stats
+            </div>
+
+            <div>
+              <strong>Futures:</strong>{' '}
+              {lists.futures?.length || 0}
+            </div>
+
+            <div>
+              <strong>Current:</strong>{' '}
+              {lists.current?.length || 0}
+            </div>
+
+            <div>
+              <strong>Completed:</strong>{' '}
+              {lists.completed?.length || 0}
+            </div>
+
+            <div>
+              <strong>Total:</strong>{' '}
+              {totalItems}
+            </div>
           </div>
+
           <div className="vertical-bar-container">
-            <div className="bar-segment futures" style={{ height: `${((lists.futures?.length || 0) / totalItems) * 100 || 0}%` }} />
-            <div className="bar-segment current" style={{ height: `${((lists.current?.length || 0) / totalItems) * 100 || 0}%` }} />
-            <div className="bar-segment completed" style={{ height: `${((lists.completed?.length || 0) / totalItems) * 100 || 0}%` }} />
+            <div
+              className="bar-segment futures"
+              style={{
+                height: `${
+                  ((lists.futures?.length || 0) / totalItems) * 100 || 0
+                }%`,
+              }}
+            />
+
+            <div
+              className="bar-segment current"
+              style={{
+                height: `${
+                  ((lists.current?.length || 0) / totalItems) * 100 || 0
+                }%`,
+              }}
+            />
+
+            <div
+              className="bar-segment completed"
+              style={{
+                height: `${
+                  ((lists.completed?.length || 0) / totalItems) * 100 || 0
+                }%`,
+              }}
+            />
           </div>
         </div>
 
-        <FavoritesGrid favorites={favorites} editable={editable} onEditClick={onEditFavorites} />
+
+        {/* -------------------------
+            FAVORITES
+            ------------------------- */}
+        <div className="favorites-box profile-panel">
+          <FavoritesGrid
+            favorites={favorites}
+            editable={editable}
+            onEditClick={onEditFavorites}
+          />
+        </div>
       </div>
 
-       <ActivityFeed
-          activity={activity}
-          title={editable ? 'Your Recent Activity' : `${username}'s Recent Activity`}
-        />
+
+      {/* =========================================================
+          ACTIVITY
+          ========================================================= */}
+      <ActivityFeed
+        activity={activity}
+        title={
+          editable
+            ? 'Your Recent Activity'
+            : `${username}'s Recent Activity`
+        }
+      />
+
+
+      {/* =========================================================
+          RATING DISTRIBUTION
+          ========================================================= */}
+      <RatingDistributionChart userId={null} />
     </div>
   );
 };
 
 export default ProfileCard;
+
