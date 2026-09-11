@@ -6,7 +6,6 @@ const friendshipsQ = require('../db/queries/friendships');
 const users = require('../db/queries/users');
 const listEntriesQ = require('../db/queries/listEntries');
 
-const listEntriesQ = require('../db/queries/listEntries');
 const favoritesQ = require('../db/queries/favorites');
 const reviewsQ = require('../db/queries/reviews');
 
@@ -65,7 +64,6 @@ router.delete('/delete/:friendId', authenticateToken, async (req, res) => {
   await friendshipsQ.remove(req.user.id, parseInt(req.params.friendId, 10));
   res.status(200).json({ message: 'Friend removed successfully' });
 });
-
 router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {
   try {
     const friendId = parseInt(req.params.friendId, 10);
@@ -76,40 +74,16 @@ router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {
     if (!friend) return res.status(404).json({ message: 'User not found' });
 
     const listRows = await listEntriesQ.getAllForUser(friendId);
-    const lists = listRows.map(r => ({
-      id: `${r.media_type}/${r.external_id}`,
-      media: r.media_type,
-      title: r.title,
-      image: r.image_url,
-      listType: r.status,   // matches viewFriendLists.js's expected field name
+    const lists = listRows.map((r) => ({
+      id: `${r.media_type}/${r.external_id}`, media: r.media_type, title: r.title, image: r.image_url, listType: r.status,
     }));
 
     const favRows = await favoritesQ.getForUser(friendId);
-    const favorites = favRows.map(r => ({
-      id: `${r.media_type}/${r.external_id}`,
-      media: r.media_type,
-      title: r.title,
-      image: r.image_url,
+    const favorites = favRows.map((r) => ({
+      id: `${r.media_type}/${r.external_id}`, media: r.media_type, title: r.title, image: r.image_url,
     }));
 
-    const reviewRows = await reviewsQ.getAllForUser(friendId);
-    const reviews = reviewRows.map(r => ({
-      id: `${r.media_type}/${r.external_id}`,
-      rating: r.rating,
-      review: r.review_text,
-      title: r.title,
-      image: r.image_url,
-    }));
-
-    res.json({
-      username: friend.username,
-      bio: friend.bio,
-      profilePicture: friend.profile_picture_url,
-      view_setting: friend.view_setting,
-      lists,
-      favorites,
-      reviews,
-    });
+    res.json({ username: friend.username, bio: friend.bio, view_setting: friend.view_setting, lists, favorites });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error fetching friend lists' });

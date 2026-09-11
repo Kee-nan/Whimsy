@@ -137,4 +137,28 @@ router.get('/distribution', authenticateToken, async (req, res) => {
   res.json(counts);
 });
 
+router.get('/stats', authenticateToken, async (req, res) => {
+  try {
+    const { mediaType, id } = req.query;
+    if (!mediaType || !id) return res.status(400).json({ message: 'mediaType and id are required' });
+
+    const mediaItem = await mediaItemsQ.findByTypeAndExternalId(mediaType, id);
+    if (!mediaItem) {
+      return res.json({ global: { average: null, count: 0 }, friends: { average: null, count: 0 }, external: { average: null, count: null }, friendActivity: [] });
+    }
+
+    const [global, friends, external, friendActivity] = await Promise.all([
+      mediaStatsQ.getGlobalRating(mediaItem.id),
+      mediaStatsQ.getFriendRating(mediaItem.id, req.user.id),
+      mediaStatsQ.getExternalRating(mediaItem.id),
+      mediaStatsQ.getFriendActivity(mediaItem.id, req.user.id),
+    ]);
+
+    res.json({ global, friends, external, friendActivity });
+  } catch (error) {
+    console.error('Error fetching media stats:', error);
+    res.status(500).json({ message: 'Failed to fetch media stats' });
+  }
+});
+
 module.exports = router;

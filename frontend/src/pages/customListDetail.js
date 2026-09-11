@@ -19,6 +19,7 @@ const CustomListDetail = () => {
   const [showBulkAdd, setShowBulkAdd] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
   const [descDraft, setDescDraft] = useState('');
+  const [iconFile, setIconFile] = useState(null);
 
   const fetchList = useCallback(async () => {
     const res = await fetch(`${process.env.REACT_APP_API_URL}/api/custom-lists/${listId}`, { headers: authHeaders() });
@@ -42,6 +43,18 @@ const CustomListDetail = () => {
     });
     if (res.ok) fetchList();
   };
+
+  const handleIconUpload = async () => {
+  if (!iconFile) return;
+  const formData = new FormData();
+  formData.append('icon', iconFile);
+  const token = localStorage.getItem('user_token');
+  await fetch(`${process.env.REACT_APP_API_URL}/api/custom-lists/${listId}/icon`, {
+    method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: formData,
+  });
+  setIconFile(null);
+  fetchList();
+};
 
   // Ranked/visibility dropdowns are live — they save immediately, independent of edit mode.
   const handleRankedChange = (e) => patchList({ isRanked: e.target.value === 'ranked' });
@@ -95,6 +108,14 @@ const CustomListDetail = () => {
         <Container>
           <Form className="whimsy-search-form d-flex align-items-center gap-2 flex-wrap">
             <button className="whimsy-btn whimsy-btn-ghost" onClick={() => navigate('/lists/custom')}>← Back</button>
+
+            {editMode && (
+              <>
+                {list.icon_url && <img src={`${process.env.REACT_APP_API_URL}${list.icon_url}`} alt="" className="tag-icon-preview" />}
+                <input type="file" accept="image/*" onChange={(e) => setIconFile(e.target.files[0])} style={{ width: '160px' }} />
+                <button className="whimsy-btn whimsy-btn-ghost" onClick={handleIconUpload} disabled={!iconFile}>Set Icon</button>
+              </>
+            )}
 
             {editMode ? (
               <Form.Control className="whimsy-form-control" value={nameDraft} onChange={(e) => setNameDraft(e.target.value)} />

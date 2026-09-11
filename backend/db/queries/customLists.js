@@ -133,8 +133,25 @@ async function getTagsMapForUser(userId) {
   return result.rows;
 }
 
+async function updateIcon(listId, iconUrl) {
+  const result = await pool.query(`UPDATE custom_lists SET icon_url = $1, updated_at = now() WHERE id = $2 RETURNING *`, [iconUrl, listId]);
+  return result.rows[0];
+}
+
+async function getTagsMapForUser(userId) {
+  const result = await pool.query(
+    `SELECT mi.media_type, mi.external_id, cl.id AS list_id, cl.name AS list_name, cl.icon_url
+     FROM custom_list_items cli
+     JOIN custom_lists cl ON cl.id = cli.custom_list_id
+     JOIN media_items mi ON mi.id = cli.media_item_id
+     WHERE cl.user_id = $1 ORDER BY cl.name`,
+    [userId]
+  );
+  return result.rows;
+}
+
 module.exports = {
   createList, getAllForUser, getById, getItems,
   addItem, removeItem, reorderItems, updateList, deleteList,
-  getListsWithMembership, getTagsMapForUser,
+  getListsWithMembership, getTagsMapForUser, updateIcon, getTagsMapForUser
 };

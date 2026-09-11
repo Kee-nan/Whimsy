@@ -65,3 +65,5 @@
 
 .tag-chip { background-color: #343334; border: 1px solid #555; color: #ddd; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.8rem; }
 .tag-chip-more { color: #999; font-size: 0.75rem; }
+
+.whimsy-table thead th.sorted-col { background: linear-gradient(135deg, var(--three-purple), var(--one-purple)); }

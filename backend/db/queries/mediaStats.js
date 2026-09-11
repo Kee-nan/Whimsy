@@ -51,4 +51,13 @@ async function getFriendActivity(mediaItemId, userId) {
   return result.rows;
 }
 
-module.exports = { getGlobalRating, getFriendRating, getFriendActivity };
+async function getExternalRating(mediaItemId) {
+  const result = await pool.query(
+    `SELECT external_rating, external_rating_count FROM media_items WHERE id = $1`,
+    [mediaItemId]
+  );
+  const row = result.rows[0];
+  return row ? { average: row.external_rating != null ? parseFloat(row.external_rating) : null, count: row.external_rating_count } : { average: null, count: null };
+}
+
+module.exports = { getGlobalRating, getFriendRating, getFriendActivity, getExternalRating };

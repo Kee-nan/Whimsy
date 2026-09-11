@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const users = require('../db/queries/users');
 const authenticateToken = require('../middleware/authenticateToken');
-const upload = require('../middleware/upload');
+const { upload } = require('../middleware/upload');
 
 router.post('/login', async (req, res) => {
   try {

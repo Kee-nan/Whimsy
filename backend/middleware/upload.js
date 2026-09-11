@@ -30,4 +30,20 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB cap
 });
 
-module.exports = upload;
+const tagIconStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(__dirname, '..', 'uploads', 'tag-icons');
+    fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `tag-${req.params.listId}-${Date.now()}${ext}`);
+  },
+});
+const uploadTagIcon = multer({ storage: tagIconStorage, fileFilter, limits: { fileSize: 3 * 1024 * 1024 } });
+
+module.exports = {
+  upload,
+  uploadTagIcon,
+};

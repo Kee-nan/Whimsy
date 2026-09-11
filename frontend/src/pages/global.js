@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Form } from 'react-bootstrap';
+import { Container, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import AppNavbar from '../components/Navbar';
 
 const PAGE_SIZE = 25;
+
+const SORT_OPTIONS = [
+  { key: 'whimsy', label: 'Whimsy Rating' },
+  { key: 'external', label: 'Source Rating' },
+  { key: 'user', label: 'Your Rating' },
+  { key: 'friends', label: 'Friend Rating' },
+];
 
 const Global = () => {
   const [rows, setRows] = useState([]);
@@ -32,7 +39,15 @@ const Global = () => {
   const totalPages = Math.ceil(rows.length / PAGE_SIZE) || 1;
   const paginated = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  const handleSortClick = (col) => setSortBy(col); // clicking a header switches the ORDER BY column
+  const renderFriendCell = (item) => {
+    if (item.friendRating == null) return '—';
+    const tooltip = item.friendContributors.map((c) => `${c.username} (${c.rating})`).join(', ');
+    return (
+      <OverlayTrigger placement="top" overlay={<Tooltip>{tooltip}</Tooltip>}>
+        <span style={{ cursor: 'help', borderBottom: '1px dotted #999' }}>{item.friendRating}/30</span>
+      </OverlayTrigger>
+    );
+  };
 
   return (
     <>
@@ -47,6 +62,9 @@ const Global = () => {
               <option value="anime">Anime</option><option value="manga">Manga</option>
               <option value="book">Books</option><option value="game">Games</option><option value="album">Albums</option>
             </Form.Select>
+            <Form.Select style={{ width: '190px' }} value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              {SORT_OPTIONS.map((o) => <option key={o.key} value={o.key}>Sort: {o.label}</option>)}
+            </Form.Select>
           </Form>
         </Container>
       </div>
@@ -58,28 +76,28 @@ const Global = () => {
               <thead>
                 <tr>
                   <th>Rank</th><th>Image</th><th>Title</th><th>Type</th>
-                  <th className="sortable-header" onClick={() => handleSortClick('whimsy')}>
-                    Whimsy Rating {sortBy === 'whimsy' && '▼'}
-                  </th>
-                  <th className="sortable-header" onClick={() => handleSortClick('external')}>
-                    Source Rating {sortBy === 'external' && '▼'}
-                  </th>
+                  <th className={sortBy === 'whimsy' ? 'sorted-col' : ''}>Whimsy Rating</th>
+                  <th className={sortBy === 'external' ? 'sorted-col' : ''}>Source Rating</th>
+                  <th className={sortBy === 'user' ? 'sorted-col' : ''}>Your Rating</th>
+                  <th className={sortBy === 'friends' ? 'sorted-col' : ''}>Friend Rating</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={6} style={{ color: '#999', padding: '2rem' }}>Loading...</td></tr>
+                  <tr><td colSpan={8} style={{ color: '#999', padding: '2rem' }}>Loading...</td></tr>
                 ) : paginated.length === 0 ? (
-                  <tr><td colSpan={6} style={{ color: '#999', padding: '2rem' }}>No rated media yet.</td></tr>
+                  <tr><td colSpan={8} style={{ color: '#999', padding: '2rem' }}>No rated media yet for this filter.</td></tr>
                 ) : (
                   paginated.map((item) => (
                     <tr key={item.id} onClick={() => navigate(`/${item.media}/${item.id.split('/').slice(1).join('/')}`)}>
-                      <td>{item.rank <= 3 ? ['🥇','🥈','🥉'][item.rank - 1] : `#${item.rank}`}</td>
+                      <td>{item.rank <= 3 ? ['🥇', '🥈', '🥉'][item.rank - 1] : `#${item.rank}`}</td>
                       <td><img src={item.image} alt={item.title} style={{ width: '50px' }} /></td>
                       <td>{item.title}</td>
                       <td>{item.media}</td>
                       <td>{item.whimsyRating != null ? `${item.whimsyRating}/30 (${item.whimsyRatingCount})` : '—'}</td>
                       <td>{item.externalRating != null ? `${item.externalRating}/30` : '—'}</td>
+                      <td>{item.userRating != null ? `${item.userRating}/30` : '—'}</td>
+                      <td onClick={(e) => e.stopPropagation()}>{renderFriendCell(item)}</td>
                     </tr>
                   ))
                 )}

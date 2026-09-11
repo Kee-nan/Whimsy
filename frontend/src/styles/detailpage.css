@@ -187,3 +187,21 @@
 .review-tile-like.liked { border-color: #ff4d6d; }
 .review-tile-like:hover { border-color: #999; }
 .reviews-pagination { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1.5rem; }
+
+
+
+.logged-and-tags-row { display: flex; gap: 1rem; width: 100%; align-items: flex-start; flex-wrap: wrap; }
+.logged-and-tags-row .logged-date-editor { flex: 1; min-width: 260px; }
+
+.media-tags-panel { flex: 1; min-width: 260px; background-color: #211c29; border-radius: 12px; padding: 1rem 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.media-tags-empty { color: #999; margin: 0; font-size: 0.9rem; }
+.media-tags-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem; }
+.media-tag-chip-icon { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; width: 60px; }
+.media-tag-chip-icon img, .media-tag-chip-icon-placeholder {
+  width: 44px; height: 44px; border-radius: 10px; object-fit: cover;
+  background-color: #343334; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+}
+.media-tag-chip-icon span { font-size: 0.7rem; color: #ccc; text-align: center; }
+
+.tag-icon-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
+.tag-icon-preview { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; }

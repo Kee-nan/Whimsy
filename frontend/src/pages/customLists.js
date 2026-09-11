@@ -125,6 +125,7 @@ const CustomLists = () => {
             <table className="table whimsy-table table-striped table-hover">
               <thead>
                 <tr>
+                  <th>Icon</th>
                   <th>Tag Title</th>
                   <th>Type</th>
                   <th>Visibility</th>
@@ -142,6 +143,10 @@ const CustomLists = () => {
                     onClick={() => navigate(`/lists/custom/${list.id}`)}
                     style={{ cursor: 'pointer' }}
                   >
+
+                    <td>
+                      {list.icon_url ? <img src={`${process.env.REACT_APP_API_URL}${list.icon_url}`} alt="" className="tag-icon-thumb" /> : '—'}
+                    </td>
                     <td
                       style={{
                         textAlign: 'left',

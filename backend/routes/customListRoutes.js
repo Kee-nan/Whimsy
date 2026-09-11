@@ -4,6 +4,7 @@ const authenticateToken = require('../middleware/authenticateToken');
 const customListsQ = require('../db/queries/customLists');
 const mediaItemsQ = require('../db/queries/mediaItems');
 const friendshipsQ = require('../db/queries/friendships');
+const { uploadTagIcon,  } = require('../middleware/upload');
 
 const shapeItems = (rows) => rows.map(r => ({
   id: `${r.media_type}/${r.external_id}`,
@@ -35,7 +36,7 @@ router.get('/for-media', authenticateToken, async (req, res) => {
     if (!mediaItem) {
       // Item has never been added anywhere yet — every list is unchecked.
       const lists = await customListsQ.getAllForUser(req.user.id);
-      return res.json(lists.map(l => ({ id: l.id, name: l.name, included: false })));
+      return res.json(lists.map(l => ({ id: l.id, name: l.name, iconUrl: l.icon_url, included: false })));
     }
     const membership = await customListsQ.getListsWithMembership(req.user.id, mediaItem.id);
     res.json(membership);
@@ -58,7 +59,7 @@ router.get('/tags-map', authenticateToken, async (req, res) => {
     for (const row of rows) {
       const compositeId = `${row.media_type}/${row.external_id}`;
       if (!map[compositeId]) map[compositeId] = [];
-      map[compositeId].push({ id: row.list_id, name: row.list_name });
+      map[compositeId].push({ id: row.list_id, name: row.list_name, iconUrl: row.icon_url });
     }
     res.json(map);
   } catch (error) {
@@ -220,6 +221,22 @@ router.delete('/:listId', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to delete list' });
+  }
+});
+
+router.post('/:listId/icon', authenticateToken, uploadTagIcon.single('icon'), async (req, res) => {
+  try {
+    const listId = parseInt(req.params.listId, 10);
+    const list = await customListsQ.getById(listId);
+    if (!list || list.user_id !== req.user.id) return res.status(403).json({ message: 'Not your list' });
+    if (!req.file) return res.status(400).json({ message: 'No icon file provided' });
+
+    const iconUrl = `/uploads/tag-icons/${req.file.filename}`;
+    await customListsQ.updateIcon(listId, iconUrl);
+    res.json({ iconUrl });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to upload icon' });
   }
 });
 

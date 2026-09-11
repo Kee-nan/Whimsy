@@ -1,292 +1,120 @@
-// frontend/src/pages/ViewFriendLists.js
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Modal } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
-import FriendListCard from '../components/friends/FriendListCard';
-import FriendSearchAndDropdowns from '../components/friends/FriendListFilter';
 import ProfileCard from '../components/profile/ProfileCard';
-import { Spinner } from 'react-bootstrap';
 import FriendListTable from '../components/friends/FriendListTable';
 
-
-/**
- *  Main homepage
- *  Just has basic information about all of the media and details about the website.
- */
+const authHeaders = () => ({
+  Authorization: `Bearer ${localStorage.getItem('user_token')}`,
+});
 
 const ViewFriendLists = () => {
-  const [completedList, setCompletedList] = useState([]);
-  const [futuresList, setFuturesList] = useState([]);
-  const [currentListData, setCurrentListData] = useState([]); 
-  const [FavoritesData, setFavoritesData] = useState([]); 
-  const [reviews, setReviews] = useState([]);
-  const [viewMode, setViewMode] = useState('profile'); // 'profile' | 'list'
-
-  const[bio, setBio] = useState('')
-  const[username, setUsername] = useState('')
-
-  const[profilePicture, setProfilePicture] = useState(null)
-
-  const [currentList, setCurrentList] = useState('current');
-  const [currentMedia, setCurrentMedia] = useState('All');
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const [showModal, setShowModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedReview, setSelectedReview] = useState(null);
-
-  const [loading, setLoading] = useState(true);
-
   const { id } = useParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [viewMode, setViewMode] = useState('profile'); // 'profile' | 'list'
 
-  const [isTableView, setIsTableView] = useState(false);
+  const [username, setUsername] = useState('');
+  const [bio, setBio] = useState('');
+  const [lists, setLists] = useState({ completed: [], current: [], futures: [] });
+  const [favorites, setFavorites] = useState([]);
+  const [activity, setActivity] = useState([]);
 
-  const [friendActivity, setFriendActivity] = useState([]);
+  const fetchFriendData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const headers = authHeaders();
+      const [friendRes, activityRes] = await Promise.all([
+        fetch(`${process.env.REACT_APP_API_URL}/api/friends/friend-lists/${id}`, { headers }),
+        fetch(`${process.env.REACT_APP_API_URL}/api/activity/user/${id}`, { headers }),
+      ]);
 
-  useEffect(() => {
-    const fetchFriendData = async () => {
-      const userToken = localStorage.getItem('user_token');
-      if (!userToken) {
-        console.error('No user token found');
+      if (!friendRes.ok) {
+        if (friendRes.status === 403) setError('You are not friends with this user.');
+        else if (friendRes.status === 404) setError('User not found.');
+        else setError('Failed to load this profile.');
+        setLoading(false);
         return;
       }
 
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/friends/friend-lists/${id}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userToken}`,
-          },
-        });
+      const data = await friendRes.json();
+      setUsername(data.username);
+      setBio(data.bio || '');
+      setLists({
+        completed: (data.lists || []).filter((item) => item.listType === 'completed'),
+        current: (data.lists || []).filter((item) => item.listType === 'current'),
+        futures: (data.lists || []).filter((item) => item.listType === 'futures'),
+      });
+      setFavorites(data.favorites || []);
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch friend data: ${response.statusText}`);
-        }
-
-        const activityRes = await fetch(`${process.env.REACT_APP_API_URL}/api/activity/user/${id}`, {
-          headers: { Authorization: `Bearer ${userToken}` },
-        });
-        if (activityRes.ok) setFriendActivity(await activityRes.json());
-
-        const data = await response.json();
-        // Subdivide the lists
-        setCompletedList(data.lists.filter(item => item.listType ==='completed'));
-        setCurrentListData(data.lists.filter(item => item.listType === 'current'));
-        setFuturesList(data.lists.filter(item => item.listType === 'futures'));
-        setFavoritesData(data.favorites || []);
-        setReviews(data.reviews || []);
-        setBio(data.bio || []);
-        setUsername(data.username || []);
-        setIsTableView(data.view_setting === 'table');
-        setProfilePicture(data.profilePicture ? `${process.env.REACT_APP_API_URL}${data.profilePicture}` : null);
-
-      } catch (error) {
-        console.error('Error fetching friend data:', error);
-      } finally {
+      if (activityRes.ok) setActivity(await activityRes.json());
+    } catch (err) {
+      console.error('Error fetching friend data:', err);
+      setError('Something went wrong loading this profile.');
+    } finally {
       setLoading(false);
-      }
-    };
-
-    fetchFriendData();
+    }
   }, [id]);
 
+  useEffect(() => { fetchFriendData(); }, [fetchFriendData]);
 
-
-
-  // List searching details
-  const handleSelectList = (list) => setCurrentList(list);
-  const handleSelectMedia = (media) => setCurrentMedia(media);
-  const handleSearchChange = (event) => setSearchTerm(event.target.value);
-
-  const filterList = (list) => {
-    return list.filter(item =>
-      item.title.toLowerCase().includes(searchTerm.toLowerCase())
+  if (loading) {
+    return (
+      <>
+        <AppNavbar />
+        <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+          <Spinner animation="border" variant="light" />
+        </Container>
+      </>
     );
-  };
+  }
 
-  const renderList = (list, key) => (
-    <Row key={key}>
-      {filterList(list).map((item, index) => (
-        <Col md={4} className="mb-4" key={index}>
-          <FriendListCard item={item} reviewData={reviews} onCardClick={() => handleCardClick(item)} />
-        </Col>
-      ))}
-    </Row>
-  );
-
-  const renderTable = (list) => (
-    <div className="whimsy-table-container">
-      <div className="whimsy-table-wrapper">
-        <table className="table whimsy-table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Title</th>
-              <th>Media Type</th>
-              <th>User Rating</th>
-              <th>ID</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filterList(list).map((item, index) => {
-              const review = reviews.find(r => r.id === `${item.id}`);
-              return (
-                <tr key={index} onClick={() => handleCardClick(item)}>
-                  <td><img src={item.image} alt={item.title} /></td>
-                  <td>{item.title}</td>
-                  <td>{item.media}</td>
-                  <td>{review ? review.rating : '—'}</td>
-                  <td>{item.id}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
-  const handleCardClick = (item) => {
-    const review = reviews.find(r => r.id === `${item.id}`);
-    setSelectedItem(item);
-    setSelectedReview(review);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedItem(null);
-    setSelectedReview(null);
-  };
-
-  const handleNavigateToDetails = () => {
-    if (selectedItem) {
-      navigate(`/${selectedItem.id}`);
-    }
-  };
-
-  const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
+  if (error) {
+    return (
+      <>
+        <AppNavbar />
+        <Container className="text-center" style={{ paddingTop: '4rem', color: 'white' }}>
+          <h3>{error}</h3>
+          <button className="whimsy-btn whimsy-btn-ghost mt-3" onClick={() => navigate('/friend')}>← Back to Friends</button>
+        </Container>
+      </>
+    );
+  }
 
   return (
     <>
       <AppNavbar />
-
       <Container>
         <div className="d-flex gap-2 my-3">
-          <button className={`whimsy-btn ${viewMode === 'profile' ? '' : 'whimsy-btn-ghost'}`} onClick={() => setViewMode('profile')}>Profile</button>
-          <button className={`whimsy-btn ${viewMode === 'list' ? '' : 'whimsy-btn-ghost'}`} onClick={() => setViewMode('list')}>Lists</button>
+          <button className={`whimsy-btn ${viewMode === 'profile' ? '' : 'whimsy-btn-ghost'}`} onClick={() => setViewMode('profile')}>
+            Profile
+          </button>
+          <button className={`whimsy-btn ${viewMode === 'list' ? '' : 'whimsy-btn-ghost'}`} onClick={() => setViewMode('list')}>
+            Lists
+          </button>
         </div>
 
         {viewMode === 'profile' ? (
-          <ProfileCard friendBio={bio} friendUsername={username} /* ...existing profile props... */ editable={false} />
+          <ProfileCard
+            username={username}
+            bio={bio}
+            lists={lists}
+            favorites={favorites}
+            activity={activity}
+            editable={false}
+          />
         ) : (
           <FriendListTable friendId={id} friendUsername={username} />
         )}
       </Container>
-
-      <Container>
-
-        <ProfileCard
-          username={username}
-          bio={bio}
-          lists={{ completed: completedList, current: currentListData, futures: futuresList }}
-          favorites={FavoritesData}
-          editable={false}
-          profilePicture={profilePicture}
-          activity={friendActivity}
-        />
-
-        <Container className="mt-5">
-        <div style={{ minHeight: '300px', position: 'relative' }}>
-          { loading ? (
-            <div className="d-flex justify-content-center align-items-center h-100">
-              <Spinner animation="border" variant="primary" />
-            </div>
-          ) : isTableView ? (
-            renderTable(
-              currentList === 'completed'
-                ? completedList
-                : currentList === 'futures'
-                  ? futuresList
-                  : currentListData
-            )
-          ) : (
-            renderList(
-              currentList === 'completed'
-                ? completedList
-                : currentList === 'futures'
-                  ? futuresList
-                  : currentListData
-            )
-          )}
-        </div>
-      </Container>
-
-        <Modal show={showModal} onHide={handleCloseModal} className="custom-modal">
-
-        
-        <Modal.Header closeButton>
-          <Modal.Title>{selectedItem?.title}</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <div className="container-fluid">
-            <div className="row">
-              {/* Left Column: Image */}
-              <div className="col-md-4 d-flex align-items-center justify-content-center">
-                <img
-                  src={selectedItem?.image}
-                  alt={selectedItem?.title}
-                  className="review-modal-card-img"
-                />
-              </div>
-
-              {/* Right Column: Title, Rating, Review */}
-              <div className="col-md-8">
-                <div className="review-modal-card-title">
-                  {selectedItem?.title}
-                </div>
-                {selectedReview ? (
-                  <>
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <span className="review-modal-label">Rating:</span>
-                      <span className="review-modal-input">{selectedReview.rating}</span>
-                    </div>
-                    <div>
-                      <span className="review-modal-label">Review:</span>
-                      <p className="review-modal-input">{selectedReview.review}</p>
-                    </div>
-                  </>
-                ) : (
-                  <p>No review available</p>
-                )}
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <button className="secondaryButton" onClick={handleCloseModal}>
-            Close
-          </button>
-          <button className="primaryButton" onClick={handleNavigateToDetails}>
-            Details
-          </button>
-        </Modal.Footer>
-      </Modal>
-
-    </Container>
     </>
   );
 };
 
 export default ViewFriendLists;
-
 
 
 

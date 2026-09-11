@@ -5,6 +5,7 @@ import FriendActivityList from './FriendActivityList';
 import LoggedDateEditor from './loggedDateEditor';
 import CustomListSelector from '../lists/CustomListSelector';
 import RatingGauge from './RatingGauge';
+import MediaTagsPanel from './MediaTagsPanel';
 
 const DetailCard = ({
   image, title, details, summary, type, mediaId, userLists,
@@ -61,11 +62,16 @@ const DetailCard = ({
 
         <div className="stats-grid">
           <RatingGauge value={stats?.global?.average} count={stats?.global?.count} label="Global" />
+          <RatingGauge value={stats?.external?.average} count={stats?.external?.count} label="Source" />
           <RatingGauge value={stats?.friends?.average} count={stats?.friends?.count} label="Friends" />
           <RatingGauge value={review ? review.rating : null} label="You" />
         </div>
 
-        <LoggedDateEditor mediaId={mediaId} loggedAt={loggedAt} onSaved={onLoggedAtSaved} />
+
+        <div className="logged-and-tags-row">
+          <LoggedDateEditor mediaId={mediaId} loggedAt={loggedAt} onSaved={onLoggedAtSaved} />
+          <MediaTagsPanel mediaType={type} externalId={mediaId.split('/').slice(1).join('/')} />
+        </div>
 
         <FriendActivityList friendActivity={stats?.friendActivity} />
 
