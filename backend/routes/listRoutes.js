@@ -5,6 +5,7 @@ const listEntriesQ = require('../db/queries/listEntries');
 const mediaItemsQ = require('../db/queries/mediaItems');
 const reviewsQ = require('../db/queries/reviews');
 const activityLogQ = require('../db/queries/activityLog');
+const {splitMediaId} = require('../utils/mediaId');
 
 router.get('/lists', authenticateToken, async (req, res) => {
   try {
@@ -66,7 +67,7 @@ router.get('/lists/detailed', authenticateToken, async (req, res) => {
 router.post('/upsert', authenticateToken, async (req, res) => {
   try {
     const { media } = req.body;
-    const externalId = media.id.includes('/') ? media.id.split('/').slice(1).join('/') : media.id;
+    const externalId = splitMediaId(media.id); // was media.id.includes(...) directly — fixed
 
     const mediaItem = await mediaItemsQ.upsertMediaItem({
       mediaType: media.media, externalId, title: media.title, imageUrl: media.image,

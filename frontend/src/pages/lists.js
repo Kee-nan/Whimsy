@@ -9,6 +9,7 @@ import SearchAndDropdowns from '../components/lists/ListFilter';
 import CSVImportModal from '../components/lists/CSVImportModal';
 import '../styles/tableStyles.css';
 import { checkTokenExpiration } from '../utils/checkTokenExpiration';
+import ExportModal from '../components/lists/ExportModal';
 
 const COLUMN_DEFINITIONS = [
   { key: 'media', label: 'Type' },
@@ -29,6 +30,7 @@ const COLUMN_DEFINITIONS = [
 
 const DEFAULT_VISIBLE_COLUMNS = ['media', 'status', 'yourRating', 'friendRating', 'globalRating', 'loggedAt', 'friendsWithItem', 'tags'];
 const COLUMN_STORAGE_KEY = 'whimsy_list_columns_v2';
+
 const PAGE_SIZE = 50;
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
@@ -52,6 +54,7 @@ const Lists = () => {
   const [isTableView, setIsTableView] = useState(false);
   const [page, setPage] = useState(1);
   const [importModalShow, setImportModalShow] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   const [lists, setLists] = useState({ completed: [], futures: [], current: [] });
   const [detailedItems, setDetailedItems] = useState([]);
@@ -60,7 +63,7 @@ const Lists = () => {
   const [customLists, setCustomLists] = useState([]);
 
   const [visibleColumns, setVisibleColumns] = useState(loadColumnPrefs());
-  const [selectedStatuses, setSelectedStatuses] = useState(['current']);
+  const [selectedStatuses, setSelectedStatuses] = useState(['All']);
   const [selectedMediaTypes, setSelectedMediaTypes] = useState(['All']);
   const [mediaMultiMode, setMediaMultiMode] = useState(false);
   const [selectedTags, setSelectedTags] = useState(['All']);
@@ -195,28 +198,7 @@ const Lists = () => {
 
   const sortIndicator = (key) => (sortColumn === key ? <span className="whimsy-table-sort-icon">{sortDir === 'asc' ? '▲' : '▼'}</span> : null);
 
-  const handleExportCSV = () => {
-    const allItems = [
-      ...lists.completed.map((item) => ({ ...item, listType: 'completed' })),
-      ...lists.current.map((item) => ({ ...item, listType: 'current' })),
-      ...lists.futures.map((item) => ({ ...item, listType: 'futures' })),
-    ];
-    if (allItems.length === 0) return alert('No list items to export.');
-    const headers = ['id', 'media', 'title', 'image', 'listType', 'rating'];
-    const csvRows = [headers.join(',')];
-    for (const item of allItems) {
-      const review = ReviewData.find((r) => r.id === item.id);
-      const rating = review ? review.rating : '-';
-      csvRows.push(headers.map((h) => h === 'rating' ? `"${rating}"` : `"${String(item[h] || '').replace(/"/g, '""')}"`).join(','));
-    }
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'my_media_lists.csv';
-    link.click();
-    URL.revokeObjectURL(url);
-  };
+  const handleExportClick = () => setShowExportModal(true);
 
   const handleColumnChange = (newSelected) => {
     setVisibleColumns(newSelected);
@@ -250,11 +232,20 @@ const Lists = () => {
         tagOptions={tagOptions} selectedTags={selectedTags} onTagsChange={setSelectedTags}
         searchTerm={searchTerm} onSearchChange={(e) => setSearchTerm(e.target.value)}
         isTableView={isTableView} setIsTableView={setIsTableView}
-        onExportClick={handleExportCSV} onImportClick={() => setImportModalShow(true)}
+        onExportClick={handleExportClick} onImportClick={() => setImportModalShow(true)}
         columnOptions={COLUMN_DEFINITIONS} visibleColumns={visibleColumns} onToggleColumn={handleColumnChange}
       />
 
       <CSVImportModal show={importModalShow} onHide={() => setImportModalShow(false)} onImportDone={() => { setImportModalShow(false); fetchAll(); }} />
+
+      <ExportModal
+        show={showExportModal}
+        onHide={() => setShowExportModal(false)}
+        detailedItems={detailedItems}
+        tagsByItemId={tagsByItemId}
+        tagOptions={tagOptions}
+        columnOptions={COLUMN_DEFINITIONS}
+        />
 
       {isTableView && (
         <Container>

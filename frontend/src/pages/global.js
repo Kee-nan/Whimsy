@@ -76,10 +76,18 @@ const Global = () => {
               <thead>
                 <tr>
                   <th>Rank</th><th>Image</th><th>Title</th><th>Type</th>
-                  <th className={sortBy === 'whimsy' ? 'sorted-col' : ''}>Whimsy Rating</th>
-                  <th className={sortBy === 'external' ? 'sorted-col' : ''}>Source Rating</th>
-                  <th className={sortBy === 'user' ? 'sorted-col' : ''}>Your Rating</th>
-                  <th className={sortBy === 'friends' ? 'sorted-col' : ''}>Friend Rating</th>
+                  <th className={`sortable-header ${sortBy === 'whimsy' ? 'sorted-col' : ''}`} onClick={() => setSortBy('whimsy')}>
+                    Whimsy Rating {sortBy === 'whimsy' && '▼'}
+                  </th>
+                  <th className={`sortable-header ${sortBy === 'external' ? 'sorted-col' : ''}`} onClick={() => setSortBy('external')}>
+                    Source Rating {sortBy === 'external' && '▼'}
+                  </th>
+                  <th className={`sortable-header ${sortBy === 'user' ? 'sorted-col' : ''}`} onClick={() => setSortBy('user')}>
+                    Your Rating {sortBy === 'user' && '▼'}
+                  </th>
+                  <th className={`sortable-header ${sortBy === 'friends' ? 'sorted-col' : ''}`} onClick={() => setSortBy('friends')}>
+                    Friend Rating {sortBy === 'friends' && '▼'}
+                  </th>
                 </tr>
               </thead>
               <tbody>

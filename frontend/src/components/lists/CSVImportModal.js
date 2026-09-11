@@ -17,22 +17,14 @@ const apiEndpoints = {
 
 function normalizeResult(result, mediaType) {
   switch (mediaType) {
-    case 'album':
-      return { id: result.id, media: 'album', title: result.name, image: result.images?.[0]?.url || '', listType: 'completed' };
-    case 'anime':
-      return { id: result.mal_id, media: 'anime', title: result.title, image: result.images?.jpg?.image_url || '', listType: 'completed' };
-    case 'book':
-      return { id: result.id, media: 'book', title: result.volumeInfo?.title, image: result.volumeInfo?.imageLinks?.thumbnail || '', listType: 'completed' };
-    case 'game':
-      return { id: result.id, media: 'game', title: result.name, image: result.background_image || '', listType: 'completed' };
-    case 'manga':
-      return { id: result.mal_id, media: 'manga', title: result.title, image: result.images?.jpg?.image_url || '', listType: 'completed' };
-    case 'movie':
-      return { id: result.id, media: 'movie', title: result.title, image: result.poster_path ? `https://image.tmdb.org/t/p/w500${result.poster_path}` : '', listType: 'completed' };
-    case 'show':
-      return { id: result.id, media: 'show', title: result.name, image: result.image?.medium || '', listType: 'completed' };
-    default:
-      return null;
+    case 'album': return { id: String(result.id), media: 'album', title: result.name, image: result.images?.[0]?.url || '', listType: 'completed' };
+    case 'anime': return { id: String(result.mal_id), media: 'anime', title: result.title, image: result.images?.jpg?.image_url || '', listType: 'completed' };
+    case 'book': return { id: String(result.id), media: 'book', title: result.volumeInfo?.title, image: result.volumeInfo?.imageLinks?.thumbnail || '', listType: 'completed' };
+    case 'game': return { id: String(result.id), media: 'game', title: result.name, image: result.background_image || '', listType: 'completed' };
+    case 'manga': return { id: String(result.mal_id), media: 'manga', title: result.title, image: result.images?.jpg?.image_url || '', listType: 'completed' };
+    case 'movie': return { id: String(result.id), media: 'movie', title: result.title, image: result.poster_path ? `https://image.tmdb.org/t/p/w500${result.poster_path}` : '', listType: 'completed' };
+    case 'show': return { id: String(result.id), media: 'show', title: result.name, image: result.image?.medium || '', listType: 'completed' };
+    default: return null;
   }
 }
 

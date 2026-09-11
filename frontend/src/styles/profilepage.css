@@ -263,36 +263,10 @@
   gap: 0.5rem;
 }
 
-.favorite-tile {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  text-align: center;
-}
-
-.favorite-tile img {
-  width: 80px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-bottom: 0.25rem;
-  white-space: normal;      /* Allow text to wrap */
-  overflow: visible;        /* Don't hide overflow */
-  text-overflow: unset;     /* Disable ellipsis */
-  word-break: break-word;   /* Break long words if needed */
-  max-width: 100%;          /* Ensure it doesn't overflow parent */
-}
-
-.favorite-title {
-  font-size: 1rem;
-  color: #ccc;
-  padding-left: 1rem;
-  white-space: normal;      /* Allow text to wrap */
-  overflow: visible;        /* Don't hide overflow */
-  text-overflow: unset;     /* Disable ellipsis */
-  word-break: break-word;   /* Break long words if needed */
-  max-width: 100%;       
-}
+.favorite-tile-img-plain { width: 80px; height: 100px; object-fit: cover; border-radius: 4px; }
+.favorite-tile-text { display: flex; flex-direction: column; padding-left: 1rem; }
+.favorite-title-plain { font-size: 1rem; color: #ccc; font-weight: normal; margin: 0 0 0.15rem; }
+.favorite-rating-plain { font-size: 1rem; color: #999; margin: 0; }
 
 .favorites-header {
   display: flex;
@@ -385,15 +359,19 @@
 }
 .bordered { border: none !important; } /* neutralizes any remaining .bordered usages */
 
-.profile-chart-card { min-height: 460px; }
+.profile-chart-card .profile-bio-card { min-height: 600px; }
 .pie-chart-canvas-wrapper { position: relative; height: 400px; }
 
-.profile-bottom-row {
+.profile-bottom-row { display: flex; gap: 1.5rem; align-items: flex-start; }
+.profile-bottom-row .stat-bar-box {
+  flex: 0 0 320px;
   display: flex;
-  gap: 1.5rem;
-  align-items: stretch; /* forces stat-bar-box and favorites-box to equal height */
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 150px;
 }
-.profile-bottom-row .stat-bar-box { flex: 0 0 260px; display: flex; flex-direction: column; }
+.profile-bottom-row .vertical-bar-container { height: 100px; } /* was 180px */
 .profile-bottom-row .favorites-box { flex: 1; }
 
 .favorite-tile-img {

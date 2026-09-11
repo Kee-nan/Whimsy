@@ -87,8 +87,9 @@ const ViewFriendLists = () => {
   return (
     <>
       <AppNavbar />
+
       <Container>
-        <div className="d-flex gap-2 my-3">
+        <div className="whimsy-search-form d-flex align-items-center gap-2 flex-wrap mt-3 mb-3">
           <button className={`whimsy-btn ${viewMode === 'profile' ? '' : 'whimsy-btn-ghost'}`} onClick={() => setViewMode('profile')}>
             Profile
           </button>

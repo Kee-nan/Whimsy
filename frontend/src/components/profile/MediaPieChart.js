@@ -85,6 +85,8 @@ const MediaPieChart = ({ lists }) => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: { padding: 15 },     // NEW — gives datalabels/edges room, fixes bottom clipping
+        radius: '100%',                     // NEW — shrinks the pie slightly to give datalabels room
         animation: { animateScale: true, duration: 400 },
         plugins: {
           legend: { position: 'right', labels: { color: '#ddd', font: { size: 14 }, boxWidth: 15, padding: 10 } },

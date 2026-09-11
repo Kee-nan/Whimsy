@@ -4,7 +4,8 @@ const authenticateToken = require('../middleware/authenticateToken');
 const customListsQ = require('../db/queries/customLists');
 const mediaItemsQ = require('../db/queries/mediaItems');
 const friendshipsQ = require('../db/queries/friendships');
-const { uploadTagIcon,  } = require('../middleware/upload');
+const { uploadTagIcon } = require('../middleware/upload');
+const { splitMediaId } = require('../utils/mediaId');
 
 const shapeItems = (rows) => rows.map(r => ({
   id: `${r.media_type}/${r.external_id}`,
@@ -115,7 +116,7 @@ router.post('/:listId/items', authenticateToken, async (req, res) => {
     if (!list || list.user_id !== req.user.id) return res.status(403).json({ message: 'Not your list' });
 
     const { media, note } = req.body; // { id: "movie/123", media: "movie", title, image }
-    const externalId = media.id.includes('/') ? media.id.split('/').slice(1).join('/') : media.id;
+    const externalId = splitMediaId(media.id);
     const mediaItem = await mediaItemsQ.upsertMediaItem({
       mediaType: media.media, externalId, title: media.title, imageUrl: media.image,
     });
@@ -141,7 +142,7 @@ router.post('/:listId/items/bulk', authenticateToken, async (req, res) => {
     }
 
     for (const media of items) {
-      const externalId = media.id.includes('/') ? media.id.split('/').slice(1).join('/') : media.id;
+      const externalId = splitMediaId(media.id);
       const mediaItem = await mediaItemsQ.upsertMediaItem({
         mediaType: media.media, externalId, title: media.title, imageUrl: media.image,
       });
