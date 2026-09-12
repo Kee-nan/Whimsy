@@ -175,19 +175,21 @@ router.delete('/:listId/items', authenticateToken, async (req, res) => {
 });
 
 /** Persist a drag-and-drop reorder — only meaningful while ranked, called on Save. */
+// backend/routes/customListRoutes.js — /reorder route
 router.put('/:listId/reorder', authenticateToken, async (req, res) => {
   try {
     const listId = parseInt(req.params.listId, 10);
     const list = await customListsQ.getById(listId);
     if (!list || list.user_id !== req.user.id) return res.status(403).json({ message: 'Not your list' });
 
-    const { mediaItemIds } = req.body; // ordered array of internal integer IDs
-    if (!Array.isArray(mediaItemIds)) return res.status(400).json({ message: 'mediaItemIds must be an array' });
-
+    const { mediaItemIds } = req.body;
+    if (!Array.isArray(mediaItemIds) || mediaItemIds.length === 0) {
+      return res.status(400).json({ message: 'mediaItemIds must be a non-empty array' });
+    }
     await customListsQ.reorderItems(listId, mediaItemIds);
-    res.status(200).json({ message: 'Order updated' });
+    res.status(200).json({ message: 'Order updated', count: mediaItemIds.length });
   } catch (error) {
-    console.error(error);
+    console.error('Error reordering list:', error);
     res.status(500).json({ message: 'Failed to reorder list' });
   }
 });

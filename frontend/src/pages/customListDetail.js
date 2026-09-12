@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Form } from 'react-bootstrap';
+import { Container, Form, FormControl } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import BulkAddModal from '../components/lists/BulkAddModal';
 import AppNavbar from '../components/Navbar';
@@ -20,6 +20,7 @@ const CustomListDetail = () => {
   const [nameDraft, setNameDraft] = useState('');
   const [descDraft, setDescDraft] = useState('');
   const [iconFile, setIconFile] = useState(null);
+  const [rankedForSave, setRankedForSave] = useState(false);
 
   const fetchList = useCallback(async () => {
     const res = await fetch(`${process.env.REACT_APP_API_URL}/api/custom-lists/${listId}`, { headers: authHeaders() });
@@ -35,6 +36,7 @@ const CustomListDetail = () => {
   }, [listId, navigate]);
 
   useEffect(() => { fetchList(); }, [fetchList]);
+  useEffect(() => { setRankedForSave(list?.is_ranked || false); }, [list]);
 
   const patchList = async (fields) => {
     const res = await fetch(`${process.env.REACT_APP_API_URL}/api/custom-lists/${listId}`, {
@@ -57,8 +59,13 @@ const CustomListDetail = () => {
 };
 
   // Ranked/visibility dropdowns are live — they save immediately, independent of edit mode.
-  const handleRankedChange = (e) => patchList({ isRanked: e.target.value === 'ranked' });
   const handleVisibilityChange = (e) => patchList({ visibility: e.target.value });
+
+  const handleRankedChange = (e) => {
+  const nowRanked = e.target.value === 'ranked';
+  setRankedForSave(nowRanked); // keep in sync immediately, don't wait on a refetch
+  patchList({ isRanked: nowRanked });
+};
 
   const handleRemove = async (mediaId) => {
     await fetch(`${process.env.REACT_APP_API_URL}/api/custom-lists/${listId}/items`, {
@@ -77,11 +84,16 @@ const CustomListDetail = () => {
 
   const handleSaveEdits = async () => {
     await patchList({});
-    if (list.is_ranked) {
-      await fetch(`${process.env.REACT_APP_API_URL}/api/custom-lists/${listId}/reorder`, {
+    // FIX: use rankedForSave (updated synchronously) instead of the
+    // possibly-stale list.is_ranked, which only updates after fetchList()
+    // resolves — this was why reorders silently no-opped.
+    if (rankedForSave) {
+      const mediaItemIds = items.map((i) => i.mediaItemId);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/custom-lists/${listId}/reorder`, {
         method: 'PUT', headers: authHeaders(),
-        body: JSON.stringify({ mediaItemIds: items.map((i) => i.mediaItemId) }),
+        body: JSON.stringify({ mediaItemIds }),
       });
+      if (!res.ok) console.error('Failed to save reorder:', await res.text());
     }
     setEditMode(false);
     fetchList();
@@ -104,50 +116,39 @@ const CustomListDetail = () => {
       <AppNavbar />
 
       {/* Top bar — same visual language as the Lists page filter bar */}
-      <div className="whimsy-search-bar py-3">
-        <Container>
-          <Form className="whimsy-search-form d-flex align-items-center gap-2 flex-wrap">
-            <button className="whimsy-btn whimsy-btn-ghost" onClick={() => navigate('/lists/custom')}>← Back</button>
+      <div className="filter-bar">
+        <div className="filter-bar-inner">
+          <button className="whimsy-btn whimsy-btn-ghost" onClick={() => navigate('/lists/custom')}>← Back</button>
 
-            {editMode && (
+          {editMode ? (
+            <FormControl className="whimsy-form-control filter-bar-search" value={nameDraft} onChange={(e) => setNameDraft(e.target.value)} />
+          ) : (
+            <h4 className="filter-bar-title">{list.name}</h4>
+          )}
+
+          <Form.Select className="filter-bar-select" style={{ width: '140px' }} value={list.is_ranked ? 'ranked' : 'unranked'} onChange={handleRankedChange}>
+            <option value="ranked">Ranked</option>
+            <option value="unranked">Unranked</option>
+          </Form.Select>
+          <Form.Select className="filter-bar-select" style={{ width: '150px' }} value={list.visibility} onChange={handleVisibilityChange}>
+            <option value="public">Public</option>
+            <option value="friends">Friends Only</option>
+            <option value="private">Private</option>
+          </Form.Select>
+
+          {list.isOwner && (
+            editMode ? (
               <>
-                {list.icon_url && <img src={`${process.env.REACT_APP_API_URL}${list.icon_url}`} alt="" className="tag-icon-preview" />}
-                <input type="file" accept="image/*" onChange={(e) => setIconFile(e.target.files[0])} style={{ width: '160px' }} />
-                <button className="whimsy-btn whimsy-btn-ghost" onClick={handleIconUpload} disabled={!iconFile}>Set Icon</button>
+                <button className="whimsy-btn" onClick={() => setShowBulkAdd(true)}>+ Add Items</button>
+                <button className="whimsy-btn" onClick={handleSaveEdits}>Save Changes</button>
+                <button className="whimsy-btn whimsy-btn-ghost" onClick={handleCancelEdits}>Cancel</button>
+                <button className="whimsy-btn whimsy-btn-ghost" onClick={handleDelete}>Delete List</button>
               </>
-            )}
-
-            {editMode ? (
-              <Form.Control className="whimsy-form-control" value={nameDraft} onChange={(e) => setNameDraft(e.target.value)} />
             ) : (
-              <h4 style={{ color: 'white', margin: 0 }}>{list.name}</h4>
-            )}
-
-            <Form.Select style={{ width: '140px' }} value={list.is_ranked ? 'ranked' : 'unranked'} onChange={handleRankedChange}>
-              <option value="ranked">Ranked</option>
-              <option value="unranked">Unranked</option>
-            </Form.Select>
-
-            <Form.Select style={{ width: '150px' }} value={list.visibility} onChange={handleVisibilityChange}>
-              <option value="public">Public</option>
-              <option value="friends">Friends Only</option>
-              <option value="private">Private</option>
-            </Form.Select>
-
-            {list.isOwner && (
-              editMode ? (
-                <>
-                  <button className="whimsy-btn" onClick={() => setShowBulkAdd(true)}>+ Add Items</button>
-                  <button className="whimsy-btn" onClick={handleSaveEdits}>Save Changes</button>
-                  <button className="whimsy-btn whimsy-btn-ghost" onClick={handleCancelEdits}>Cancel</button>
-                  <button className="whimsy-btn whimsy-btn-ghost" onClick={handleDelete}>Delete List</button>
-                </>
-              ) : (
-                <button className="whimsy-btn" onClick={() => setEditMode(true)}>Edit List</button>
-              )
-            )}
-          </Form>
-        </Container>
+              <button className="whimsy-btn" onClick={() => setEditMode(true)}>Edit List</button>
+            )
+          )}
+        </div>
       </div>
 
       <Container className="mt-4">

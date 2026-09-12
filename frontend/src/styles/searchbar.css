@@ -1,0 +1,69 @@
+/* ============================================================
+   UNIFIED FILTER/SEARCH BAR SYSTEM
+   Used by: SearchHub, Lists, CustomLists, CustomListDetail,
+   FriendListTable, Global. One row, centered, horizontally
+   scrollable instead of wrapping when contents overflow — this
+   is what keeps buttons from getting pushed to a second row.
+   ============================================================ */
+
+.filter-bar {
+  background-color: #1b1a1b;
+  border-bottom: 1px solid #353535;
+  padding: 0.85rem 0;
+}
+
+.filter-bar-inner {
+  max-width: 1500px;      /* widened from the old 1140px Bootstrap container cap */
+  min-height: 50px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;       /* the fix — never wraps to a second row */
+  overflow-x: auto;
+  gap: 0.4rem;
+  scrollbar-width: thin;
+}
+
+.filter-bar-inner::-webkit-scrollbar { height: 6px; }
+.filter-bar-inner::-webkit-scrollbar-thumb { background-color: #4a3a52; border-radius: 3px; }
+
+.filter-bar-title {
+  color: white;
+  margin: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 1.15rem;
+}
+
+.filter-bar-search {
+  flex: 1 1 220px;
+  min-width: 180px;
+  max-width: 300px;
+}
+
+.filter-bar-check {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #ccc;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.filter-bar-select {
+  flex-shrink: 0;
+  min-width: 140px;
+}
+
+/* Buttons and dropdown toggles inside a filter bar never wrap their text
+   and never shrink below content size, so the row scrolls instead of
+   collapsing the button layout. */
+.filter-bar .whimsy-btn,
+.filter-bar .whimsy-btn-ghost,
+.filter-bar .dropdown-toggle {
+  white-space: nowrap;
+  flex-shrink: 0;
+}

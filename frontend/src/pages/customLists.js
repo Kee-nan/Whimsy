@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Modal, Form } from 'react-bootstrap';
+import { Container, Modal, Form, FormControl } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import AppNavbar from '../components/Navbar';
+
 
 const authHeaders = () => ({
   'Content-Type': 'application/json',
@@ -88,36 +89,13 @@ const CustomLists = () => {
     <>
       <AppNavbar />
 
-      <div className="whimsy-search-bar py-3">
-          <Container>
-            <Form className="whimsy-search-form d-flex align-items-center gap-2 flex-wrap">
-              <h4
-                style={{
-                  color: 'white',
-                  margin: 0,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                Custom List Tags
-              </h4>
-
-              <Form.Control
-                className="whimsy-form-control"
-                placeholder="Search tags..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-
-              <button
-                type="button"
-                className="whimsy-btn"
-                onClick={() => setShowCreate(true)}
-              >
-                + New List
-              </button>
-            </Form>
-          </Container>
+      <div className="filter-bar">
+        <div className="filter-bar-inner">
+          <h4 className="filter-bar-title">Custom List Tags</h4>
+          <FormControl className="whimsy-form-control filter-bar-search" placeholder="Search tags..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          <button className="whimsy-btn" onClick={() => setShowCreate(true)}>+ New List</button>
         </div>
+      </div>
 
       <Container className="mt-5">
         <div className="whimsy-table-container">

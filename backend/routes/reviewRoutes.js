@@ -81,40 +81,6 @@ router.get('/get', authenticateToken, async (req, res) => {
   }
 });
 
-/**
- * GET /api/review/stats?mediaType=movie&id=12345
- * Global rating, friend-only rating, and the list of friends who have
- * this item logged. Returns empty/null stats (not a 404) when the item
- * has never been added by anyone — "no data yet" is a valid state.
- */
-router.get('/stats', authenticateToken, async (req, res) => {
-  try {
-    const { mediaType, id } = req.query;
-    if (!mediaType || !id) {
-      return res.status(400).json({ message: 'mediaType and id are required' });
-    }
-
-    const mediaItem = await mediaItemsQ.findByTypeAndExternalId(mediaType, id);
-    if (!mediaItem) {
-      return res.json({
-        global: { average: null, count: 0 },
-        friends: { average: null, count: 0 },
-        friendActivity: [],
-      });
-    }
-
-    const [global, friends, friendActivity] = await Promise.all([
-      mediaStatsQ.getGlobalRating(mediaItem.id),
-      mediaStatsQ.getFriendRating(mediaItem.id, req.user.id),
-      mediaStatsQ.getFriendActivity(mediaItem.id, req.user.id),
-    ]);
-
-    res.json({ global, friends, friendActivity });
-  } catch (error) {
-    console.error('Error fetching media stats:', error);
-    res.status(500).json({ message: 'Error fetching media stats' });
-  }
-});
 
 router.delete('/delete', authenticateToken, async (req, res) => {
   try {
@@ -137,14 +103,29 @@ router.get('/distribution', authenticateToken, async (req, res) => {
   res.json(counts);
 });
 
+
 router.get('/stats', authenticateToken, async (req, res) => {
   try {
     const { mediaType, id } = req.query;
-    if (!mediaType || !id) return res.status(400).json({ message: 'mediaType and id are required' });
 
-    const mediaItem = await mediaItemsQ.findByTypeAndExternalId(mediaType, id);
+    if (!mediaType || !id) {
+      return res.status(400).json({
+        message: 'mediaType and id are required'
+      });
+    }
+
+    const mediaItem = await mediaItemsQ.findByTypeAndExternalId(
+      mediaType,
+      id
+    );
+
     if (!mediaItem) {
-      return res.json({ global: { average: null, count: 0 }, friends: { average: null, count: 0 }, external: { average: null, count: null }, friendActivity: [] });
+      return res.json({
+        global: { average: null, count: 0 },
+        friends: { average: null, count: 0 },
+        external: { average: null, count: null },
+        friendActivity: []
+      });
     }
 
     const [global, friends, external, friendActivity] = await Promise.all([
@@ -154,11 +135,19 @@ router.get('/stats', authenticateToken, async (req, res) => {
       mediaStatsQ.getFriendActivity(mediaItem.id, req.user.id),
     ]);
 
-    res.json({ global, friends, external, friendActivity });
+    res.json({
+      global,
+      friends,
+      external,
+      friendActivity
+    });
   } catch (error) {
     console.error('Error fetching media stats:', error);
-    res.status(500).json({ message: 'Failed to fetch media stats' });
+    res.status(500).json({
+      message: 'Failed to fetch media stats'
+    });
   }
 });
+
 
 module.exports = router;

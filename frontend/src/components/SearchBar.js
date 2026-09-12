@@ -21,32 +21,28 @@ const SearchBar = ({
   };
 
   return (
-    <div className="whimsy-search-bar py-3">
-      <Container>
-        <Form className="whimsy-search-form d-flex align-items-center gap-2 flex-wrap" onSubmit={searchFunction}>
-          
-          <button type="submit" className="whimsy-btn">Search</button>
-          <button type="button" onClick={clearFunction} className="whimsy-btn whimsy-btn-ghost">Clear</button>
-          <Dropdown>
-            <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn whimsy-btn-ghost">
-              {isTableView ? 'Table View' : 'Card View'}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => handleViewChange('card')}>Card View</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleViewChange('table')}>Table View</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-          <FormControl
-            className="whimsy-form-control"
-            type="search"
-            placeholder={placeholder}
-            aria-label="Search"
-            value={searchKey}
-            onChange={(e) => setSearchKey(e.target.value)}
-          />
-          {mediaTypeSelector && <div className="unified-search-tabs">{mediaTypeSelector}</div>}
-        </Form>
-      </Container>
+    <div className="filter-bar">
+      <div className="filter-bar-inner">
+        <button type="submit" className="whimsy-btn" onClick={searchFunction}>Search</button>
+        <button type="button" onClick={clearFunction} className="whimsy-btn whimsy-btn-ghost">Clear</button>
+        <Dropdown>
+          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn whimsy-btn-ghost">
+            {isTableView ? 'Table View' : 'Card View'}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => handleViewChange('card')}>Card View</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleViewChange('table')}>Table View</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+        <FormControl
+          className="whimsy-form-control filter-bar-search"
+          type="search"
+          placeholder={placeholder}
+          value={searchKey}
+          onChange={(e) => setSearchKey(e.target.value)}
+        />
+        {mediaTypeSelector && <div className="unified-search-tabs">{mediaTypeSelector}</div>}
+      </div>
     </div>
   );
 };

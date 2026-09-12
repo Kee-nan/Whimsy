@@ -197,7 +197,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100%;
+  height: 420px;
   background-color: #2a2a2a;
   padding: 1rem;
   border: 1px solid #444;
@@ -274,6 +274,64 @@
   align-items: center;
   margin-bottom: 0.5rem;
 }
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.favorite-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background-color: #1c1720;
+  border-radius: 8px;
+  padding: 0.5rem;
+  min-height: 100px;
+}
+
+.favorite-cell-image { flex: 0 0 45%; height: 100%; }
+.favorite-cell-image img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; display: block; }
+
+.favorite-cell-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.3rem;
+}
+
+.favorite-cell-title {
+  color: white;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.favorite-cell-score { color: #999; font-size: 0.95rem; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 .pie-chart-filter {
@@ -364,14 +422,15 @@
 
 .profile-bottom-row { display: flex; gap: 1.5rem; align-items: flex-start; }
 .profile-bottom-row .stat-bar-box {
-  flex: 0 0 320px;
+  flex: 0 0 220px;         /* narrower than the previous 320px */
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  min-height: 150px;
+  min-height: 230px;        /* matches the 2-row favorites grid height */
 }
-.profile-bottom-row .vertical-bar-container { height: 100px; } /* was 180px */
+
+.profile-bottom-row .vertical-bar-container { height: 190px; width: 30px; } /* tall + matches favorites-box height */
 .profile-bottom-row .favorites-box { flex: 1; }
 
 .favorite-tile-img {

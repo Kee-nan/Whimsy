@@ -232,8 +232,11 @@ const Lists = () => {
         tagOptions={tagOptions} selectedTags={selectedTags} onTagsChange={setSelectedTags}
         searchTerm={searchTerm} onSearchChange={(e) => setSearchTerm(e.target.value)}
         isTableView={isTableView} setIsTableView={setIsTableView}
-        onExportClick={handleExportClick} onImportClick={() => setImportModalShow(true)}
+        onExportClick={() => setShowExportModal(true)} onImportClick={() => setImportModalShow(true)}
         columnOptions={COLUMN_DEFINITIONS} visibleColumns={visibleColumns} onToggleColumn={handleColumnChange}
+        ratedOnly={ratedOnly} onRatedOnlyChange={setRatedOnly}
+        friendsLoggedOnly={friendsLoggedOnly} onFriendsLoggedOnlyChange={setFriendsLoggedOnly}
+        groupBy={groupBy} onGroupByChange={setGroupBy}
       />
 
       <CSVImportModal show={importModalShow} onHide={() => setImportModalShow(false)} onImportDone={() => { setImportModalShow(false); fetchAll(); }} />
@@ -247,29 +250,6 @@ const Lists = () => {
         columnOptions={COLUMN_DEFINITIONS}
         />
 
-      {isTableView && (
-        <Container>
-          <div className="d-flex justify-content-between align-items-center my-2 flex-wrap gap-2">
-            <div className="d-flex gap-3 flex-wrap">
-              <Form.Check type="checkbox" label="Rated only" checked={ratedOnly} onChange={(e) => setRatedOnly(e.target.checked)} />
-              <Form.Check type="checkbox" label="Friends have logged this" checked={friendsLoggedOnly} onChange={(e) => setFriendsLoggedOnly(e.target.checked)} />
-            </div>
-            <div className="d-flex align-items-center gap-2">
-              <span style={{ color: '#999', fontSize: '0.9rem' }}>Group by:</span>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" size="sm">
-                  {groupBy === 'none' ? 'None' : groupBy === 'media' ? 'Media Type' : 'List Status'}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => setGroupBy('none')}>None</Dropdown.Item>
-                  <Dropdown.Item onClick={() => setGroupBy('media')}>Media Type</Dropdown.Item>
-                  <Dropdown.Item onClick={() => setGroupBy('status')}>List Status</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          </div>
-        </Container>
-      )}
 
       <Container className="mt-3">
         <div style={{ minHeight: '300px', position: 'relative' }}>

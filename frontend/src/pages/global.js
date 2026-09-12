@@ -52,21 +52,22 @@ const Global = () => {
   return (
     <>
       <AppNavbar />
-      <div className="whimsy-search-bar py-3">
-        <Container>
-          <Form className="whimsy-search-form d-flex align-items-center gap-2 flex-wrap">
-            <h4 style={{ color: 'white', margin: 0 }}>Global Leaderboard — Top 100</h4>
-            <Form.Select style={{ width: '180px' }} value={mediaFilter} onChange={(e) => setMediaFilter(e.target.value)}>
-              <option value="All">All Types</option>
-              <option value="movie">Movies</option><option value="show">Shows</option>
-              <option value="anime">Anime</option><option value="manga">Manga</option>
-              <option value="book">Books</option><option value="game">Games</option><option value="album">Albums</option>
-            </Form.Select>
-            <Form.Select style={{ width: '190px' }} value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-              {SORT_OPTIONS.map((o) => <option key={o.key} value={o.key}>Sort: {o.label}</option>)}
-            </Form.Select>
-          </Form>
-        </Container>
+      <div className="filter-bar">
+        <div className="filter-bar-inner">
+          <h4 className="filter-bar-title">Global Leaderboard — Top 100</h4>
+          <Form.Select className="filter-bar-select" style={{ width: '180px' }} value={mediaFilter} onChange={(e) => setMediaFilter(e.target.value)}>
+            <option value="All">All Types</option>
+            <option value="movie">Movies</option><option value="show">Shows</option>
+            <option value="anime">Anime</option><option value="manga">Manga</option>
+            <option value="book">Books</option><option value="game">Games</option><option value="album">Albums</option>
+          </Form.Select>
+          <Form.Select className="filter-bar-select" style={{ width: '190px' }} value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <option value="whimsy">Sort: Whimsy Rating</option>
+            <option value="external">Sort: Source Rating</option>
+            <option value="user">Sort: Your Rating</option>
+            <option value="friends">Sort: Friend Rating</option>
+          </Form.Select>
+        </div>
       </div>
 
       <Container className="mt-4">

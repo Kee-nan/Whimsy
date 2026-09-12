@@ -16,9 +16,9 @@ const AppNavbar = () => {
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/search" className="nav-link-button">Search</Nav.Link>
             <Nav.Link as={Link} to="/profile" className="nav-link-button">Profile</Nav.Link>
+            <Nav.Link as={Link} to="/friend" className="nav-link-button">Friends</Nav.Link>
             <Nav.Link as={Link} to="/lists" className="nav-link-button">Lists</Nav.Link>
             <Nav.Link as={Link} to="/lists/custom" className="nav-link-button">Tags</Nav.Link>
-            <Nav.Link as={Link} to="/friend" className="nav-link-button">Friends</Nav.Link>
             <Nav.Link as={Link} to="/global" className="nav-link-button">Leaderboard</Nav.Link>
           </Nav>
         </Container>

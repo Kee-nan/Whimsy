@@ -120,25 +120,20 @@ const FriendListTable = ({ friendId, friendUsername }) => {
 
   return (
     <div>
-      <div className="whimsy-search-bar py-2">
-        <Container><h5 style={{ color: 'white', margin: 0 }}>Viewing {friendUsername}'s Lists</h5></Container>
-      </div>
-
-      <div className="whimsy-search-bar py-3">
-        <Container>
-          <Form className="whimsy-search-form d-flex align-items-center gap-2 flex-wrap">
-            <MultiCheckDropdown label="List Status" options={STATUS_OPTIONS} selected={selectedStatuses} onChange={setSelectedStatuses} mode="multi" includeAllOption />
-            <MultiCheckDropdown label="Media Type" options={MEDIA_OPTIONS} selected={selectedMediaTypes} onChange={setSelectedMediaTypes} mode="toggle" multiMode={mediaMultiMode} onToggleMultiMode={setMediaMultiMode} includeAllOption />
-            <MultiCheckDropdown label="Tags" options={tagOptions} selected={selectedTags} onChange={setSelectedTags} mode="multi" includeAllOption />
-            <input className="whimsy-form-control" placeholder="Search by title" value={search} onChange={(e) => setSearch(e.target.value)} />
-            <MultiCheckDropdown label="Edit Columns" options={COLUMN_DEFINITIONS} selected={visibleColumns} onChange={setVisibleColumns} mode="multi" />
-            <select className="form-select" style={{ width: '160px' }} value={groupBy} onChange={(e) => setGroupBy(e.target.value)}>
-              <option value="none">No Grouping</option>
-              <option value="media">Group by Type</option>
-              <option value="status">Group by Status</option>
-            </select>
-          </Form>
-        </Container>
+      <div className="filter-bar">
+        <div className="filter-bar-inner">
+          <h4 className="filter-bar-title">Viewing {friendUsername}'s Lists</h4>
+          <MultiCheckDropdown label="List Status" options={STATUS_OPTIONS} selected={selectedStatuses} onChange={setSelectedStatuses} mode="multi" includeAllOption />
+          <MultiCheckDropdown label="Media Type" options={MEDIA_OPTIONS} selected={selectedMediaTypes} onChange={setSelectedMediaTypes} mode="toggle" multiMode={mediaMultiMode} onToggleMultiMode={setMediaMultiMode} includeAllOption />
+          <MultiCheckDropdown label="Tags" options={tagOptions} selected={selectedTags} onChange={setSelectedTags} mode="multi" includeAllOption />
+          <input className="whimsy-form-control filter-bar-search" placeholder="Search by title" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <MultiCheckDropdown label="Edit Columns" options={COLUMN_DEFINITIONS} selected={visibleColumns} onChange={setVisibleColumns} mode="multi" />
+          <Form.Select className="filter-bar-select" style={{ width: '160px' }} value={groupBy} onChange={(e) => setGroupBy(e.target.value)}>
+            <option value="none">No Grouping</option>
+            <option value="media">Group by Type</option>
+            <option value="status">Group by Status</option>
+          </Form.Select>
+        </div>
       </div>
 
       <Container className="mt-3">

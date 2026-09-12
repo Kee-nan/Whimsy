@@ -12,6 +12,7 @@ import './styles/list.css';
 import './styles/homepage.css';
 import './styles/ratingScale.css';
 import './styles/searchhub.css';
+import './styles/searchbar.css';
 
 
 
