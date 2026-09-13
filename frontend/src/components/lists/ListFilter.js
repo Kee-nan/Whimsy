@@ -38,7 +38,7 @@ const SearchAndDropdowns = ({
     <div className="filter-bar">
       <div className="filter-bar-inner">
         <Dropdown>
-          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn whimsy-btn-ghost">
+          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn-outline">
             {isTableView ? 'Table View' : 'Card View'}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -53,21 +53,23 @@ const SearchAndDropdowns = ({
 
         <FormControl className="whimsy-form-control filter-bar-search" placeholder="Search by title" value={searchTerm} onChange={onSearchChange} />
 
-        <button className="whimsy-btn whimsy-btn-ghost" type="button" onClick={onImportClick}>Import</button>
-        <button className="whimsy-btn whimsy-btn-ghost" type="button" onClick={onExportClick}>Export</button>
-        {isTableView && <MultiCheckDropdown label="Edit Columns" options={columnOptions} selected={visibleColumns} onChange={onToggleColumn} mode="multi" />}
+        
+        {isTableView && <MultiCheckDropdown className="filter-bar-select" label="Edit Columns" options={columnOptions} selected={visibleColumns} onChange={onToggleColumn} mode="multi" />}
 
         {isTableView && (
           <>
             <Form.Check className="filter-bar-check" type="checkbox" id="rated-only" label="Rated only" checked={ratedOnly} onChange={(e) => onRatedOnlyChange(e.target.checked)} />
             <Form.Check className="filter-bar-check" type="checkbox" id="friends-logged" label="Friends logged" checked={friendsLoggedOnly} onChange={(e) => onFriendsLoggedOnlyChange(e.target.checked)} />
-            <Form.Select className="filter-bar-select" style={{ width: '150px' }} value={groupBy} onChange={(e) => onGroupByChange(e.target.value)}>
+            <Form.Select className="filter-bar-select whimsy-btn-outline" style={{ width: '150px' }} value={groupBy} onChange={(e) => onGroupByChange(e.target.value)}>
               <option value="none">No Grouping</option>
               <option value="media">Group by Type</option>
               <option value="status">Group by Status</option>
             </Form.Select>
           </>
         )}
+
+        <button className="whimsy-btn whimsy-btn-ghost" type="button" onClick={onImportClick}>Import</button>
+        <button className="whimsy-btn whimsy-btn-ghost" type="button" onClick={onExportClick}>Export</button>
       </div>
     </div>
   );

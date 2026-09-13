@@ -1,276 +1,88 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Form } from 'react-bootstrap';
-
-import '../../styles/profilepage.css';
-import '../../styles/modal.css';
-
+import { Form } from 'react-bootstrap';
 import FavoritesGrid from './FavoritesGrid';
 import MediaPieChart from './MediaPieChart';
 import ActivityFeed from './ActivityFeed';
 import RatingDistributionChart from './RatingDistributionChart';
+import Avatar from '../common/Avatar';
 
-/**
- * Shared profile card for both the logged-in user's own profile and a
- * friend's read-only profile.
- *
- * `editable` controls whether the user can:
- * - edit their bio
- * - edit their favorites
- * - access account settings
- * - sign out
- *
- * When editable=false, the profile is rendered as a read-only view.
- */
 const ProfileCard = ({
-  username,
-  bio,
-  lists,
-  favorites,
-  editable = false,
-  onUpdateBio,
-  onEditFavorites,
-  onSignOut,
-  onOpenSettings,
-  profilePicture,
-  activity,
+  username, bio, lists, favorites, reviews = [], activity, profilePicture,
+  editable = false, viewedUserId,
+  onUpdateBio, onEditFavorites, onSignOut, onOpenSettings,
 }) => {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioDraft, setBioDraft] = useState(bio || '');
+  useEffect(() => { setBioDraft(bio || ''); }, [bio]);
 
-  useEffect(() => {
-    setBioDraft(bio || '');
-  }, [bio]);
+  const handleSaveBio = async () => { await onUpdateBio(bioDraft); setIsEditingBio(false); };
+  const handleCancelBio = () => { setBioDraft(bio || ''); setIsEditingBio(false); };
 
-  const handleSaveBio = async () => {
-    if (onUpdateBio) {
-      await onUpdateBio(bioDraft);
-    }
-
-    setIsEditingBio(false);
-  };
-
-  const handleCancelBio = () => {
-    setBioDraft(bio || '');
-    setIsEditingBio(false);
-  };
-
-  const totalItems =
-    (lists.completed?.length || 0) +
-    (lists.current?.length || 0) +
-    (lists.futures?.length || 0);
+  const totalItems = (lists.completed?.length || 0) + (lists.current?.length || 0) + (lists.futures?.length || 0);
 
   return (
     <div className="profile-container wide">
-
-      {/* =========================================================
-          PROFILE HEADER
-          ========================================================= */}
       <div className="profile-header profile-panel">
-        <div className="profile-left">
-          <Image
-            src={profilePicture || 'https://via.placeholder.com/150'}
-            roundedCircle
-            width="150"
-            height="150"
-            className="profile-picture"
-            alt={`${username}'s profile`}
-          />
-        </div>
-
-        <div className="profile-center">
-          <h1 className="profile-username">
-            {username}'s Profile
-          </h1>
-        </div>
-
+        <div className="profile-left"><Avatar src={profilePicture} size={150} className="profile-picture" /></div>
+        <div className="profile-center"><h1 className="profile-username">{username}'s Profile</h1></div>
         <div className="profile-right vertical-buttons">
           {editable && (
             <>
-              <button
-                type="button"
-                className="whimsy-btn whimsy-btn-ghost"
-                onClick={onSignOut}
-              >
-                Sign Out
-              </button>
-
-              <button
-                type="button"
-                className="whimsy-btn"
-                onClick={onOpenSettings}
-              >
-                Account Details
-              </button>
+              <button className="whimsy-btn whimsy-btn-ghost" onClick={onSignOut}>Sign Out</button>
+              <button className="whimsy-btn" onClick={onOpenSettings}>Account Details</button>
             </>
           )}
         </div>
       </div>
 
-
-      {/* =========================================================
-          MIDDLE ROW
-          ========================================================= */}
       <div className="profile-middle">
-
-        {/* -------------------------
-            BIO
-            ------------------------- */}
-        <div className="profile-bio-card bio-card profile-panel">
+        <div className="profile-bio-card profile-panel">
           <div className="bio-header">
             <h4>Bio:</h4>
-
-            {editable && !isEditingBio && (
-              <button
-                type="button"
-                className="smallButton"
-                onClick={() => setIsEditingBio(true)}
-              >
-                Edit Bio
-              </button>
-            )}
+            {editable && !isEditingBio && <button className="whimsy-btn whimsy-btn-ghost" onClick={() => setIsEditingBio(true)}>Edit Bio</button>}
           </div>
-
           {isEditingBio ? (
             <>
-              <Form.Control
-                as="textarea"
-                rows={5}
-                value={bioDraft}
-                onChange={(e) => setBioDraft(e.target.value)}
-                className="mb-2 bio-textarea"
-              />
-
+              <Form.Control as="textarea" rows={5} value={bioDraft} onChange={(e) => setBioDraft(e.target.value)} className="mb-2 bio-textarea" />
               <div className="button-group">
-                <button
-                  type="button"
-                  className="primaryButton"
-                  onClick={handleSaveBio}
-                >
-                  Save
-                </button>
-
-                <button
-                  type="button"
-                  className="secondaryButton"
-                  onClick={handleCancelBio}
-                >
-                  Cancel
-                </button>
+                <button className="whimsy-btn" onClick={handleSaveBio}>Save</button>
+                <button className="whimsy-btn whimsy-btn-ghost" onClick={handleCancelBio}>Cancel</button>
               </div>
             </>
           ) : (
-            <div className="bio-content">
-              <p>
-                {bio || "This user hasn't written a bio yet."}
-              </p>
-            </div>
+            <div className="bio-content"><p>{bio || "This user hasn't written a bio yet."}</p></div>
           )}
         </div>
 
-
-        {/* -------------------------
-            MEDIA BREAKDOWN
-            ------------------------- */}
-        <MediaPieChart lists={lists} />
+        <div className="profile-chart-card profile-panel">
+          <MediaPieChart lists={lists} />
+        </div>
       </div>
 
-
-      {/* =========================================================
-          BOTTOM ROW
-          ========================================================= */}
       <div className="profile-bottom-row">
-
-        {/* -------------------------
-            LIST STATS
-            ------------------------- */}
         <div className="stat-bar-box profile-panel">
           <div className="stat-list">
-            <div className="stat-list-header">
-              List Stats
-            </div>
-
-            <div>
-              <strong>Futures:</strong>{' '}
-              {lists.futures?.length || 0}
-            </div>
-
-            <div>
-              <strong>Current:</strong>{' '}
-              {lists.current?.length || 0}
-            </div>
-
-            <div>
-              <strong>Completed:</strong>{' '}
-              {lists.completed?.length || 0}
-            </div>
-
-            <div>
-              <strong>Total:</strong>{' '}
-              {totalItems}
-            </div>
+            <div className="stat-list-header">List Stats</div>
+            <div><strong>Futures:</strong> {lists.futures?.length || 0}</div>
+            <div><strong>Current:</strong> {lists.current?.length || 0}</div>
+            <div><strong>Completed:</strong> {lists.completed?.length || 0}</div>
+            <div><strong>Total:</strong> {totalItems}</div>
           </div>
-
           <div className="vertical-bar-container">
-            <div
-              className="bar-segment futures"
-              style={{
-                height: `${
-                  ((lists.futures?.length || 0) / totalItems) * 100 || 0
-                }%`,
-              }}
-            />
-
-            <div
-              className="bar-segment current"
-              style={{
-                height: `${
-                  ((lists.current?.length || 0) / totalItems) * 100 || 0
-                }%`,
-              }}
-            />
-
-            <div
-              className="bar-segment completed"
-              style={{
-                height: `${
-                  ((lists.completed?.length || 0) / totalItems) * 100 || 0
-                }%`,
-              }}
-            />
+            <div className="bar-segment completed" style={{ height: `${((lists.completed?.length || 0) / totalItems) * 100 || 0}%` }} />
+            <div className="bar-segment current" style={{ height: `${((lists.current?.length || 0) / totalItems) * 100 || 0}%` }} />
+            <div className="bar-segment futures" style={{ height: `${((lists.futures?.length || 0) / totalItems) * 100 || 0}%` }} />
           </div>
         </div>
 
-
-        {/* -------------------------
-            FAVORITES
-            ------------------------- */}
-        <div className="favorites-box profile-panel">
-          <FavoritesGrid
-            favorites={favorites}
-            editable={editable}
-            onEditClick={onEditFavorites}
-          />
-        </div>
+        <FavoritesGrid favorites={favorites} editable={editable} onEditClick={onEditFavorites} reviews={reviews} />
       </div>
 
+      <ActivityFeed activity={activity} title={editable ? 'Your Recent Activity' : `${username}'s Recent Activity`} />
 
-      {/* =========================================================
-          ACTIVITY
-          ========================================================= */}
-      <ActivityFeed
-        activity={activity}
-        title={
-          editable
-            ? 'Your Recent Activity'
-            : `${username}'s Recent Activity`
-        }
-      />
-
-
-      {/* =========================================================
-          RATING DISTRIBUTION
-          ========================================================= */}
-      <RatingDistributionChart userId={null} />
+      <div className="profile-charts-row">
+        <div className="profile-chart-card profile-panel"><RatingDistributionChart userId={viewedUserId} /></div>
+      </div>
     </div>
   );
 };

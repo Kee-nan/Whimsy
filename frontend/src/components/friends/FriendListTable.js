@@ -23,7 +23,7 @@ const COLUMN_DEFINITIONS = [
   { key: 'tags', label: 'Tags' },
 ];
 
-const FriendListTable = ({ friendId, friendUsername }) => {
+const FriendListTable = ({ friendId, friendUsername, titleText, toggleButtons }) => {
   const [items, setItems] = useState([]);
   const [selectedStatuses, setSelectedStatuses] = useState(['All']);
   const [selectedMediaTypes, setSelectedMediaTypes] = useState(['All']);
@@ -122,17 +122,18 @@ const FriendListTable = ({ friendId, friendUsername }) => {
     <div>
       <div className="filter-bar">
         <div className="filter-bar-inner">
-          <h4 className="filter-bar-title">Viewing {friendUsername}'s Lists</h4>
+          <h4 className="filter-bar-title">{titleText}</h4>
+          {toggleButtons}
           <MultiCheckDropdown label="List Status" options={STATUS_OPTIONS} selected={selectedStatuses} onChange={setSelectedStatuses} mode="multi" includeAllOption />
           <MultiCheckDropdown label="Media Type" options={MEDIA_OPTIONS} selected={selectedMediaTypes} onChange={setSelectedMediaTypes} mode="toggle" multiMode={mediaMultiMode} onToggleMultiMode={setMediaMultiMode} includeAllOption />
           <MultiCheckDropdown label="Tags" options={tagOptions} selected={selectedTags} onChange={setSelectedTags} mode="multi" includeAllOption />
           <input className="whimsy-form-control filter-bar-search" placeholder="Search by title" value={search} onChange={(e) => setSearch(e.target.value)} />
           <MultiCheckDropdown label="Edit Columns" options={COLUMN_DEFINITIONS} selected={visibleColumns} onChange={setVisibleColumns} mode="multi" />
-          <Form.Select className="filter-bar-select" style={{ width: '160px' }} value={groupBy} onChange={(e) => setGroupBy(e.target.value)}>
+          <select className="form-select filter-bar-select" style={{ width: '160px' }} value={groupBy} onChange={(e) => setGroupBy(e.target.value)}>
             <option value="none">No Grouping</option>
             <option value="media">Group by Type</option>
             <option value="status">Group by Status</option>
-          </Form.Select>
+          </select>
         </div>
       </div>
 

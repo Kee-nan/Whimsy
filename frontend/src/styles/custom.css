@@ -254,3 +254,11 @@ handleback
 
 .unified-search-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
 
+/* add to custom.css */
+.whimsy-avatar {
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-color: #343334;
+  flex-shrink: 0;
+}

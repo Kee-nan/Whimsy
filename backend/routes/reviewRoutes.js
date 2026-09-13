@@ -6,8 +6,9 @@ const mediaItemsQ = require('../db/queries/mediaItems');
 const mediaStatsQ = require('../db/queries/mediaStats');
 const activityLogQ = require('../db/queries/activityLog');
 const reviewLikesQ = require('../db/queries/reviewLikes');
+const { requireFields } = require('../middleware/validate');
 
-router.post('/add', authenticateToken, async (req, res) => {
+router.post('/add', authenticateToken, requireFields(['reviewData']), async (req, res) => {
   try {
     const { reviewData } = req.body;
     const [mediaType, ...rest] = reviewData.id.split('/');

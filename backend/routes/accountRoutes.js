@@ -5,8 +5,9 @@ const jwt = require('jsonwebtoken');
 const users = require('../db/queries/users');
 const authenticateToken = require('../middleware/authenticateToken');
 const { upload } = require('../middleware/upload');
+const { authLimiter } = require('../middleware/rateLimiters');
 
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await users.findByUsername(username);
@@ -25,9 +26,19 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', authLimiter, async (req, res) => {
   try {
     const { firstName, lastName, username, email, password } = req.body;
+
+    if (!firstName || !lastName || !username || !email || !password) {
+      return res.status(400).send('All fields are required.');
+    }
+    if (password.length < 8) {
+      return res.status(400).send('Password must be at least 8 characters.');
+    }
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).send('Please enter a valid email address.');
+    }
 
     const existing = await users.findByUsernameOrEmail(username, email);
     if (existing) {
@@ -41,6 +52,13 @@ router.post('/create', async (req, res) => {
     await users.createUser({ firstName, lastName, username, email, passwordHash });
     res.status(201).send('Account created successfully');
   } catch (error) {
+    // Handles the rare race where two signups with the same username/email
+    // land between the check above and this insert — the CITEXT UNIQUE
+    // constraint catches it at the DB level; this turns that into the
+    // same clean message instead of a raw 500.
+    if (error.code === '23505') {
+      return res.status(400).send('That username or email is already taken.');
+    }
     console.error(error);
     res.status(500).send('Error creating account');
   }

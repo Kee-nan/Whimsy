@@ -86,7 +86,7 @@ const MediaPieChart = ({ lists }) => {
         responsive: true,
         maintainAspectRatio: false,
         layout: { padding: 15 },     // NEW — gives datalabels/edges room, fixes bottom clipping
-        radius: '100%',                     // NEW — shrinks the pie slightly to give datalabels room
+        radius: '80%',                     // NEW — shrinks the pie slightly to give datalabels room
         animation: { animateScale: true, duration: 400 },
         plugins: {
           legend: { position: 'right', labels: { color: '#ddd', font: { size: 14 }, boxWidth: 15, padding: 10 } },
@@ -109,6 +109,10 @@ const MediaPieChart = ({ lists }) => {
       },
     });
 
+    requestAnimationFrame(() => {
+      chartRef.current?.resize();
+  });
+
     return () => {
       if (chartRef.current) chartRef.current.destroy();
     };
@@ -120,7 +124,7 @@ const MediaPieChart = ({ lists }) => {
 
   return (
     <div className="profile-chart-card meter-card bordered">
-      <div className="d-flex justify-content-between align-items-center mb-2">
+      <div className="d-flex justify-content-between align-items-center mb-1">
         <h4 style={{ margin: 0 }}>Media Breakdown</h4>
         <select
           className="pie-chart-filter"
@@ -133,7 +137,9 @@ const MediaPieChart = ({ lists }) => {
         </select>
       </div>
       {total > 0 ? (
-        <canvas ref={canvasRef}></canvas>
+        <div className="pie-chart-canvas-wrapper">
+          <canvas ref={canvasRef}></canvas>
+        </div>
       ) : (
         <p className="text-center" style={{ color: '#999', marginTop: '2rem' }}>
           No media logged in this list yet.

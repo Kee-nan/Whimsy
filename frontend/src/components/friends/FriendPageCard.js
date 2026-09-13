@@ -3,6 +3,7 @@ import '../../styles/friendpage.css';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/modal.css'
 import { Modal } from 'react-bootstrap';
+import Avatar from '../common/Avatar';
 
 
 const FriendPageCard = () => {
@@ -211,7 +212,7 @@ const FriendPageCard = () => {
           {filteredFriends.length > 0 ? (
             filteredFriends.map(friend => (
               <div key={friend.id} className="friend-row-shaded" onClick={() => handleViewList(friend.username, friend.id)}>
-                <img src={avatarUrl(friend.profile_picture_url)} alt={friend.username} className="friend-row-avatar" />
+                <Avatar src={friend.profile_picture_url ? `${process.env.REACT_APP_API_URL}${friend.profile_picture_url}` : null} size={36} />
                 <span className="friend-row-name">{friend.username}</span>
                 <button className="whimsy-btn whimsy-btn-ghost" onClick={(e) => { e.stopPropagation(); handleDeleteClick(friend); }}>Delete</button>
             </div>

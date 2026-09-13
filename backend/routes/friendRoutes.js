@@ -9,7 +9,9 @@ const listEntriesQ = require('../db/queries/listEntries');
 const favoritesQ = require('../db/queries/favorites');
 const reviewsQ = require('../db/queries/reviews');
 
-router.post('/send', authenticateToken, async (req, res) => {
+const { requireFields } = require('../middleware/validate');
+
+router.post('/send', authenticateToken, requireFields(['receiverUsername']), async (req, res) => {
   try {
     const { receiverUsername } = req.body;
     const receiver = await users.findByUsername(receiverUsername);
@@ -64,6 +66,7 @@ router.delete('/delete/:friendId', authenticateToken, async (req, res) => {
   await friendshipsQ.remove(req.user.id, parseInt(req.params.friendId, 10));
   res.status(200).json({ message: 'Friend removed successfully' });
 });
+
 router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {
   try {
     const friendId = parseInt(req.params.friendId, 10);
@@ -83,7 +86,14 @@ router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {
       id: `${r.media_type}/${r.external_id}`, media: r.media_type, title: r.title, image: r.image_url,
     }));
 
-    res.json({ username: friend.username, bio: friend.bio, view_setting: friend.view_setting, lists, favorites });
+    const reviewRows = await reviewsQ.getAllForUser(friendId);
+    const reviews = reviewRows.map((r) => ({ id: `${r.media_type}/${r.external_id}`, rating: r.rating }));
+
+    res.json({
+      username: friend.username, bio: friend.bio, view_setting: friend.view_setting,
+      profilePicture: friend.profile_picture_url,
+      lists, favorites, reviews,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error fetching friend lists' });

@@ -26,7 +26,7 @@ const SearchBar = ({
         <button type="submit" className="whimsy-btn" onClick={searchFunction}>Search</button>
         <button type="button" onClick={clearFunction} className="whimsy-btn whimsy-btn-ghost">Clear</button>
         <Dropdown>
-          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn whimsy-btn-ghost">
+          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn-outline">
             {isTableView ? 'Table View' : 'Card View'}
           </Dropdown.Toggle>
           <Dropdown.Menu>

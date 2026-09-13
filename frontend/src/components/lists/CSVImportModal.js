@@ -96,56 +96,52 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
 
   return (
     <Modal show={show} onHide={onHide} size="lg" className="custom-modal">
-      <Modal.Header closeButton>
-        <Modal.Title>Import CSV</Modal.Title>
-      </Modal.Header>
+      <Modal.Header closeButton><Modal.Title>Import CSV</Modal.Title></Modal.Header>
       <Modal.Body>
         {!rows.length && (
           <Form.Group>
             <Form.Label>Upload CSV (columns: media,title)</Form.Label>
-            <Form.Control type="file" accept=".csv" onChange={handleFile}/>
+            <Form.Control type="file" accept=".csv" onChange={handleFile} />
           </Form.Group>
         )}
         {loading && <Spinner animation="border" className="my-3" />}
         {candidates.length > 0 && (
-          <Table hover responsive className="mt-3">
-            <thead>
-              <tr><th>#</th><th>Image</th><th>Media</th><th>Title</th><th>Match</th></tr>
-            </thead>
-            <tbody>
-              {candidates.map((c, ci) => {
-                const selected = c.hits[c.selectedIndex];
-                const norm = selected ? normalizeResult(selected, c.row.media) : null;
-                return (
-                  <tr key={ci}>
-                    <td>{ci + 1}</td>
-                    <td>
-                      {norm?.image
-                        ? <img src={norm.image} alt={norm.title} className="modal-table-img" />
-                        : <span style={{ color: '#aaa' }}>No image</span>}
-                    </td>
-                    <td>{c.row.media}</td>
-                    <td>{c.row.title}</td>
-                    <td>
-                      <Form.Select value={c.selectedIndex} onChange={e => changeSelection(ci, +e.target.value)}>
-                        {c.hits.length
-                          ? c.hits.map((h, i) => {
+          <div className="whimsy-table-container csv-import-scroll">
+            <div className="whimsy-table-wrapper">
+              <table className="table whimsy-table table-striped table-hover">
+                <thead>
+                  <tr><th>#</th><th>Image</th><th>Media</th><th>Title</th><th>Match</th></tr>
+                </thead>
+                <tbody>
+                  {candidates.map((c, ci) => {
+                    const selected = c.hits[c.selectedIndex];
+                    const norm = selected ? normalizeResult(selected, c.row.media) : null;
+                    return (
+                      <tr key={ci}>
+                        <td>{ci + 1}</td>
+                        <td>{norm?.image ? <img src={norm.image} alt={norm.title} style={{ width: '50px' }} /> : <span style={{ color: '#aaa' }}>No image</span>}</td>
+                        <td>{c.row.media}</td>
+                        <td>{c.row.title}</td>
+                        <td>
+                          <Form.Select value={c.selectedIndex} onChange={(e) => changeSelection(ci, +e.target.value)}>
+                            {c.hits.length ? c.hits.map((h, i) => {
                               const optNorm = normalizeResult(h, c.row.media);
                               return <option key={i} value={i}>{optNorm?.title} ({optNorm?.id})</option>;
-                            })
-                          : <option value={-1}>No matches</option>}
-                      </Form.Select>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
+                            }) : <option value={-1}>No matches</option>}
+                          </Form.Select>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
       </Modal.Body>
       <Modal.Footer>
-        <button className="secondaryButton" onClick={onHide}>Cancel</button>
-        <button className="primaryButton" onClick={handleConfirm} disabled={!candidates.length}>Confirm & Add Completed</button>
+        <button className="whimsy-btn whimsy-btn-ghost" onClick={onHide}>Cancel</button>
+        <button className="whimsy-btn" onClick={handleConfirm} disabled={!candidates.length}>Confirm & Add Completed</button>
       </Modal.Footer>
     </Modal>
   );

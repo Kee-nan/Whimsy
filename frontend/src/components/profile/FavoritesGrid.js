@@ -1,9 +1,7 @@
 import React from 'react';
-import '../../styles/profilepage.css';
 
 const FavoritesGrid = ({ onEditClick, favorites, editable = false, reviews = [] }) => {
   const slots = Array(8).fill(null).map((_, i) => favorites?.[i] || null);
-
   const getRating = (item) => {
     if (!item) return null;
     const review = reviews.find((r) => r.id === item.id);
@@ -16,7 +14,6 @@ const FavoritesGrid = ({ onEditClick, favorites, editable = false, reviews = [] 
         <h4>Favorites</h4>
         {editable && <button className="smallButton" onClick={onEditClick}>Edit</button>}
       </div>
-
       <div className="favorites-grid">
         {slots.map((item, index) => {
           const rating = getRating(item);

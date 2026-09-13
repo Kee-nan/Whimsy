@@ -7,6 +7,9 @@ const friendshipsQ = require('../db/queries/friendships');
 const { uploadTagIcon } = require('../middleware/upload');
 const { splitMediaId } = require('../utils/mediaId');
 
+
+const fs = require('fs');
+
 const shapeItems = (rows) => rows.map(r => ({
   id: `${r.media_type}/${r.external_id}`,
   mediaItemId: r.media_item_id,   // internal PK, used for reorder payloads
@@ -231,7 +234,10 @@ router.post('/:listId/icon', authenticateToken, uploadTagIcon.single('icon'), as
   try {
     const listId = parseInt(req.params.listId, 10);
     const list = await customListsQ.getById(listId);
-    if (!list || list.user_id !== req.user.id) return res.status(403).json({ message: 'Not your list' });
+    if (!list || list.user_id !== req.user.id) {
+      if (req.file) fs.unlink(req.file.path, () => {}); // clean up the file multer already wrote before we knew ownership was invalid
+      return res.status(403).json({ message: 'Not your list' });
+    }
     if (!req.file) return res.status(400).json({ message: 'No icon file provided' });
 
     const iconUrl = `/uploads/tag-icons/${req.file.filename}`;

@@ -48,7 +48,12 @@ const RatingDistributionChart = () => {
     <div className="profile-panel mt-4">
       <h4>Your Rating Distribution</h4>
       <p style={{ color: '#999', fontSize: '0.9rem' }}>See how spread out your ratings are across the scale.</p>
-      {hasData ? <div style={{ height: '280px' }}><canvas ref={canvasRef}></canvas></div> : <p style={{ color: '#999', textAlign: 'center' }}>No reviews yet.</p>}
+      {hasData ? <div style={{ height: '280px' }}>
+        <div className="chart-canvas-wrapper">
+        <canvas ref={canvasRef}></canvas>
+        </div>
+        </div> : 
+        <p style={{ color: '#999', textAlign: 'center' }}>No reviews yet.</p>}
     </div>
   );
 };
