@@ -16,6 +16,7 @@ const friendRoutes = require('./routes/friendRoutes');
 const app = express();
 
 const helmet = require('helmet');
+
 const morgan = require('morgan');
 
 const allowedOrigins = process.env.CORS_ORIGIN
@@ -34,7 +35,11 @@ app.use(cors({
 
 app.use(express.json({ limit: '1mb' }));
 
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }, // was blocking frontend from reading API responses across ports
+  crossOriginOpenerPolicy: false,                         // not needed for a plain REST API, and adds no value here
+}));
+
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 app.use('/api/accounts', accountRoutes);

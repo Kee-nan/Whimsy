@@ -36,7 +36,8 @@ const LoginPage = () => {
 
       localStorage.setItem('user_token', data.user_token);
       localStorage.setItem('tokenExpiry', data.expiresAt);
-      navigate('/');
+
+      navigate('/homepage');
     } catch (err) {
       console.error('Login error:', err);
       setError('Could not reach the server. Please try again.');

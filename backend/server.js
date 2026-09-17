@@ -32,11 +32,29 @@ pool.query('SELECT NOW()')
   .then(() => console.log('Connected to PostgreSQL'))
   .catch((err) => console.error('Error connecting to PostgreSQL:', err));
 
-app.use(cors());
+app.use(morgan('dev'));
+
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+  : ['http://localhost:3000'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.error('CORS blocked origin:', origin);
+    console.error('Allowed origins:', allowedOrigins);
+
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
 
-app.use('/api/activity', activityRoutes);
-app.use('/api/custom-lists', customListRoutes);
+
 
 app.use(
   helmet({
@@ -45,7 +63,6 @@ app.use(
     },
   })
 );
-app.use(morgan('dev')); // request logging — genuinely useful during local debugging too
 
 
 // Applies specifically to the search routes, since those're the ones proxying
@@ -59,6 +76,8 @@ app.use('/api/review', reviewRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/friends', friendRoutes);
 app.use('/api/global', globalRoutes);
+app.use('/api/activity', activityRoutes);
+app.use('/api/custom-lists', customListRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

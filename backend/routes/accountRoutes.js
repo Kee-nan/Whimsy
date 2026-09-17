@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const users = require('../db/queries/users');
 const authenticateToken = require('../middleware/authenticateToken');
 const { authLimiter } = require('../middleware/rateLimiters');
+const { upload } = require('../middleware/upload');
 
 router.post('/login', authLimiter, async (req, res) => {
   try {
