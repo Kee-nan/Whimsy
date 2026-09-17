@@ -8,6 +8,7 @@ const listEntriesQ = require('../db/queries/listEntries');
 
 const favoritesQ = require('../db/queries/favorites');
 const reviewsQ = require('../db/queries/reviews');
+const customListsQ = require('../db/queries/customLists');
 
 const { requireFields } = require('../middleware/validate');
 
@@ -126,6 +127,49 @@ router.get('/:friendId/lists/detailed', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to fetch friend list' });
+  }
+});
+
+/** GET /api/friends/:friendId/tags — every tag a friend has that isn't private. */
+router.get('/:friendId/tags', authenticateToken, async (req, res) => {
+  try {
+    const friendId = parseInt(req.params.friendId, 10);
+    const isFriend = await friendshipsQ.areFriends(req.user.id, friendId);
+    if (!isFriend) return res.status(403).json({ message: 'Not friends with this user' });
+
+    const lists = await customListsQ.getVisibleListsForFriend(friendId);
+    res.json(lists);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch tags' });
+  }
+});
+
+/** GET /api/friends/:friendId/tags/:listId — a specific tag's items with the friend's own rating per item. */
+router.get('/:friendId/tags/:listId', authenticateToken, async (req, res) => {
+  try {
+    const friendId = parseInt(req.params.friendId, 10);
+    const listId = parseInt(req.params.listId, 10);
+    const isFriend = await friendshipsQ.areFriends(req.user.id, friendId);
+    if (!isFriend) return res.status(403).json({ message: 'Not friends with this user' });
+
+    const list = await customListsQ.getById(listId);
+    if (!list || list.user_id !== friendId || list.visibility === 'private') {
+      return res.status(404).json({ message: 'Tag not found or not visible' });
+    }
+
+    const items = await customListsQ.getItemsWithOwnerRating(listId);
+    res.json({
+      ...list,
+      items: items.map((r) => ({
+        id: `${r.media_type}/${r.external_id}`,
+        media: r.media_type, title: r.title, image: r.image_url,
+        friendRating: r.owner_rating,
+      })),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch tag details' });
   }
 });
 

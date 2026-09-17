@@ -94,17 +94,25 @@ router.get('/:listId', authenticateToken, async (req, res) => {
     if (!list) return res.status(404).json({ message: 'List not found' });
 
     if (list.user_id !== req.user.id) {
-      if (list.visibility === 'private') {
-        return res.status(403).json({ message: 'This list is private' });
-      }
+      if (list.visibility === 'private') return res.status(403).json({ message: 'This list is private' });
       if (list.visibility === 'friends') {
         const isFriend = await friendshipsQ.areFriends(req.user.id, list.user_id);
         if (!isFriend) return res.status(403).json({ message: 'This list is friends-only' });
       }
     }
 
-    const items = await customListsQ.getItems(listId);
-    res.json({ ...list, items: shapeItems(items), isOwner: list.user_id === req.user.id });
+    const items = await customListsQ.getItemsWithOwnerRating(listId); // was getItems — now includes owner_rating
+    res.json({
+      ...list,
+      items: items.map((r) => ({
+        id: `${r.media_type}/${r.external_id}`,
+        mediaItemId: r.media_item_id,
+        media: r.media_type, title: r.title, image: r.image_url,
+        note: r.note, position: r.position, addedAt: r.added_at,
+        ownerRating: r.owner_rating,
+      })),
+      isOwner: list.user_id === req.user.id,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to fetch list' });

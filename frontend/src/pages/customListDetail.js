@@ -169,7 +169,7 @@ const CustomListDetail = () => {
               <thead>
                 <tr>
                   {list.is_ranked && <th style={{ width: '60px' }}>#</th>}
-                  <th>Image</th><th>Title</th><th>Type</th>
+                  <th>Image</th><th>Title</th><th>Type</th><th>Your Rating</th>
                   {editMode && <th style={{ width: '80px' }}>Remove</th>}
                 </tr>
               </thead>
@@ -187,6 +187,7 @@ const CustomListDetail = () => {
                                 <td><img src={item.image} alt={item.title} style={{ width: '50px' }} /></td>
                                 <td>{item.title}</td>
                                 <td>{item.media}</td>
+                                <td>{item.ownerRating != null ? `${item.ownerRating}/30` : '—'}</td>
                                 <td><button className="whimsy-btn whimsy-btn-ghost" onClick={() => handleRemove(item.id)}>✕</button></td>
                               </tr>
                             )}
@@ -205,6 +206,7 @@ const CustomListDetail = () => {
                       <td><img src={item.image} alt={item.title} style={{ width: '50px' }} /></td>
                       <td>{item.title}</td>
                       <td>{item.media}</td>
+                      <td>{item.ownerRating != null ? `${item.ownerRating}/30` : '—'}</td>
                       {editMode && <td><button className="whimsy-btn whimsy-btn-ghost" onClick={() => handleRemove(item.id)}>✕</button></td>}
                     </tr>
                   ))}

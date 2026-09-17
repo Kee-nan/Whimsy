@@ -150,8 +150,44 @@ async function getTagsMapForUser(userId) {
   return result.rows;
 }
 
+/** Every tag belonging to targetUserId that requestingUserId is allowed to see. */
+async function getVisibleListsForFriend(targetUserId) {
+  const result = await pool.query(
+    `SELECT cl.*, COUNT(cli.id) AS item_count,
+            (SELECT mi.image_url FROM custom_list_items cli2
+             JOIN media_items mi ON mi.id = cli2.media_item_id
+             WHERE cli2.custom_list_id = cl.id ORDER BY cli2.position ASC LIMIT 1) AS cover_image
+     FROM custom_lists cl
+     LEFT JOIN custom_list_items cli ON cli.custom_list_id = cl.id
+     WHERE cl.user_id = $1 AND cl.visibility != 'private'
+     GROUP BY cl.id
+     ORDER BY cl.name`,
+    [targetUserId]
+  );
+  return result.rows;
+}
+
+/** Items in a list, including the LIST OWNER's rating for each item (for both "your tags" and "friend's tags"). */
+async function getItemsWithOwnerRating(listId) {
+  const result = await pool.query(
+    `SELECT cli.note, cli.position, cli.added_at,
+            mi.id AS media_item_id, mi.media_type, mi.external_id, mi.title, mi.image_url,
+            cl.user_id AS list_owner_id,
+            r.rating AS owner_rating
+     FROM custom_list_items cli
+     JOIN custom_lists cl ON cl.id = cli.custom_list_id
+     JOIN media_items mi ON mi.id = cli.media_item_id
+     LEFT JOIN reviews r ON r.media_item_id = mi.id AND r.user_id = cl.user_id
+     WHERE cli.custom_list_id = $1
+     ORDER BY cli.position ASC, cli.added_at ASC`,
+    [listId]
+  );
+  return result.rows;
+}
+
 module.exports = {
   createList, getAllForUser, getById, getItems,
   addItem, removeItem, reorderItems, updateList, deleteList,
-  getListsWithMembership, getTagsMapForUser, updateIcon, getTagsMapForUser
+  getListsWithMembership, getTagsMapForUser, updateIcon,
+  getVisibleListsForFriend, getItemsWithOwnerRating, // new
 };
