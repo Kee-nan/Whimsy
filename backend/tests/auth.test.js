@@ -8,13 +8,20 @@ describe('Account creation and login', () => {
     expect(token).toBeDefined();
   });
 
-  it('rejects duplicate usernames', async () => {
-    const { user } = await createAndLoginUser();
-    const res = await request(app).post('/api/accounts/create').send({ ...user, email: 'different@example.com' });
+  it('rejects a password shorter than 8 characters', async () => {
+    const res = await request(app).post('/api/accounts/create').send({
+      firstName: 'T', lastName: 'U', username: `short_${Date.now()}`, email: `s_${Date.now()}@example.com`, password: 'abc',
+    });
     expect(res.status).toBe(400);
   });
 
-  it('rejects login with wrong password', async () => {
+  it('rejects duplicate usernames', async () => {
+    const { user } = await createAndLoginUser();
+    const res = await request(app).post('/api/accounts/create').send({ ...user, email: `different_${Date.now()}@example.com` });
+    expect(res.status).toBe(400);
+  });
+
+  it('rejects login with the wrong password', async () => {
     const { user } = await createAndLoginUser();
     const res = await request(app).post('/api/accounts/login').send({ username: user.username, password: 'wrongpass' });
     expect(res.status).toBe(401);

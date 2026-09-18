@@ -12,6 +12,9 @@ const listRoutes = require('./routes/listRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const friendRoutes = require('./routes/friendRoutes');
+const customListRoutes = require('./routes/customListRoutes');
+const activityRoutes = require('./routes/activityRoutes');
+const globalRoutes = require('./routes/globalRoutes');
 
 const app = express();
 
@@ -47,6 +50,9 @@ app.use('/api/list', listRoutes);
 app.use('/api/review', reviewRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/friends', friendRoutes);
+app.use('/api/custom-lists', customListRoutes);
+app.use('/api/activity', activityRoutes);
+app.use('/api/global', globalRoutes);
 
 const errorHandler = require('./middleware/errorHandler');
 app.use(errorHandler); // MUST be last
