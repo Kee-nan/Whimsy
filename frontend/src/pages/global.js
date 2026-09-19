@@ -116,7 +116,7 @@ const Global = () => {
         </div>
 
         {rows.length > 0 && (
-          <div className="d-flex justify-content-center my-3">
+          <div className="pagination-container">
             <button className="whimsy-btn whimsy-btn-ghost mx-2" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>← Prev</button>
             <span className="align-self-center">Page {page} of {totalPages}</span>
             <button className="whimsy-btn whimsy-btn-ghost mx-2" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>Next →</button>

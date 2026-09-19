@@ -2,47 +2,46 @@ import React, { useState, useEffect } from 'react';
 
 const formatForInput = (dateStr) => (dateStr ? new Date(dateStr).toISOString().split('T')[0] : '');
 
-/**
- * Shows the date this item was last logged/status-changed, editable via
- * a manual override — for cases where a user finished something days
- * before they got around to logging it in Whimsy.
- */
 const LoggedDateEditor = ({ mediaId, loggedAt, onSaved }) => {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(formatForInput(loggedAt));
 
   useEffect(() => { setDraft(formatForInput(loggedAt)); }, [loggedAt]);
 
-  if (!loggedAt) return null; // not on any list yet — nothing to show
-
   const handleSave = async () => {
     const token = localStorage.getItem('user_token');
     const res = await fetch(`${process.env.REACT_APP_API_URL}/api/list/logged-at`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ mediaId, loggedAt: new Date(draft).toISOString() }),
+      body: JSON.stringify({ mediaId, loggedAt: new Date(draft || Date.now()).toISOString() }),
     });
     if (res.ok) {
       const data = await res.json();
       onSaved(data.loggedAt);
       setEditing(false);
+    } else {
+      const err = await res.json().catch(() => ({}));
+      // Most common cause: this item isn't on any list yet, so there's
+      // no list_entries row to attach a date to.
+      alert(err.message || 'Could not save — add this item to a list first.');
     }
   };
 
   return (
     <div className="logged-date-editor">
+      <div className="detail-panel-header">
+        <span className="detail-panel-label">Logged On:</span>
+      </div>
       {editing ? (
-        <>
+        <div className="logged-date-edit-row">
           <input type="date" value={draft} onChange={(e) => setDraft(e.target.value)} className="logged-date-input" />
           <button className="smallButton" onClick={handleSave}>Save</button>
-          <button className="smallButton" onClick={() => setEditing(false)}>Cancel</button>
-        </>
+        </div>
       ) : (
-        <>
-          <span>Logged on {new Date(loggedAt).toLocaleDateString()}</span>
-          <button className="smallButton" onClick={() => setEditing(true)}>Edit</button>
-        </>
+        <div className="detail-panel-value">{loggedAt ? new Date(loggedAt).toLocaleDateString() : 'N/A'}</div>
       )}
+
+      <button className="smallButton" onClick={() => setEditing((e) => !e)}>{editing ? 'Cancel' : 'Edit'}</button>
     </div>
   );
 };

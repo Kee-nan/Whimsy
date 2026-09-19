@@ -317,7 +317,7 @@ const Lists = () => {
         </div>
 
         {totalItems > 0 && (
-          <div className="d-flex justify-content-center my-3">
+          <div className="pagination-container">
             <button className="whimsy-btn whimsy-btn-ghost mx-2" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>← Prev</button>
             <span className="align-self-center">Page {page} of {lastVisiblePage}</span>
             <button className="whimsy-btn whimsy-btn-ghost mx-2" disabled={page >= lastVisiblePage} onClick={() => setPage((p) => Math.min(lastVisiblePage, p + 1))}>Next →</button>

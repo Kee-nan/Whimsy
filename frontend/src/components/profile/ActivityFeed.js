@@ -25,7 +25,7 @@ const timeAgo = (dateStr) => {
  * Shows the last 5 actions (list adds, status changes, reviews) for
  * either the logged-in user or a friend, reverse chronological.
  */
-const ActivityFeed = ({ activity, title = 'Recent Activity' }) => {
+const ActivityFeed = ({ activity, title = 'Recent Activity', showUsername = false}) => {
   const navigate = useNavigate();
 
   return (
@@ -46,6 +46,9 @@ const ActivityFeed = ({ activity, title = 'Recent Activity' }) => {
                 <span className="activity-feed-title">{entry.media?.title || 'Unknown'}</span>
                 <span className="activity-feed-action">
                   {ACTION_LABELS[entry.actionType]?.(entry.detail) || entry.actionType}
+                </span>
+                <span className="activity-feed-title">
+                  {showUsername && entry.username ? `${entry.username} — ` : ''}{entry.media?.title || 'Unknown'}
                 </span>
               </div>
               <span className="activity-feed-time">{timeAgo(entry.createdAt)}</span>

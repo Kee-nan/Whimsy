@@ -49,4 +49,14 @@ router.get('/recommendations', authenticateToken, async (req, res) => {
   })));
 });
 
+/**
+ * GET /api/activity/friends-feed
+ * The 15 most recent raw actions across all accepted friends —
+ * chronological, not deduped by media item (unlike /recommendations).
+ */
+router.get('/friends-feed', authenticateToken, async (req, res) => {
+  const rows = await activityLogQ.getRecentForFriends(req.user.id, 15);
+  res.json(shapeActivity(rows, true)); // true = include username per row
+});
+
 module.exports = router;

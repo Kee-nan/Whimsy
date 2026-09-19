@@ -46,7 +46,7 @@ const CustomListSelector = ({ mediaId, mediaType, title, image }) => {
 
   return (
     <Dropdown autoClose="outside">
-      <Dropdown.Toggle variant="secondary">Add to Custom List</Dropdown.Toggle>
+      <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn-outline">Add to Custom List</Dropdown.Toggle>
       <Dropdown.Menu style={{ padding: '0.75rem 1rem', minWidth: '240px' }}>
         {lists.length === 0 ? (
           <div style={{ color: '#999' }}>You have no custom lists yet.</div>

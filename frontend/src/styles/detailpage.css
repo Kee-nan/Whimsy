@@ -119,7 +119,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0.6rem 0.9rem;
-  background-color: #2a2438;
+  background-color: var(--whimsy-inset-bg);
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.15s;
@@ -128,6 +128,8 @@
 .friend-activity-name { font-weight: bold; flex: 1; }
 .friend-activity-status { flex: 1; text-align: center; color: #ccc; }
 .friend-activity-rating { flex: 1; text-align: right; }
+
+.anime-buttons { display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; }
 
 .review-box {
   width: 100%;
@@ -140,16 +142,16 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.anime-buttons { display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; }
-
 /* Reviews list card (below detail page) */
 .reviews-list-card {
   width: 95%;
   max-width: 1400px;
+  background: var(--whimsy-card-bg);
+  border: var(--whimsy-card-border);
+  border-radius: var(--whimsy-card-radius);
   margin: 1rem auto;
   padding: 1.5rem;
   background-color: #1c1c1c;
-  border-radius: 16px;
   color: white;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
@@ -183,18 +185,59 @@
 
 
 
-.logged-and-tags-row { display: flex; gap: 1rem; width: 100%; align-items: flex-start; flex-wrap: wrap; }
-.logged-and-tags-row .logged-date-editor { flex: 1; min-width: 260px; }
+.logged-and-tags-row {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  align-items: stretch;
+}
+.logged-and-tags-row > * {
+  flex: 1 1 50%;   /* exact 50/50 split, matches the 4-box stats grid's even columns */
+  min-width: 0;
+}
 
-.media-tags-panel { flex: 1; min-width: 260px; background-color: #211c29; border-radius: 12px; padding: 1rem 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-.media-tags-empty { color: #999; margin: 0; font-size: 0.9rem; }
-.media-tags-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem; }
-.media-tag-chip-icon { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; width: 60px; }
-.media-tag-chip-icon img, .media-tag-chip-icon-placeholder {
+/* New shared internal layout for both boxes, matching the stats-grid's
+   bold-label + value pattern */
+.detail-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.detail-panel-label { font-weight: bold; color: white; }
+.detail-panel-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  padding: 0.5rem 0;
+}
+
+/* Tags — single horizontal row, scrolls sideways instead of wrapping */
+.media-tags-row {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+.media-tag-chip-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 60px;
+  flex-shrink: 0; /* prevents cells from squishing — this is what makes horizontal scroll happen instead of wrap */
+}
+.media-tag-chip-icon img,
+.media-tag-chip-icon-placeholder {
   width: 44px; height: 44px; border-radius: 10px; object-fit: cover;
   background-color: #343334; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
 }
 .media-tag-chip-icon span { font-size: 0.7rem; color: #ccc; text-align: center; }
+.media-tags-empty { color: #999; margin: 0; font-size: 0.9rem; }
+
+.logged-date-edit-row { display: flex; gap: 0.5rem; justify-content: center; }
+.logged-date-input { background-color: #343334; color: white; border: 1px solid #555; border-radius: 4px; padding: 0.3rem 0.5rem; }
 
 .tag-icon-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
 .tag-icon-preview { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; }

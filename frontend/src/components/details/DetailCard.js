@@ -81,7 +81,7 @@ const DetailCard = ({
         </div>
 
         <div className="anime-buttons">
-          <DropdownButton title={buttonLabel} variant="secondary">
+          <DropdownButton title={buttonLabel} variant="outline-secondary">
             <Dropdown.Item onClick={() => handleChange('completed')}>Completed</Dropdown.Item>
             <Dropdown.Item onClick={() => handleChange('current')}>Current</Dropdown.Item>
             <Dropdown.Item onClick={() => handleChange('futures')}>Futures</Dropdown.Item>
@@ -89,9 +89,8 @@ const DetailCard = ({
             <Dropdown.Item onClick={() => handleChange('none')}>None</Dropdown.Item>
           </DropdownButton>
           <CustomListSelector mediaId={mediaId} mediaType={type} title={title} image={image} />
-          <button className="btn btn-outline-light" onClick={onReview}>Reviews</button>
-          <button className="btn btn-outline-light" onClick={onEdit}>Edit Review</button>
-          <button className="btn btn-outline-light" onClick={onDelete}>Delete Review</button>
+          <button className="whimsy-btn whimsy-btn-ghost" onClick={onReview}>Review</button>
+          <button className="whimsy-btn whimsy-btn-ghost" onClick={onDelete}>Delete Review</button>
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-/** Shows which of the user's custom-list tags contain this media item — icon + name grid. */
 const MediaTagsPanel = ({ mediaType, externalId }) => {
   const [tags, setTags] = useState([]);
 
@@ -20,11 +19,13 @@ const MediaTagsPanel = ({ mediaType, externalId }) => {
 
   return (
     <div className="media-tags-panel">
-      <h5>Your Tags</h5>
+      <div className="detail-panel-header">
+        <span className="detail-panel-label">Your Tags</span>
+      </div>
       {tags.length === 0 ? (
         <p className="media-tags-empty">Not on any of your tags yet.</p>
       ) : (
-        <div className="media-tags-grid">
+        <div className="media-tags-row">
           {tags.map((tag) => (
             <div key={tag.id} className="media-tag-chip-icon">
               {tag.iconUrl ? (

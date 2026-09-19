@@ -4,8 +4,7 @@ import { getRatingTier } from '../details/RatingGauge';
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
-/** Bell-curve style histogram of every rating (0–30) the user has given. */
-const RatingDistributionChart = () => {
+const RatingDistributionChart = ({ userId }) => {
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
   const [hasData, setHasData] = useState(true);
@@ -13,7 +12,8 @@ const RatingDistributionChart = () => {
   useEffect(() => {
     const fetchDistribution = async () => {
       const token = localStorage.getItem('user_token');
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/review/distribution`, {
+      const query = userId ? `?userId=${userId}` : '';
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/review/distribution${query}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) return;
@@ -25,11 +25,7 @@ const RatingDistributionChart = () => {
         type: 'bar',
         data: {
           labels: counts.map((_, i) => i),
-          datasets: [{
-            data: counts,
-            backgroundColor: counts.map((_, i) => getRatingTier(i).color),
-            borderRadius: 3,
-          }],
+          datasets: [{ data: counts, backgroundColor: counts.map((_, i) => getRatingTier(i).color), borderRadius: 3 }],
         },
         options: {
           plugins: { legend: { display: false }, tooltip: { callbacks: { title: (items) => `Rating: ${items[0].label}` } } },
@@ -39,22 +35,22 @@ const RatingDistributionChart = () => {
           },
         },
       });
+      requestAnimationFrame(() => chartRef.current?.resize());
     };
     fetchDistribution();
     return () => { if (chartRef.current) chartRef.current.destroy(); };
-  }, []);
+  }, [userId]); // <-- re-fetches whenever userId changes (own profile vs a friend's)
 
   return (
-    <div className="profile-panel mt-4">
+    <>
       <h4>Your Rating Distribution</h4>
-      <p style={{ color: '#999', fontSize: '0.9rem' }}>See how spread out your ratings are across the scale.</p>
-      {hasData ? <div style={{ height: '280px' }}>
-        <div className="chart-canvas-wrapper">
-        <canvas ref={canvasRef}></canvas>
-        </div>
-        </div> : 
-        <p style={{ color: '#999', textAlign: 'center' }}>No reviews yet.</p>}
-    </div>
+      <p style={{ color: '#999', fontSize: '0.9rem' }}>See how spread out ratings are across the scale.</p>
+      {hasData ? (
+        <div className="chart-canvas-wrapper"><canvas ref={canvasRef}></canvas></div>
+      ) : (
+        <p style={{ color: '#999', textAlign: 'center' }}>No reviews yet.</p>
+      )}
+    </>
   );
 };
 

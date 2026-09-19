@@ -6,6 +6,7 @@ const mediaItemsQ = require('../db/queries/mediaItems');
 const mediaStatsQ = require('../db/queries/mediaStats');
 const activityLogQ = require('../db/queries/activityLog');
 const reviewLikesQ = require('../db/queries/reviewLikes');
+const friendshipsQ = require('../db/queries/friendships');
 const { requireFields } = require('../middleware/validate');
 
 router.post('/add', authenticateToken, requireFields(['reviewData']), async (req, res) => {
@@ -98,10 +99,20 @@ router.delete('/delete', authenticateToken, async (req, res) => {
 });
 
 router.get('/distribution', authenticateToken, async (req, res) => {
-  const rows = await reviewsQ.getRatingDistribution(req.user.id);
-  const counts = Array(31).fill(0);
-  rows.forEach((r) => { counts[r.rating] = parseInt(r.count, 10); });
-  res.json(counts);
+  try {
+    const targetId = req.query.userId ? parseInt(req.query.userId, 10) : req.user.id;
+    if (targetId !== req.user.id) {
+      const isFriend = await friendshipsQ.areFriends(req.user.id, targetId);
+      if (!isFriend) return res.status(403).json({ message: 'Not friends with this user' });
+    }
+    const rows = await reviewsQ.getRatingDistribution(targetId);
+    const counts = Array(31).fill(0);
+    rows.forEach((r) => { counts[r.rating] = parseInt(r.count, 10); });
+    res.json(counts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch rating distribution' });
+  }
 });
 
 
