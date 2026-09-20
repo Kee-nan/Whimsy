@@ -38,7 +38,7 @@ const MultiCheckDropdown = ({
 
   return (
     <Dropdown autoClose="outside" popperConfig={{ strategy: 'fixed' }}>
-      <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn-outline">{buttonLabel}</Dropdown.Toggle>
+      <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn">{buttonLabel}</Dropdown.Toggle>
       <Dropdown.Menu style={{ padding: '0.75rem 1rem', minWidth: '220px', maxHeight: '320px', overflowY: 'auto' }}>
         {mode === 'toggle' && (
           <Form.Check

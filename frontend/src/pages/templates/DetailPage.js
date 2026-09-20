@@ -187,6 +187,7 @@ const DetailPage = ({ fetchDetails, extractDetails, mediaType, tokenRequired }) 
         onClose={handleCloseModal}
         mediaDetails={{ id: `${mediaType}/${id}`, title: details.title, image: details.image, review }}
         onSubmit={handleReviewSubmit}
+        onDelete={handleDelete}
       />
     </>
   );

@@ -45,7 +45,7 @@ const DetailCard = ({
         <div className="title-row">
           {onBack && (
             <div className="back-container">
-              <div className="btn btn-outline-light back-arrow" onClick={onBack}>←</div>
+              <div className="whimsy-btn whimsy-btn-ghost" onClick={onBack}>←</div>
             </div>
           )}
           <div className="title-container"><div className="anime-title">{title}</div></div>
@@ -81,16 +81,20 @@ const DetailCard = ({
         </div>
 
         <div className="anime-buttons">
-          <DropdownButton title={buttonLabel} variant="outline-secondary">
-            <Dropdown.Item onClick={() => handleChange('completed')}>Completed</Dropdown.Item>
-            <Dropdown.Item onClick={() => handleChange('current')}>Current</Dropdown.Item>
-            <Dropdown.Item onClick={() => handleChange('futures')}>Futures</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item onClick={() => handleChange('none')}>None</Dropdown.Item>
-          </DropdownButton>
+          <Dropdown>
+            <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn">
+              {buttonLabel}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => handleChange('completed')}>Completed</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleChange('current')}>Current</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleChange('futures')}>Futures</Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Item onClick={() => handleChange('none')}>None</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
           <CustomListSelector mediaId={mediaId} mediaType={type} title={title} image={image} />
           <button className="whimsy-btn whimsy-btn-ghost" onClick={onReview}>Review</button>
-          <button className="whimsy-btn whimsy-btn-ghost" onClick={onDelete}>Delete Review</button>
         </div>
       </div>
     </div>

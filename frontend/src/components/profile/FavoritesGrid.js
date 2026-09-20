@@ -11,7 +11,7 @@ const FavoritesGrid = ({ onEditClick, favorites, editable = false, reviews = [] 
   return (
     <div className="favorites-box">
       <div className="favorites-header">
-        <h4>Favorites</h4>
+        <h4>Favorites - The Great Eight</h4>
         {editable && <button className="smallButton" onClick={onEditClick}>Edit</button>}
       </div>
       <div className="favorites-grid">

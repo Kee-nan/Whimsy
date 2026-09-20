@@ -286,10 +286,12 @@ const FriendPageCard = () => {
           : 'Loading...'}
       </Modal.Body>
       <Modal.Footer>
-        <button onClick={handleConfirmDelete} className="primaryButton" disabled={!selectedFriend}>
+        <button onClick={handleConfirmDelete} className="WhimsyBtn" disabled={!selectedFriend}>
           Confirm
         </button>
-        <button onClick={handleCancelDelete} className="secondaryButton">Cancel</button>
+        <button onClick={handleCancelDelete} className="WhimsyBtn whimsy-btn-ghost">
+          Cancel
+        </button>
       </Modal.Footer>
     </Modal>
 

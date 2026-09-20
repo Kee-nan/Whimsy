@@ -12,6 +12,12 @@ const STATUS_OPTIONS = [
   { key: 'current', label: 'Current' }, { key: 'completed', label: 'Completed' }, { key: 'futures', label: 'Futures' },
 ];
 
+const GROUP_OPTIONS = [
+  { value: 'none', label: 'No Grouping' },
+  { value: 'media', label: 'Group by Type' },
+  { value: 'status', label: 'Group by Status' },
+];
+
 const SearchAndDropdowns = ({
   selectedStatuses, onStatusChange,
   selectedMediaTypes, onMediaChange, mediaMultiMode, onToggleMediaMultiMode,
@@ -38,7 +44,7 @@ const SearchAndDropdowns = ({
     <div className="filter-bar">
       <div className="filter-bar-inner">
         <Dropdown>
-          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn-outline">
+          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn">
             {isTableView ? 'Table View' : 'Card View'}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -60,11 +66,16 @@ const SearchAndDropdowns = ({
           <>
             <Form.Check className="filter-bar-check" type="checkbox" id="rated-only" label="Rated only" checked={ratedOnly} onChange={(e) => onRatedOnlyChange(e.target.checked)} />
             <Form.Check className="filter-bar-check" type="checkbox" id="friends-logged" label="Friends logged" checked={friendsLoggedOnly} onChange={(e) => onFriendsLoggedOnlyChange(e.target.checked)} />
-            <Form.Select className="filter-bar-select whimsy-btn-outline" style={{ width: '150px' }} value={groupBy} onChange={(e) => onGroupByChange(e.target.value)}>
-              <option value="none">No Grouping</option>
-              <option value="media">Group by Type</option>
-              <option value="status">Group by Status</option>
-            </Form.Select>
+            <Dropdown>
+            <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn whimsy-btn-ghost filter-bar-select" style={{ width: '150px' }}>
+              {GROUP_OPTIONS.find((o) => o.value === groupBy)?.label}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {GROUP_OPTIONS.map((o) => (
+                <Dropdown.Item key={o.value} onClick={() => onGroupByChange(o.value)}>{o.label}</Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
           </>
         )}
 

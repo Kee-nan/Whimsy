@@ -85,7 +85,7 @@ const ViewFriendLists = () => {
           <div className="filter-bar">
             <div className="filter-bar-inner">
               <h4 className="filter-bar-title">Viewing {username}'s Profile</h4>
-              <ViewModeSelect viewMode={viewMode} setViewMode={setViewMode} />
+              <ViewModeSelect className = "whimsy-btn" viewMode={viewMode} setViewMode={setViewMode} />
             </div>
           </div>
           <Container>

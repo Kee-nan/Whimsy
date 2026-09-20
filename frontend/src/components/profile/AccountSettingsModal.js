@@ -81,7 +81,7 @@ const AccountSettingsModal = ({ show, handleClose, user, updateUser, viewSetting
             style={{ objectFit: 'cover', marginBottom: '0.75rem' }}
           />
           <Form.Control type="file" accept="image/*" onChange={handleFileChange} className="mb-2" />
-          <button className="primaryButton" onClick={handleUploadPicture} disabled={!selectedFile || uploading}>
+          <button className="whimsy-btn" onClick={handleUploadPicture} disabled={!selectedFile || uploading}>
             {uploading ? 'Uploading...' : 'Upload New Picture'}
           </button>
         </div>
@@ -103,20 +103,22 @@ const AccountSettingsModal = ({ show, handleClose, user, updateUser, viewSetting
                 ) : (
                   <div className="me-2 text-white">{formData[field]}</div>
                 )}
-                <Button
-                  variant="outline-light"
-                  size="sm"
+                <button
                   onClick={() => toggleEdit(field)}
-                  className="secondaryButton"
+                  className="whimsy-btn whimsy-btn-ghost"
                 >
                   {editableFields[field] ? 'Cancel' : 'Edit'}
-                </Button>
+                </button>
               </div>
             ))}
 
             <div className="mt-4 d-flex gap-2">
-              <button className="primaryButton" onClick={handleSave}>Save</button>
-              <button className="secondaryButton" onClick={handleClose}>Close</button>
+              <button className="whimsy-btn" onClick={handleSave}>
+                Save
+              </button>
+              <button className="whimsy-btn whimsy-btn-ghost" onClick={handleClose}>
+                Close
+              </button>
             </div>
           </Col>
 

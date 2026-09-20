@@ -22,43 +22,40 @@ const ProfileCard = ({
 
   return (
     <div className="profile-container wide">
+      {/* Header — unchanged */}
       <div className="profile-header profile-panel">
         <div className="profile-left"><Avatar src={profilePicture} size={150} className="profile-picture" /></div>
         <div className="profile-center"><h1 className="profile-username">{username}'s Profile</h1></div>
         <div className="profile-right vertical-buttons">
           {editable && (
             <>
+              <button className="whimsy-btn " onClick={onOpenSettings}>Account Details</button>
               <button className="whimsy-btn whimsy-btn-ghost" onClick={onSignOut}>Sign Out</button>
-              <button className="whimsy-btn" onClick={onOpenSettings}>Account Details</button>
             </>
           )}
         </div>
       </div>
 
-      <div className="profile-middle">
-        <div className="profile-bio-card profile-panel">
-          <div className="bio-header">
-            <h4>Bio:</h4>
-            {editable && !isEditingBio && <button className="whimsy-btn whimsy-btn-ghost" onClick={() => setIsEditingBio(true)}>Edit Bio</button>}
-          </div>
-          {isEditingBio ? (
-            <>
-              <Form.Control as="textarea" rows={5} value={bioDraft} onChange={(e) => setBioDraft(e.target.value)} className="mb-2 bio-textarea" />
-              <div className="button-group">
-                <button className="whimsy-btn" onClick={handleSaveBio}>Save</button>
-                <button className="whimsy-btn whimsy-btn-ghost" onClick={handleCancelBio}>Cancel</button>
-              </div>
-            </>
-          ) : (
-            <div className="bio-content"><p>{bio || "This user hasn't written a bio yet."}</p></div>
-          )}
+      {/* NEW: Bio — full width, short height, sits directly below the header */}
+      <div className="profile-bio-full profile-panel">
+        <div className="bio-header">
+          <h4>Bio:</h4>
+          {editable && !isEditingBio && <button className="smallButton" onClick={() => setIsEditingBio(true)}>Edit Bio</button>}
         </div>
-
-        <div className="profile-chart-card profile-panel">
-          <MediaPieChart lists={lists} />
-        </div>
+        {isEditingBio ? (
+          <>
+            <Form.Control as="textarea" rows={2} value={bioDraft} onChange={(e) => setBioDraft(e.target.value)} className="mb-2 bio-textarea" />
+            <div className="button-group">
+              <button className="whimsy-btn" onClick={handleSaveBio}>Save</button>
+              <button className="whimsy-btn whimsy-btn-ghost" onClick={handleCancelBio}>Cancel</button>
+            </div>
+          </>
+        ) : (
+          <div className="bio-content"><p>{bio || "This user hasn't written a bio yet."}</p></div>
+        )}
       </div>
 
+      {/* List Stats + Favorites row — unchanged, just moved down one slot */}
       <div className="profile-bottom-row">
         <div className="stat-bar-box profile-panel">
           <div className="stat-list">
@@ -72,17 +69,33 @@ const ProfileCard = ({
             <div className="bar-segment completed" style={{ height: `${((lists.completed?.length || 0) / totalItems) * 100 || 0}%` }} />
             <div className="bar-segment current" style={{ height: `${((lists.current?.length || 0) / totalItems) * 100 || 0}%` }} />
             <div className="bar-segment futures" style={{ height: `${((lists.futures?.length || 0) / totalItems) * 100 || 0}%` }} />
+            
           </div>
         </div>
 
         <FavoritesGrid favorites={favorites} editable={editable} onEditClick={onEditFavorites} reviews={reviews} />
       </div>
 
+      <div className="profile-middle">
+        
+        <div className="profile-chart-card profile-panel">
+          <div className="pie-chart-canvas-wrapper"><MediaPieChart lists={lists} /></div>
+        </div>
+
+        <div className="profile-chart-card profile-panel">
+          <RatingDistributionChart userId={viewedUserId} />
+        </div>
+
+      </div>
+
       <ActivityFeed activity={activity} title={editable ? 'Your Recent Activity' : `${username}'s Recent Activity`} />
 
-      <div className="profile-charts-row">
-        <div className="profile-chart-card profile-panel"><RatingDistributionChart userId={viewedUserId} /></div>
-      </div>
+      {/* Pie chart + Rating Distribution — now side-by-side, replacing the old
+          bio+pie row. This reuses .profile-middle's existing equal-width flex
+          layout instead of the old .profile-charts-row, and reuses
+          .profile-chart-card's existing fixed-height/no-scroll sizing so
+          both panels fill their space with no scrollbar. */}
+      
     </div>
   );
 };

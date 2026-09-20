@@ -56,3 +56,15 @@
 .activity-feed-row {
   background-color: var(--whimsy-inset-bg);
 }
+
+.custom-list-description-block {
+  background: var(--whimsy-inset-bg);
+  border-radius: var(--whimsy-panel-radius);
+  border: var(--whimsy-card-border);
+  border-color: white;
+  color: white;
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  text-align: center;
+  padding: 1rem 1.5rem;
+}

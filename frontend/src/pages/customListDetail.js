@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Form, FormControl } from 'react-bootstrap';
+import { Container, Form, FormControl, Dropdown } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import BulkAddModal from '../components/lists/BulkAddModal';
 import AppNavbar from '../components/Navbar';
@@ -59,11 +59,13 @@ const CustomListDetail = () => {
 };
 
   // Ranked/visibility dropdowns are live — they save immediately, independent of edit mode.
-  const handleVisibilityChange = (e) => patchList({ visibility: e.target.value });
+  const handleVisibilityChange = (value) => {
+  patchList({ visibility: value });
+};
 
-  const handleRankedChange = (e) => {
-  const nowRanked = e.target.value === 'ranked';
-  setRankedForSave(nowRanked); // keep in sync immediately, don't wait on a refetch
+  const handleRankedChange = (value) => {
+  const nowRanked = value === 'ranked';
+  setRankedForSave(nowRanked);
   patchList({ isRanked: nowRanked });
 };
 
@@ -126,15 +128,26 @@ const CustomListDetail = () => {
             <h4 className="filter-bar-title">{list.name}</h4>
           )}
 
-          <Form.Select className="filter-bar-select" style={{ width: '140px' }} value={list.is_ranked ? 'ranked' : 'unranked'} onChange={handleRankedChange}>
-            <option value="ranked">Ranked</option>
-            <option value="unranked">Unranked</option>
-          </Form.Select>
-          <Form.Select className="filter-bar-select" style={{ width: '150px' }} value={list.visibility} onChange={handleVisibilityChange}>
-            <option value="public">Public</option>
-            <option value="friends">Friends Only</option>
-            <option value="private">Private</option>
-          </Form.Select>
+          <Dropdown>
+          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn">
+            {list.is_ranked ? 'Ranked' : 'Unranked'}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => handleRankedChange('ranked')}>Ranked</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleRankedChange('unranked')}>Unranked</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+
+        <Dropdown>
+          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn">
+            {list.visibility === 'public' ? 'Public' : list.visibility === 'friends' ? 'Friends Only' : 'Private'}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => handleVisibilityChange('public')}>Public</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleVisibilityChange('friends')}>Friends Only</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleVisibilityChange('private')}>Private</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
 
           {list.isOwner && (
             editMode ? (

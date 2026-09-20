@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ActivityFeed from '../profile/ActivityFeed';
+import { Container } from 'react-bootstrap';
 
 const FriendRecommendationsCard = () => {
   const [activity, setActivity] = useState([]);
@@ -24,7 +25,13 @@ const FriendRecommendationsCard = () => {
 
   if (loading) return null;
 
-  return <ActivityFeed activity={activity} title="What Your Friends Are Logging" showUsername />;
+  return (
+
+    <Container className="friend-recommendations-card">
+      <ActivityFeed activity={activity} title="What Your Friends Are Logging" showUsername />
+    </Container>
+  )
+
 };
 
 export default FriendRecommendationsCard;

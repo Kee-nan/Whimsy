@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Card, Row, Col } from 'react-bootstrap';
 import { getRatingTier } from './RatingGauge';
 
-const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
+const ReviewModal = ({ show, onClose, mediaDetails, onSubmit, onDelete }) => {
   const [rating, setRating] = useState(15);
   const [review, setReview] = useState('');
 
@@ -17,15 +17,13 @@ const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
   }, [mediaDetails]);
 
   const tier = getRatingTier(rating);
+  const hasExistingReview = !!mediaDetails.review;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const reviewData = {
-      id: mediaDetails.id,
-      image: mediaDetails.image,
-      rating,
-      review: review.trim() === '' ? null : review, // review text is optional — rating alone is enough
-      title: mediaDetails.title,
+      id: mediaDetails.id, image: mediaDetails.image,
+      rating, review: review.trim() === '' ? null : review, title: mediaDetails.title,
     };
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/review/add`, {
@@ -35,7 +33,6 @@ const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
       });
       if (response.ok) {
         onSubmit();
-        alert('Review Successfully Added');
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.message}`);
@@ -46,9 +43,15 @@ const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
     }
   };
 
+  const handleDeleteClick = async () => {
+    if (!window.confirm('Delete this review? This cannot be undone.')) return;
+    await onDelete(); // parent (DetailPage) owns the actual DELETE call + state refresh
+    onClose();
+  };
+
   return (
     <Modal show={show} onHide={onClose} centered className="custom-modal review-modal-lg">
-      <Modal.Header closeButton><Modal.Title>Leave a Review</Modal.Title></Modal.Header>
+      <Modal.Header closeButton><Modal.Title>{hasExistingReview ? 'Edit Your Review' : 'Leave a Review'}</Modal.Title></Modal.Header>
       <Modal.Body>
         <Card className="review-modal-card">
           <Row>
@@ -65,28 +68,18 @@ const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
                       <span className="review-rating-value">{rating}</span>
                       <span className="review-rating-tier">{tier.label}</span>
                     </div>
-                    <input
-                      type="range" min="0" max="30" step="1"
-                      value={rating}
-                      onChange={(e) => setRating(Number(e.target.value))}
-                      className="review-rating-slider"
-                      style={{ accentColor: tier.color }}
-                    />
+                    <input type="range" min="0" max="30" step="1" value={rating} onChange={(e) => setRating(Number(e.target.value))} className="review-rating-slider" style={{ accentColor: tier.color }} />
                   </Form.Group>
                   <Form.Group controlId="review" className="mb-3">
-                    <Form.Label className="review-modal-label">
-                      Review <span className="review-modal-optional">(optional)</span>
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={8}
-                      value={review}
-                      onChange={(e) => setReview(e.target.value)}
-                      placeholder="Share your thoughts... or leave this blank and just save your rating."
-                      className="review-modal-input"
-                    />
+                    <Form.Label className="review-modal-label">Review <span className="review-modal-optional">(optional)</span></Form.Label>
+                    <Form.Control as="textarea" rows={8} value={review} onChange={(e) => setReview(e.target.value)} placeholder="Share your thoughts... or leave this blank and just save your rating." className="review-modal-input" />
                   </Form.Group>
-                  <button type="submit" className="whimsy-btn">Submit Review</button>
+                  <div className="d-flex gap-2">
+                    <button type="submit" className="whimsy-btn">Submit Review</button>
+                    {hasExistingReview && (
+                      <button type="button" className="whimsy-btn whimsy-btn-ghost" onClick={handleDeleteClick}>Delete Review</button>
+                    )}
+                  </div>
                 </Form>
               </Card.Body>
             </Col>
@@ -98,5 +91,4 @@ const ReviewModal = ({ show, onClose, mediaDetails, onSubmit }) => {
 };
 
 export default ReviewModal;
-
 

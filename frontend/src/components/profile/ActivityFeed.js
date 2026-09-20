@@ -43,12 +43,11 @@ const ActivityFeed = ({ activity, title = 'Recent Activity', showUsername = fals
             >
               {entry.media?.image && <img src={entry.media.image} alt={entry.media.title} className="activity-feed-thumb" />}
               <div className="activity-feed-text">
-                <span className="activity-feed-title">{entry.media?.title || 'Unknown'}</span>
-                <span className="activity-feed-action">
-                  {ACTION_LABELS[entry.actionType]?.(entry.detail) || entry.actionType}
-                </span>
                 <span className="activity-feed-title">
                   {showUsername && entry.username ? `${entry.username} — ` : ''}{entry.media?.title || 'Unknown'}
+                </span>
+                <span className="activity-feed-action">
+                  {ACTION_LABELS[entry.actionType]?.(entry.detail) || entry.actionType}
                 </span>
               </div>
               <span className="activity-feed-time">{timeAgo(entry.createdAt)}</span>

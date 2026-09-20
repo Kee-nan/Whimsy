@@ -97,7 +97,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.6rem 0.9rem;
-  background-color: #2a2438;
+  background-color: var(--whimsy-inset-bg);
   border-radius: 8px;
   margin-bottom: 0.5rem;
   cursor: pointer;
@@ -106,3 +106,13 @@
 .friend-row-shaded:hover { background-color: #37304a; }
 .friend-row-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
 .friend-row-name { flex: 1; font-weight: 600; color: white; }
+
+.friend-recommendations-card {
+  max-width: 1230px;
+  margin: 1rem auto;
+  background: #1c1c1c;
+  border: 2px solid white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  color: white;
+}

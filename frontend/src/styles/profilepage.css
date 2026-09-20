@@ -38,8 +38,30 @@
 .profile-picture { border: 2px solid white; }
 
 /* ---- Bio + Pie chart row (equal height) ---- */
+/* .profile-middle now hosts the two charts (previously bio + pie) — the
+   existing equal-width flex + stretch behavior is reused as-is, only the
+   fixed height needs to accommodate the rating distribution chart's
+   x-axis labels comfortably. */
 .profile-middle { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; align-items: stretch; }
 .profile-middle > * { flex: 1; }
+.profile-middle .profile-chart-card {
+  height: 460px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.profile-middle .chart-canvas-wrapper,
+.profile-middle .pie-chart-canvas-wrapper {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  width: 100%;
+}
+.profile-middle canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
 
 .profile-chart-card, .profile-bio-card {
   height: 500px;       /* was min/max-height + overflow-y: auto */
@@ -136,19 +158,10 @@
 .activity-feed-time { font-size: 0.8rem; color: #999; white-space: nowrap; }
 
 /* ---- Bottom charts row (rating distribution + logging activity) ---- */
-.profile-charts-row { display: flex; gap: 1.5rem; align-items: stretch; margin-bottom: 0.5rem; }
-.profile-charts-row > .profile-chart-card {
-  flex: 1;
-  height: 300px;        /* was min-height/max-height */
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.profile-charts-row canvas {
-  max-width: 100% !important;
-  max-height: 100% !important;
-}
-.profile-charts-row h4, .profile-charts-row p { color: white; }
+
+
+
+
 .profile-charts-row .chart-canvas-wrapper {
   flex: 1;
   min-height: 0;
@@ -163,3 +176,10 @@
 .fav-modal-thumb.landscape { aspect-ratio: 16 / 9; }
 .fav-modal-thumb.portrait { aspect-ratio: 2 / 3; }
 
+/* NEW: full-width, short bio bar sitting directly under the header */
+.profile-bio-full {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  min-height: 0;   /* no fixed tall height — sized to content, like the header bar */
+}
+.profile-bio-full .bio-content p { margin: 0; color: #ddd; white-space: pre-wrap; }

@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Container, Form, OverlayTrigger, Tooltip, Dropdown} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import AppNavbar from '../components/Navbar';
 
 const PAGE_SIZE = 25;
 
+const MEDIA_OPTIONS = [
+  { value: 'All', label: 'All Types' },
+  { value: 'movie', label: 'Movies' }, { value: 'show', label: 'Shows' },
+  { value: 'anime', label: 'Anime' }, { value: 'manga', label: 'Manga' },
+  { value: 'book', label: 'Books' }, { value: 'game', label: 'Games' }, { value: 'album', label: 'Albums' },
+];
 const SORT_OPTIONS = [
-  { key: 'whimsy', label: 'Whimsy Rating' },
-  { key: 'external', label: 'Source Rating' },
-  { key: 'user', label: 'Your Rating' },
-  { key: 'friends', label: 'Friend Rating' },
+  { value: 'whimsy', label: 'Sort: Whimsy Rating' },
+  { value: 'external', label: 'Sort: Source Rating' },
+  { value: 'user', label: 'Sort: Your Rating' },
+  { value: 'friends', label: 'Sort: Friend Rating' },
 ];
 
 const Global = () => {
@@ -55,18 +61,27 @@ const Global = () => {
       <div className="filter-bar">
         <div className="filter-bar-inner">
           <h4 className="filter-bar-title">Global Leaderboard — Top 100</h4>
-          <Form.Select className="filter-bar-select" style={{ width: '180px' }} value={mediaFilter} onChange={(e) => setMediaFilter(e.target.value)}>
-            <option value="All">All Types</option>
-            <option value="movie">Movies</option><option value="show">Shows</option>
-            <option value="anime">Anime</option><option value="manga">Manga</option>
-            <option value="book">Books</option><option value="game">Games</option><option value="album">Albums</option>
-          </Form.Select>
-          <Form.Select className="filter-bar-select" style={{ width: '190px' }} value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-            <option value="whimsy">Sort: Whimsy Rating</option>
-            <option value="external">Sort: Source Rating</option>
-            <option value="user">Sort: Your Rating</option>
-            <option value="friends">Sort: Friend Rating</option>
-          </Form.Select>
+         <Dropdown>
+          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn">
+            {MEDIA_OPTIONS.find((o) => o.value === mediaFilter)?.label}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            {MEDIA_OPTIONS.map((o) => (
+              <Dropdown.Item key={o.value} onClick={() => setMediaFilter(o.value)}>{o.label}</Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+
+        <Dropdown>
+          <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn">
+            {SORT_OPTIONS.find((o) => o.value === sortBy)?.label}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            {SORT_OPTIONS.map((o) => (
+              <Dropdown.Item key={o.value} onClick={() => setSortBy(o.value)}>{o.label}</Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
         </div>
       </div>
 
