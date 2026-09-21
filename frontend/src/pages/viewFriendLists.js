@@ -6,20 +6,28 @@ import ProfileCard from '../components/profile/ProfileCard';
 import FriendListTable from '../components/friends/FriendListTable';
 import FriendTagsList from '../components/friends/FriendTagsList';
 import FriendTagDetail from '../components/friends/FriendTagDetail';
+import { Dropdown } from 'react-bootstrap';
+
+const VIEW_MODE_OPTIONS = [
+  { value: 'profile', label: 'Profile' },
+  { value: 'list', label: 'Lists' },
+  { value: 'tags', label: 'Tags' },
+];
+
 
 const authHeaders = () => ({ Authorization: `Bearer ${localStorage.getItem('user_token')}` });
 
 const ViewModeSelect = ({ viewMode, setViewMode }) => (
-  <Form.Select
-    className="filter-bar-select"
-    style={{ width: '150px' }}
-    value={viewMode}
-    onChange={(e) => setViewMode(e.target.value)}
-  >
-    <option value="profile">Profile</option>
-    <option value="list">Lists</option>
-    <option value="tags">Tags</option>
-  </Form.Select>
+  <Dropdown>
+    <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn whimsy-btn-ghost">
+      {VIEW_MODE_OPTIONS.find((o) => o.value === viewMode)?.label}
+    </Dropdown.Toggle>
+    <Dropdown.Menu>
+      {VIEW_MODE_OPTIONS.map((o) => (
+        <Dropdown.Item key={o.value} onClick={() => setViewMode(o.value)}>{o.label}</Dropdown.Item>
+      ))}
+    </Dropdown.Menu>
+  </Dropdown>
 );
 
 const ViewFriendLists = () => {

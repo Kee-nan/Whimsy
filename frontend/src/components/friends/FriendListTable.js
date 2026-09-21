@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Form } from 'react-bootstrap';
+import { Container, Form, Dropdown } from 'react-bootstrap';
 import MultiCheckDropdown from '../lists/MultiCheckDropdown';
 import TagsCell from '../lists/TagsCell';
 
@@ -22,6 +22,13 @@ const COLUMN_DEFINITIONS = [
   { key: 'loggedAt', label: 'Date Logged' },
   { key: 'tags', label: 'Tags' },
 ];
+
+const GROUP_OPTIONS = [
+  { value: 'none', label: 'No Grouping' },
+  { value: 'media', label: 'Group by Type' },
+  { value: 'status', label: 'Group by Status' },
+];
+
 
 const FriendListTable = ({ friendId, friendUsername, titleText, toggleButtons }) => {
   const [items, setItems] = useState([]);
@@ -129,11 +136,17 @@ const FriendListTable = ({ friendId, friendUsername, titleText, toggleButtons })
           <MultiCheckDropdown label="Tags" options={tagOptions} selected={selectedTags} onChange={setSelectedTags} mode="multi" includeAllOption />
           <input className="whimsy-form-control filter-bar-search" placeholder="Search by title" value={search} onChange={(e) => setSearch(e.target.value)} />
           <MultiCheckDropdown label="Edit Columns" options={COLUMN_DEFINITIONS} selected={visibleColumns} onChange={setVisibleColumns} mode="multi" />
-          <select className="form-select filter-bar-select" style={{ width: '160px' }} value={groupBy} onChange={(e) => setGroupBy(e.target.value)}>
-            <option value="none">No Grouping</option>
-            <option value="media">Group by Type</option>
-            <option value="status">Group by Status</option>
-          </select>
+          
+          <Dropdown>
+            <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn whimsy-btn-ghost filter-bar-select">
+              {GROUP_OPTIONS.find((o) => o.value === groupBy)?.label}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {GROUP_OPTIONS.map((o) => (
+                <Dropdown.Item key={o.value} onClick={() => setGroupBy(o.value)}>{o.label}</Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
       </div>
 
@@ -184,7 +197,7 @@ const FriendListTable = ({ friendId, friendUsername, titleText, toggleButtons })
         </div>
 
         {sorted.length > 0 && (
-          <div className="d-flex justify-content-center my-3">
+          <div className="pagination-container">
             <button className="whimsy-btn whimsy-btn-ghost mx-2" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>← Prev</button>
             <span className="align-self-center">Page {page} of {totalPages}</span>
             <button className="whimsy-btn whimsy-btn-ghost mx-2" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>Next →</button>
