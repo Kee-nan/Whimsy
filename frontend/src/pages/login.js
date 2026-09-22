@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
+import { scheduleRefresh } from '../utils/tokenManager';
 
 
 /**
@@ -25,6 +26,7 @@ const LoginPage = () => {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ username, password }),
       });
       const data = await response.json(); // now always valid JSON regardless of success/failure
@@ -36,6 +38,7 @@ const LoginPage = () => {
 
       localStorage.setItem('user_token', data.user_token);
       localStorage.setItem('tokenExpiry', data.expiresAt);
+      scheduleRefresh(data.expiresAt);
 
       navigate('/homepage');
     } catch (err) {

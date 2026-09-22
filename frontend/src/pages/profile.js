@@ -7,6 +7,7 @@ import ProfileCard from '../components/profile/ProfileCard';
 import AccountSettingsModal from '../components/profile/AccountSettingsModal';
 import FavoritesModal from '../components/profile/FavoritesModal';
 import { checkTokenExpiration } from '../utils/checkTokenExpiration';
+import { stopTokenManager } from '../utils/tokenManager';
 
 const authHeaders = () => ({
   'Content-Type': 'application/json',
@@ -76,11 +77,20 @@ const Profile = () => {
     }
   };
 
-  const handleSignOut = () => {
-    if (window.confirm('Are you sure you would like to sign out?')) {
-      localStorage.removeItem('user_token');
-      navigate('/login');
+  const handleSignOut = async () => {
+    if (!window.confirm('Are you sure you would like to sign out?')) return;
+    try {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (err) {
+      console.error('Logout request failed (proceeding anyway):', err);
     }
+    stopTokenManager();
+    localStorage.removeItem('user_token');
+    localStorage.removeItem('tokenExpiry');
+    navigate('/login');
   };
 
   if (!user) return null;

@@ -3,16 +3,39 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const users = require('../db/queries/users');
+const authTokensQ = require('../db/queries/authTokens');
 const authenticateToken = require('../middleware/authenticateToken');
 const { authLimiter } = require('../middleware/rateLimiters');
+const { generateToken, hashToken } = require('../utils/tokens');
 const { upload } = require('../middleware/upload');
+
+const ACCESS_TOKEN_TTL = '15m';
+const REFRESH_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+const REFRESH_COOKIE_OPTS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production', // requires HTTPS in prod; fine as false over local http
+  sameSite: 'lax',
+  path: '/api/accounts',
+  maxAge: REFRESH_TOKEN_TTL_MS,
+};
+
+function issueAccessToken(userId) {
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: ACCESS_TOKEN_TTL });
+  const { exp } = jwt.decode(token);
+  return { token, expiresAt: exp * 1000 };
+}
+
+async function issueRefreshToken(res, userId) {
+  const raw = generateToken();
+  const expiresAt = new Date(Date.now() + REFRESH_TOKEN_TTL_MS);
+  await authTokensQ.createRefreshToken(userId, hashToken(raw), expiresAt);
+  res.cookie('refresh_token', raw, REFRESH_COOKIE_OPTS);
+}
 
 router.post('/login', authLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ message: 'Username and password are required.' });
-    }
+    if (!username || !password) return res.status(400).json({ message: 'Username and password are required.' });
 
     const user = await users.findByUsername(username);
     if (!user) return res.status(401).json({ message: 'Username does not exist.' });
@@ -20,13 +43,69 @@ router.post('/login', authLimiter, async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) return res.status(401).json({ message: 'Incorrect password.' });
 
-    const user_token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '5h' });
-    const decoded = jwt.decode(user_token);
+    const { token: user_token, expiresAt } = issueAccessToken(user.id);
+    await issueRefreshToken(res, user.id);
 
-    res.json({ user_token, expiresAt: decoded.exp * 1000 });
+    res.json({ user_token, expiresAt });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error logging in.' });
+  }
+});
+
+/**
+ * POST /api/accounts/refresh
+ * Rotation with reuse detection: the refresh cookie is single-use. Each
+ * call issues a brand-new refresh token and revokes the old one. If a
+ * refresh token that's ALREADY revoked is ever presented again, that's a
+ * strong signal it was stolen and used by someone else before the
+ * legitimate owner — so every refresh token for that user is revoked
+ * immediately, forcing a fresh login everywhere.
+ */
+router.post('/refresh', async (req, res) => {
+  try {
+    const raw = req.cookies?.refresh_token;
+    if (!raw) return res.status(401).json({ message: 'No refresh token provided.' });
+
+    const tokenHash = hashToken(raw);
+    const existing = await authTokensQ.findRefreshToken(tokenHash);
+
+    if (!existing) return res.status(401).json({ message: 'Invalid refresh token.' });
+
+    if (existing.revoked_at) {
+      // Reuse of an already-rotated token — treat as compromise.
+      await authTokensQ.revokeAllRefreshTokensForUser(existing.user_id);
+      res.clearCookie('refresh_token', { path: '/api/accounts' });
+      return res.status(401).json({ message: 'Session invalidated. Please log in again.' });
+    }
+
+    if (new Date(existing.expires_at) < new Date()) {
+      return res.status(401).json({ message: 'Refresh token expired. Please log in again.' });
+    }
+
+    await authTokensQ.revokeRefreshToken(existing.id);
+    const { token: user_token, expiresAt } = issueAccessToken(existing.user_id);
+    await issueRefreshToken(res, existing.user_id);
+
+    res.json({ user_token, expiresAt });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error refreshing session.' });
+  }
+});
+
+router.post('/logout', async (req, res) => {
+  try {
+    const raw = req.cookies?.refresh_token;
+    if (raw) {
+      const existing = await authTokensQ.findRefreshToken(hashToken(raw));
+      if (existing && !existing.revoked_at) await authTokensQ.revokeRefreshToken(existing.id);
+    }
+    res.clearCookie('refresh_token', { path: '/api/accounts' });
+    res.json({ message: 'Logged out.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error logging out.' });
   }
 });
 

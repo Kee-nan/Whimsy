@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 // General Pages
 import MainPage from './pages/main';
@@ -27,11 +28,14 @@ import MovieDetail from './pages/details/movieDetails';
 import GameDetail from './pages/details/gameDetails';
 
 
+import { initTokenManager } from './utils/tokenManager';
+
 import LeaveReview from './pages/leaveReview';
 
 import PrivateRoute from './components/PrivateRoute';
 
 const App = () => {
+  useEffect(() => { initTokenManager(); }, []);
   return (
     <Router>
       <Routes>
