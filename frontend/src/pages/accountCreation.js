@@ -41,11 +41,11 @@ const AccountCreation = () => {
   };
 
   return (
-    <Container className="login-container">
-      <div className="login-card">
-        <h2 className="login-title">Create Your Account</h2>
+    <div className="login-page">
+      <Container className="d-flex flex-column justify-content-center align-items-center vh-100">
+        <h2 className="header-title">Create Your Account</h2>
         {error && <Alert variant="danger">{error}</Alert>}
-        <Form onSubmit={handleSubmit}>
+        <Form className="w-50" onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>First Name</Form.Label>
             <Form.Control name="firstName" value={formData.firstName} onChange={handleChange} required />
@@ -70,9 +70,12 @@ const AccountCreation = () => {
           <button type="submit" className="whimsy-btn w-100" disabled={submitting}>
             {submitting ? 'Creating Account...' : 'Create Account'}
           </button>
+           <button type="button" className="whimsy-btn w-100 mt-2" onClick={() => navigate('login')} disabled={submitting}>
+            Cancel
+          </button>
         </Form>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 };
 
