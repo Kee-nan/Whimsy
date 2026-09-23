@@ -56,7 +56,7 @@ const LoginPage = () => {
     <div className="login-page">
       <Container className="d-flex flex-column justify-content-center align-items-center vh-100">
         <h1 className="header-title">Whimsy</h1>
-        <Form className="w-100" onSubmit={handleSubmit}>
+        <Form className="w-50" onSubmit={handleSubmit}>
           {error && <Alert variant="danger">{error}</Alert>}
 
           {/* Username Enter Field */}

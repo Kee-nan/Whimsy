@@ -1182,3 +1182,22 @@ ALTER TABLE ONLY public.reviews
 
 \unrestrict PksCnYxjWxEVcrZmn2m2LbEf31OlNM5XN1xLkqwGDPB0QxqXSC1UM4p3ZdYXgWj
 
+
+
+
+-- Set up this Neon project in the current working directory.
+
+-- 1. `npm i -g neon@latest && neon login`
+-- 2. `neon skills -y`
+-- 3. `neon mcp -y`
+-- 4. `neon link --project-id jolly-voice-55577217 --branch production -y`
+-- 5. `neon config init`
+-- 6. Update `neon.ts`:
+
+-- ```ts
+-- import { defineConfig } from "@neon/config/v1";
+
+-- export default defineConfig({});
+-- ```
+
+-- 7. `neon deploy`
