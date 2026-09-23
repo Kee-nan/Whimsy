@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 
+import RatingScaleExplainer from '../components/RatingScaleExplainer';
+
 import tmdbLogo from '../styles/images/TMDB.png';
 import spotifyLogo from '../styles/images/Spotify.png';
 import malLogo from '../styles/images/MAL.png';
@@ -38,6 +40,8 @@ const MainPage = () => {
           </Row>
         </Container>
       </div>
+
+      <RatingScaleExplainer />
 
       {/* Powered by grid */}
       <div className="features-section py-5" style={{ paddingBottom: '150px' }}>

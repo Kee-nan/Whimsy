@@ -16,18 +16,7 @@
   align-items: center;
 }
 
-.whimsy-btn-primary {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.3s;
-}
 
-.whimsy-btn-primary:hover {
-  background-color: #0056b3;
-}
 
 .whimsy-btn-outline {
   background-color: transparent;
@@ -107,3 +96,38 @@
   overflow: hidden;
 }
 
+.whimsy-form-control {
+  flex: 1 1 260px;
+  min-width: 220px;
+  width: auto;
+}
+
+
+
+
+
+
+/* Covers every Bootstrap state a dropdown toggle can be in: default,
+   hover, focus (the blue glow), active, and .show (while open) — all of
+   these previously fell back to Bootstrap defaults because our earlier
+   rule only targeted the resting state. */
+.btn-outline-secondary,
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus,
+.btn-outline-secondary:active,
+.btn-outline-secondary.show,
+.dropdown-toggle.show,
+.dropdown-toggle:active {
+  background-image: radial-gradient(100% 100% at 100% 0, var(--three-purple) 0, var(--one-purple) 100%) !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  color: white !important;
+  padding: 0.4rem 0.6rem;
+  box-shadow: none !important;
+}
+
+/* Kills Bootstrap's default blue focus ring app-wide on buttons/toggles. */
+.btn:focus, .btn:focus-visible, .dropdown-toggle:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}

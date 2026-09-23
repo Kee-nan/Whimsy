@@ -1,132 +1,79 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Form, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Form, Container, Alert } from 'react-bootstrap';
+import '../styles/login.css';
 
-/**
- *  Account creation
- *  All the details an account
- */
-
-const CreateAccountPage = () => {
-  //Account Variable details
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const AccountCreation = () => {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({ firstName: '', lastName: '', username: '', email: '', password: '' });
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Create a JSON object with form data
-    const userData = {
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-    };
-
+    setError('');
+    setSubmitting(true);
     try {
-      // Send a POST request to the backend API to save user data
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/create`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        // If the account creation is successful, navigate to the login page or home page
-        navigate('/login');
-        alert('Account Created. Please login.')
-      } else {
-        // Handle error if the account creation fails
-        console.error('Account creation failed');
+      // FIX: always parse JSON now that the backend responds consistently —
+      // and always check response.ok before treating this as success.
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || 'Something went wrong creating your account.');
+        setSubmitting(false);
+        return;
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert(`Error Occured: ${error.message}, username or email may already be used.`)
+
+      navigate('/login', { state: { accountCreated: true } });
+    } catch (err) {
+      console.error('Account creation error:', err);
+      setError('Could not reach the server. Please try again.');
+      setSubmitting(false);
     }
   };
 
   return (
-
-    <div className="login-page">
-      <Container className="d-flex justify-content-center align-items-center vh-100">
-        <Form className="w-100" onSubmit={handleSubmit}>
-          <h1 className="text-center mb-4 header-title">Create Account</h1>
-
-          <Form.Group controlId="formFirstName">
-            <Form.Label className="form-label">First Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter your first name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-              className="form-control"
-            />
+    <Container className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Create Your Account</h2>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control name="firstName" value={formData.firstName} onChange={handleChange} required />
           </Form.Group>
-
-          <Form.Group controlId="formLastName" className="mt-3">
-            <Form.Label className="form-label">Last Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter your last name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-              className="form-control"
-            />
+          <Form.Group className="mb-3">
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control name="lastName" value={formData.lastName} onChange={handleChange} required />
           </Form.Group>
-
-          <Form.Group controlId="formUsername" className="mt-3">
-            <Form.Label className="form-label">Username</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="form-control"
-            />
+          <Form.Group className="mb-3">
+            <Form.Label>Username</Form.Label>
+            <Form.Control name="username" value={formData.username} onChange={handleChange} required />
           </Form.Group>
-
-          <Form.Group controlId="formEmail" className="mt-3">
-            <Form.Label className="form-label">Email address</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="form-control"
-            />
+          <Form.Group className="mb-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} required />
           </Form.Group>
-
-          <Form.Group controlId="formPassword" className="mt-3">
-            <Form.Label className="form-label">Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="form-control"
-            />
+          <Form.Group className="mb-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" name="password" value={formData.password} onChange={handleChange} required />
+            <Form.Text className="text-muted">Must be at least 8 characters.</Form.Text>
           </Form.Group>
-
-          <Button type="submit" className="button-login">
-            Create Account
-          </Button>
+          <button type="submit" className="whimsy-btn w-100" disabled={submitting}>
+            {submitting ? 'Creating Account...' : 'Create Account'}
+          </button>
         </Form>
-      </Container>
-    </div>
+      </div>
+    </Container>
   );
 };
 
-export default CreateAccountPage;
+export default AccountCreation;

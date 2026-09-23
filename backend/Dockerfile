@@ -1,27 +1,8 @@
-# backend/Dockerfile
-FROM node:18-alpine
-
-# set working directory
-WORKDIR /usr/src/app
-
-# install system deps (if needed)
-RUN apk add --no-cache bash
-
-# copy package.json and package-lock.json first to leverage docker cache
+FROM node:20-alpine
+WORKDIR /app
 COPY package*.json ./
-
-# install dependencies
-RUN npm ci --production
-
-# copy app source
+RUN npm ci --omit=dev
 COPY . .
-
-# expose port your app listens on (example 5000)
+RUN mkdir -p uploads/profile-pictures uploads/tag-icons
 EXPOSE 5000
-
-# healthcheck (optional)
-# HEALTHCHECK --interval=30s --timeout=3s \
-#   CMD curl -f http://localhost:5000/health || exit 1
-
-# run the server (use npm start or node)
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

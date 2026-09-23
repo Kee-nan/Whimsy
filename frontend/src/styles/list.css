@@ -65,3 +65,11 @@
 
 
 
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  Color: white;
+  margin-bottom: 3rem;
+}

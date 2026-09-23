@@ -1,103 +1,100 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import '../../styles/detailpage.css';
+import FriendActivityList from './FriendActivityList';
+import LoggedDateEditor from './loggedDateEditor';
+import CustomListSelector from '../lists/CustomListSelector';
+import RatingGauge from './RatingGauge';
+import MediaTagsPanel from './MediaTagsPanel';
 
-const DetailCard = ({ image, title, details, summary, type, mediaId, userLists, onAddToList, onReview, onBack, review, onEdit, onDelete }) => {
+const DetailCard = ({
+  image, title, details, summary, type, mediaId, userLists,
+  onAddToList, onReview, onBack, review, onEdit, onDelete,
+  stats, loggedAt, onLoggedAtSaved,
+}) => {
   let imageClass = 'anime-image';
+  if (type === 'album') imageClass += ' square large';
+  else if (type === 'game') imageClass += ' landscape';
+  else imageClass += ' portrait large';
 
-  
-  if (type === 'album') {
-    imageClass += ' square large';
-  } else if (type === 'game') {
-    imageClass += ' landscape';
-  } else  {
-    imageClass += ' portrait large';
-  }
   const getInitial = useCallback(() => {
     for (const listType of ['completed', 'current', 'futures']) {
       const arr = userLists[listType] || [];
-      if (arr.find(item => item.id === mediaId)) {
-        return listType;
-      }
+      if (arr.find((item) => item.id === mediaId)) return listType;
     }
     return 'none';
   }, [userLists, mediaId]);
 
   const [selected, setSelected] = useState(getInitial());
+  useEffect(() => { setSelected(getInitial()); }, [getInitial]);
 
-  useEffect(() => {
-    setSelected(getInitial());
-  }, [getInitial]);
-
-  const handleChange = (newType) => {
+  const handleChange = async (newType) => {
     if (newType === selected) return;
+    const previous = selected;
     setSelected(newType);
     const mediaObj = { id: mediaId, media: type, title, image, listType: newType };
-    onAddToList(newType, mediaId, mediaObj);
+    const success = await onAddToList(newType, mediaId, mediaObj);
+    if (!success) setSelected(previous);
   };
 
-  const buttonLabel = selected === 'none'
-    ? 'Add to List'
-    : selected.charAt(0).toUpperCase() + selected.slice(1);
+  const buttonLabel = selected === 'none' ? 'Add to List' : selected.charAt(0).toUpperCase() + selected.slice(1);
 
   return (
     <div className="anime-detail-container">
-      {/* LEFT SIDE */}
       <div className="anime-left">
         <div className="title-row">
           {onBack && (
             <div className="back-container">
-              <div className="btn btn-outline-light back-arrow" onClick={onBack}>
-                ←
-              </div>
+              <div className="whimsy-btn whimsy-btn-ghost" onClick={onBack}>←</div>
             </div>
           )}
-          <div className="title-container">
-            <div className="anime-title">{title}</div>
-          </div>
+          <div className="title-container"><div className="anime-title">{title}</div></div>
         </div>
-        <div className="image-wrapper">
-          <img src={image} alt={title} className={imageClass} />
-        </div>
+        <div className="image-wrapper"><img src={image} alt={title} className={imageClass} /></div>
       </div>
 
-      {/* RIGHT SIDE */}
       <div className="anime-right">
-        {/* 2x3 Details Grid */}
         <div className="details-grid">
-          {details.map((item, idx) => (
-            <div key={idx} className="detail-cell">{item}</div>
-          ))}
+          {details.map((item, idx) => <div key={idx} className="detail-cell">{item}</div>)}
         </div>
 
-        {/* Summary Box */}
         <div className="summary-box">{summary}</div>
 
-        {/* 3x1 Stats Grid */}
         <div className="stats-grid">
-          {( [<p>Global Rating: 0</p>, <p>Friend Rating: 0</p> , <p>Your Rating: {review ? review.rating : "n/a"} </p>]).map((stat, idx) => (
-            <div key={idx} className="stat-cell">{stat}</div>
-          ))}
+          <RatingGauge value={stats?.global?.average} count={stats?.global?.count} label="Global" />
+          <RatingGauge value={stats?.external?.average} count={stats?.external?.count} label="Source" />
+          <RatingGauge value={stats?.friends?.average} count={stats?.friends?.count} label="Friends" />
+          <RatingGauge value={review ? review.rating : null} label="You" />
         </div>
 
-        {/* Review Box */}
+
+        <div className="logged-and-tags-row">
+          <LoggedDateEditor mediaId={mediaId} loggedAt={loggedAt} onSaved={onLoggedAtSaved} />
+          <MediaTagsPanel mediaType={type} externalId={mediaId.split('/').slice(1).join('/')} />
+        </div>
+
+        <FriendActivityList friendActivity={stats?.friendActivity} />
+
         <div className="review-box">
           <h5 style={{ textAlign: 'left' }}>Your Review:</h5>
-          <p>{review ? review.review : "Not yet reviewed"}</p>
+          <p>{review ? review.review : 'Not yet reviewed'}</p>
         </div>
 
-        {/* Buttons */}
         <div className="anime-buttons">
-          <DropdownButton title={buttonLabel} variant="secondary">
-            <Dropdown.Item onClick={() => handleChange('completed')}>Completed</Dropdown.Item>
-            <Dropdown.Item onClick={() => handleChange('current')}>Current</Dropdown.Item>
-            <Dropdown.Item onClick={() => handleChange('futures')}>Futures</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item onClick={() => handleChange('none')}>None</Dropdown.Item>
-          </DropdownButton>
-          <button className="btn btn-outline-light" onClick={onReview}>Reviews</button>
-          <button className='btn btn-outline-light' onClick={onEdit}>Edit Review</button>
-          <button className='btn btn-outline-light' onClick={onDelete}>Delete Review</button>
+          <Dropdown>
+            <Dropdown.Toggle variant="outline-secondary" className="whimsy-btn">
+              {buttonLabel}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => handleChange('completed')}>Completed</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleChange('current')}>Current</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleChange('futures')}>Futures</Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Item onClick={() => handleChange('none')}>None</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <CustomListSelector mediaId={mediaId} mediaType={type} title={title} image={image} />
+          <button className="whimsy-btn whimsy-btn-ghost" onClick={onReview}>Review</button>
         </div>
       </div>
     </div>
@@ -105,6 +102,5 @@ const DetailCard = ({ image, title, details, summary, type, mediaId, userLists, 
 };
 
 export default DetailCard;
-
 
 

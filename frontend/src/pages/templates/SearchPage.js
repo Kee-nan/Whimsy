@@ -8,7 +8,7 @@ import SearchBar from '../../components/SearchBar';
 import GridCard from '../../components/GridCard';
 import TableView from '../../components/TableViewSearch';
 
-const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
+const SearchPage = ({ searchFunction, renderCard, placeholder, extractId, mediaTypeSelector }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -88,6 +88,7 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
 
   return (
     <>
+
       <AppNavbar />
 
       {/* Search bar with toggle between table and grid view */}
@@ -99,6 +100,7 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
         setSearchKey={setSearchKey}
         isTableView={isTableView}
         setIsTableView={setIsTableView}
+        mediaTypeSelector={mediaTypeSelector}
       />
 
       {/* Display search results according to user preference */}
@@ -118,9 +120,9 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
 
       {/* Pagination Controls */}
       {results.length > 0 && (
-        <div className="d-flex justify-content-center my-3">
+        <div className="pagination-container">
           <button
-            className="btn btn-secondary mx-2"
+            className="whimsy-btn whimsy-btn-ghost mx-2"
             disabled={page === 1}
             onClick={() => setPage(p => Math.max(1, p - 1))}
           >
@@ -132,7 +134,7 @@ const SearchPage = ({ searchFunction, renderCard, placeholder, extractId }) => {
           </span>
 
           <button
-            className="btn btn-secondary mx-2"
+            className="whimsy-btn whimsy-btn-ghost mx-2"
             disabled={page >= (pagination?.last_visible_page || 1)}
             onClick={() => setPage(p => Math.min(pagination?.last_visible_page || p, p + 1))}
           >

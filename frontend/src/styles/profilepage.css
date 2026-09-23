@@ -1,306 +1,185 @@
-.profile-container {
-  width: 95%;
+/* ============================================================
+   PROFILE PAGE — recolored to match the Friends page / detail
+   page's card language: one outer white-bordered dark-grey card,
+   lighter-grey panels inside for each section, white text
+   throughout.
+   ============================================================ */
+
+.profile-container.wide {
+  max-width: 1600px;
   margin: 1rem auto;
-  background-color: #1c1c1c;
-  color: white;
-  padding: 2rem;
-  border-radius: 15px;
+  background: #1c1c1c;
   border: 2px solid white;
-  min-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  border-radius: 15px;
+  padding: 1.5rem;
+  color: white;
 }
 
+/* Every section inside the profile (bio, chart, stats, favorites,
+   activity, distribution charts) uses this same lighter-grey panel —
+   matches .scroll-box from the friend page exactly. */
+.profile-panel {
+  background: #2a2a2a;
+  border-radius: 10px;
+  padding: 1.25rem;
+  color: white;
+}
 
+/* ---- Header ---- */
 .profile-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
-}
-
-.profile-left {
-  flex: 0 0 auto;
-}
-
-.profile-picture {
-  border: 3px solid white;
-}
-
-.profile-center {
-  flex: 1 1 auto;
-  text-align: center;
-}
-
-.profile-username {
-  font-size: 3.69rem;
-  margin: 0;
-}
-
-.profile-right {
-  flex: 0 0 auto;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.profile-body {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
+.profile-username { color: white; margin: 0; font-size: 4rem; }
+.vertical-buttons { display: flex; flex-direction: column; gap: 0.5rem; }
+.profile-picture { border: 2px solid white; }
 
-.profile-section {
-  background-color: #2a2a2a;
-  padding: 1rem;
-  border-radius: 10px;
-  border: 1px solid #444;
-}
-
-.profile-section h3 {
-  margin-bottom: 1rem;
-}
-
-.button-group {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-start;
-  margin-top: 0.5rem;
-}
-
-/* Stack buttons vertically */
-.vertical-buttons {
+/* ---- Bio + Pie chart row (equal height) ---- */
+/* .profile-middle now hosts the two charts (previously bio + pie) — the
+   existing equal-width flex + stretch behavior is reused as-is, only the
+   fixed height needs to accommodate the rating distribution chart's
+   x-axis labels comfortably. */
+.profile-middle { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; align-items: stretch; }
+.profile-middle > * { flex: 1; }
+.profile-middle .profile-chart-card {
+  height: 460px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  overflow: hidden;
 }
-
-/* Make bio section taller than wide */
-.bio-section {
-  width: 200px;
-  height: 500px;
-  overflow-y: auto;
-}
-
-/* Media Meter section */
-.media-meter-section {
-  padding: 1rem;
-  border: 1px solid #444;
-  border-radius: 10px;
-  background-color: #2a2a2a;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.profile-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.profile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.profile-middle {
-  display: flex;
-  justify-content: space-between;
-  gap: 2rem;
+.profile-middle .chart-canvas-wrapper,
+.profile-middle .pie-chart-canvas-wrapper {
   flex: 1;
-  margin-bottom: 1rem;
+  min-height: 0;
+  position: relative;
+  width: 100%;
+}
+.profile-middle canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
 }
 
-.profile-chart-card {
-  flex: 1;
-  padding: 1.5rem;
-  background-color: #2a2a2a; /* changed from gradient to grey */
-  color: #fff;
-  min-height: 355px;
-  max-height: 355px;
-  border-radius: 10px;
-  overflow: auto;
+
+.profile-chart-card, .profile-bio-card {
+  height: 500px;       /* was min/max-height + overflow-y: auto */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  width: 100% !important;
+  overflow: hidden;     /* safety net only — nothing should need to scroll now */
 }
 
-.profile-bio-card {
+.bio-header, .favorites-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+.bio-header h4, .favorites-header h4, .profile-chart-card h4 { color: white; margin: 0; }
+.bio-content p { color: #ddd; white-space: pre-wrap; }
+.bio-textarea { background-color: #1c1c1c; color: white; border: 1px solid #555; }
+.button-group { display: flex; gap: 0.5rem; }
+
+.pie-chart-canvas-wrapper {
   flex: 1;
-  padding: 1.5rem;
-  background-color: #2a2a2a; /* changed from gradient to grey */
-  color: #fff;
-  min-height: 355px;
-  max-height: 355px;
-  border-radius: 10px;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  min-height: 0;         /* REQUIRED: without this, a flex child can refuse to shrink below its content size, which is exactly what was pushing the canvas taller than the panel */
+  position: relative;
+  width: 100%;
+}
+.pie-chart-canvas-wrapper canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
 }
 
-.bordered {
-  border: 2px dashed #555; /* temporary layout aid */
-}
+/* ---- List Stats + Favorites row ---- */
+.profile-bottom-row { display: flex; gap: 1.5rem; align-items: stretch; margin-bottom: 1.5rem; }
 
-.bio-card .bio-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.bio-content { 
-  overflow-y: auto;
-  max-height: 300px;
-  padding-top: 0.5rem;
-  margin-top: 1rem;
-}
-
-.bio-textarea {
-  resize: none;
-  height: 250px;
-  padding-top: 0.5rem;
-  margin-top: 1rem;
-}
-
-.profile-bottom {
-  padding: 1rem;
-  background-color: #2a2a2a;
-  color: #ccc;
-  border-radius: 10px;
-  display: flex;               /* ✅ Make it horizontal */
-  gap: 1rem;                   /* ✅ Space between children */
-  height: auto;                /* ✅ Let it adjust based on content */
-  flex-wrap: wrap;             /* ✅ Wrap on smaller screens */
-  justify-content: space-between;
-}
-
-
-.smallButton {
-  background: #444;
-  border: none;
-  color: #fff;
-  padding: 0.3rem 0.6rem;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-
-/* STAT BOX DETAILS*/
 .stat-bar-box {
+  flex: 0 0 220px;
   display: flex;
+  flex-direction: row;
+  align-items: stretch;
   justify-content: space-between;
-  align-items: center;
-  height: 100%;
-  background-color: #2a2a2a;
-  padding: 1rem;
-  border: 1px solid #444;
-  border-radius: 10px;
-  width: 20%;
 }
-
-.stat-list {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-size: 1.2rem;
-  color: #fff;
-}
+.stat-list { display: flex; flex-direction: column; justify-content: center; color: white; gap: 0.25rem; }
+.stat-list-header { font-weight: bold; text-decoration: underline; margin-bottom: 0.25rem; color: white; }
 
 .vertical-bar-container {
   width: 30px;
-  height: 180px;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-left: 1rem;
+  height: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #1c1c1c; /* matches outer card bg, sits inside the grey panel */
 }
+.bar-segment.futures { background-color: #f1c40f; }
+.bar-segment.current { background-color: #2980b9; }
+.bar-segment.completed { background-color: #27ae60; }
 
-.bar-segment {
-  width: 100%;
-}
-
-.bar-segment.futures {
-  background-color: #00c2ff; /* light blue */
-}
-
-.bar-segment.current {
-  background-color: #fcd303; /* yellow */
-}
-
-.bar-segment.completed {
-  background-color: #00cc44; /* green */
-}
-
-.stat-list-header {
-  font-size: 1.4rem;
-  font-weight: bold;
-  text-decoration: underline;
-  margin-bottom: 0.5rem;
-}
-
-/* Great Eight DETAILS*/
-.favorites-box {
-  width: 100%;                 /* default for small screens */           /* ✅ reasonable limit */
-  background-color: #1e1e1e;
-  padding: 0.75rem;
-  border-radius: 8px;
+.favorites-box { 
+  flex: 1; 
+  background: #2a2a2a;
+  border-radius: 10px;
+  padding: 1.25rem;
   color: white;
-  flex: 1;    
 }
 
+/* ---- Favorites (single layer — cells sit directly in the panel) ---- */
 .favorites-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.75rem;
+  height: calc(100% - 2.5rem);
 }
 
-.favorite-tile {
+.favorite-cell {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  text-align: center;
+  gap: 0.6rem;
+  background-color: #1c1c1c; /* same dark tone as the outer card, sits "inset" within the grey panel */
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+.favorite-cell-image { flex: 0 0 45%; height: 100%; }
+.favorite-cell-image img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; display: block; }
+.favorite-cell-info { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.3rem; }
+.favorite-cell-title { color: white; font-size: 0.9rem; line-height: 1.2; overflow-wrap: break-word; }
+.favorite-cell-score { color: #ccc; font-size: 0.95rem; }
+
+/* ---- Activity feed ---- */
+.activity-feed-box { background: #2a2a2a; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; color: white; }
+.activity-feed-box h4 { color: white; }
+.activity-feed-empty { color: #999; text-align: center; }
+.activity-feed-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.activity-feed-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; background-color: #1c1c1c; border-radius: 6px; cursor: pointer; }
+.activity-feed-row:hover { background-color: #333; }
+.activity-feed-thumb { width: 40px; height: 55px; object-fit: cover; border-radius: 4px; }
+.activity-feed-text { display: flex; flex-direction: column; flex: 1; }
+.activity-feed-title { font-weight: bold; color: white; }
+.activity-feed-action { font-size: 0.85rem; color: #ccc; }
+.activity-feed-time { font-size: 0.8rem; color: #999; white-space: nowrap; }
+
+/* ---- Bottom charts row (rating distribution + logging activity) ---- */
+
+
+
+
+.profile-charts-row .chart-canvas-wrapper {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  width: 100%;
 }
 
-.favorite-tile img {
-  width: 80px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-bottom: 0.25rem;
-  white-space: normal;      /* Allow text to wrap */
-  overflow: visible;        /* Don't hide overflow */
-  text-overflow: unset;     /* Disable ellipsis */
-  word-break: break-word;   /* Break long words if needed */
-  max-width: 100%;          /* Ensure it doesn't overflow parent */
+/* ---- Favorites modal (unchanged from prior pass, colors kept
+   consistent with this theme) ---- */
+.fav-modal-thumb { width: 50px; height: auto; object-fit: cover; border: 1px solid white; border-radius: 4px; }
+.fav-modal-thumb.square { aspect-ratio: 1 / 1; }
+.fav-modal-thumb.landscape { aspect-ratio: 16 / 9; }
+.fav-modal-thumb.portrait { aspect-ratio: 2 / 3; }
+
+/* NEW: full-width, short bio bar sitting directly under the header */
+.profile-bio-full {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  min-height: 0;   /* no fixed tall height — sized to content, like the header bar */
 }
-
-.favorite-title {
-  font-size: 1rem;
-  color: #ccc;
-  padding-left: 1rem;
-  white-space: normal;      /* Allow text to wrap */
-  overflow: visible;        /* Don't hide overflow */
-  text-overflow: unset;     /* Disable ellipsis */
-  word-break: break-word;   /* Break long words if needed */
-  max-width: 100%;       
-}
-
-.favorites-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-
-
-
+.profile-bio-full .bio-content p { margin: 0; color: #ddd; white-space: pre-wrap; }

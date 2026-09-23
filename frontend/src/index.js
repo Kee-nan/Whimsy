@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 // Every style sheet must be imported here to be implemented across the pages
 import './index.css';
+import './styles/cards.css'
 import './styles/custom.css';
 import './styles/navbar.css';
 import './styles/mediacard.css';
@@ -10,6 +11,9 @@ import './styles/login.css';
 import './styles/detailpage.css';
 import './styles/list.css';
 import './styles/homepage.css';
+import './styles/ratingScale.css';
+import './styles/searchhub.css';
+import './styles/searchbar.css';
 
 
 

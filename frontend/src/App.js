@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 // General Pages
 import MainPage from './pages/main';
@@ -7,18 +8,15 @@ import Profile from './pages/profile';
 import Lists from './pages/lists';
 import ViewFriendLists from './pages/viewFriendLists';
 import Friend from './pages/friend';
+import CustomLists from './pages/customLists';
+import CustomListDetail from './pages/customListDetail';
+import Global from './pages/global';
 
 import LoginPage from './pages/login';
 import CreateAccountPage from './pages/accountCreation';
 
 // Search Pages
-import Movies from './pages/searchs/movies';
-import Anime from './pages/searchs/anime';
-import Manga from './pages/searchs/manga';
-import Albums from './pages/searchs/albums';
-import Shows from './pages/searchs/shows';
-import Books from './pages/searchs/books';
-import Games from './pages/searchs/games';
+import SearchHub from './pages/searchHub';
 
 // Detail Pages
 import AnimeDetail from './pages/details/animeDetails';
@@ -30,11 +28,14 @@ import MovieDetail from './pages/details/movieDetails';
 import GameDetail from './pages/details/gameDetails';
 
 
+import { initTokenManager } from './utils/tokenManager';
+
 import LeaveReview from './pages/leaveReview';
 
 import PrivateRoute from './components/PrivateRoute';
 
 const App = () => {
+  useEffect(() => { initTokenManager(); }, []);
   return (
     <Router>
       <Routes>
@@ -49,14 +50,14 @@ const App = () => {
         <Route path="/lists" element={<PrivateRoute element={<Lists />} />} />
         <Route path="/friend" element={<PrivateRoute element={<Friend />} />} />
         <Route path="/lists/:username/:id" element={<ViewFriendLists />} />
+        <Route path="/global" element={<PrivateRoute element={<Global />} />} />
 
-        <Route path="/movie" element={<PrivateRoute element={<Movies />} />} />
-        <Route path="/anime" element={<PrivateRoute element={<Anime />} />} />
-        <Route path="/manga" element={<PrivateRoute element={<Manga />} />} />
-        <Route path="/album" element={<PrivateRoute element={<Albums />} />} />
-        <Route path="/show" element={<PrivateRoute element={<Shows />} />} />
-        <Route path="/book" element={<PrivateRoute element={<Books />} />} />
-        <Route path="/game" element={<PrivateRoute element={<Games />} />} />
+        <Route path="/lists/custom" element={<PrivateRoute element={<CustomLists />} />} />
+        <Route path="/lists/custom/:listId" element={<PrivateRoute element={<CustomListDetail />} />} />
+
+        <Route path="/search" element={<PrivateRoute element={<SearchHub />} />} />
+        <Route path="/search/:mediaType" element={<PrivateRoute element={<SearchHub />} />} />
+        
 
         <Route path="/anime/:id" element={<PrivateRoute element={<AnimeDetail />} />} />
         <Route path="/manga/:id" element={<PrivateRoute element={<MangaDetail />} />} />

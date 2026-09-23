@@ -1,0 +1,70 @@
+/* ============================================================
+   SHARED CARD SYSTEM
+   Used by: the media detail page (.anime-detail-container), the
+   friend page (.friend-page-container), and the profile page
+   (.profile-container.wide). All three share the same visual
+   language — dark outer card, solid white border, rounded
+   corners, white text, lighter-grey inner panels — so that
+   language now lives in exactly one place.
+   ============================================================ */
+
+:root {
+  --whimsy-card-bg: #1c1c1c;
+  --whimsy-card-border: 2px solid white;
+  --whimsy-card-radius: 15px;
+  --whimsy-panel-bg: #2a2a2a;
+  --whimsy-panel-radius: 10px;
+  --whimsy-inset-bg: #1c1c1c; /* used for elements nested a level deeper than a panel, e.g. favorite cells */
+}
+
+/* The outer "card" shell — grouped selector applies identical base
+   properties to all three cards; each file below still owns its own
+   layout (flex direction, width, height, gap) since those genuinely
+   differ page to page. */
+.anime-detail-container,
+.friend-page-container,
+.profile-container.wide {
+  background: var(--whimsy-card-bg);
+  border: var(--whimsy-card-border);
+  border-radius: var(--whimsy-card-radius);
+  color: white;
+  margin: 1rem auto;
+}
+
+/* The inner "panel" — the lighter-grey box used inside all three cards
+   (detail-cell/summary-box/stats-grid on the detail page, scroll-box on
+   the friend page, profile-panel on the profile page). */
+.detail-cell,
+.summary-box,
+.stats-grid,
+.review-box,
+.friend-activity-box,
+.media-tags-panel,
+.logged-date-editor,
+.scroll-box,
+.profile-panel {
+  background: var(--whimsy-panel-bg);
+  border-radius: var(--whimsy-panel-radius);
+  color: white;
+}
+
+/* The "inset" level — one step darker than a panel, used for individual
+   rows/cells nested inside a panel (favorite-cell, activity-feed-row,
+   friend-activity-row, friend-row-shaded background reference). */
+.favorite-cell,
+.vertical-bar-container,
+.activity-feed-row {
+  background-color: var(--whimsy-inset-bg);
+}
+
+.custom-list-description-block {
+  background: var(--whimsy-inset-bg);
+  border-radius: var(--whimsy-panel-radius);
+  border: var(--whimsy-card-border);
+  border-color: white;
+  color: white;
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  text-align: center;
+  padding: 1rem 1.5rem;
+}

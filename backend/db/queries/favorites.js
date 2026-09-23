@@ -20,13 +20,16 @@ async function replaceAll(userId, slots) {
   try {
     await client.query('BEGIN');
     await client.query(`DELETE FROM favorites WHERE user_id = $1`, [userId]);
+
+    const seen = new Set();
     for (let i = 0; i < slots.length; i++) {
-      if (slots[i] !== null) {
-        await client.query(
-          `INSERT INTO favorites (user_id, media_item_id, slot_index) VALUES ($1, $2, $3)`,
-          [userId, slots[i], i]
-        );
-      }
+      if (slots[i] === null) continue;
+      if (seen.has(slots[i])) continue; // dedupe silently instead of letting the UNIQUE constraint throw and fail the whole save
+      seen.add(slots[i]);
+      await client.query(
+        `INSERT INTO favorites (user_id, media_item_id, slot_index) VALUES ($1, $2, $3)`,
+        [userId, slots[i], i]
+      );
     }
     await client.query('COMMIT');
   } catch (err) {
@@ -36,5 +39,4 @@ async function replaceAll(userId, slots) {
     client.release();
   }
 }
-
 module.exports = { getForUser, replaceAll };

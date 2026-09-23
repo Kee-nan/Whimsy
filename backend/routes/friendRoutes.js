@@ -4,16 +4,31 @@ const router = express.Router();
 const authenticateToken = require('../middleware/authenticateToken');
 const friendshipsQ = require('../db/queries/friendships');
 const users = require('../db/queries/users');
+const listEntriesQ = require('../db/queries/listEntries');
 
-router.post('/send', authenticateToken, async (req, res) => {
+const favoritesQ = require('../db/queries/favorites');
+const reviewsQ = require('../db/queries/reviews');
+const customListsQ = require('../db/queries/customLists');
+
+const { requireFields } = require('../middleware/validate');
+
+router.post('/send', authenticateToken, requireFields(['receiverUsername']), async (req, res) => {
   try {
     const { receiverUsername } = req.body;
     const receiver = await users.findByUsername(receiverUsername);
     if (!receiver) return res.status(404).json({ message: 'User not found' });
-    await friendshipsQ.sendRequest(req.user.id, receiver.id);
+    if (receiver.id === req.user.id) {
+      return res.status(400).json({ message: "You can't send a friend request to yourself" });
+    }
+
+    const result = await friendshipsQ.sendRequest(req.user.id, receiver.id);
+    if (result.alreadyFriends) return res.status(409).json({ message: 'You are already friends' });
+    if (result.alreadyPending) return res.status(409).json({ message: 'A request is already pending' });
+
     res.status(200).json({ message: 'Friend request sent' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -26,7 +41,7 @@ router.get('/search', authenticateToken, async (req, res) => {
 
 router.get('/pending', authenticateToken, async (req, res) => {
   const requests = await friendshipsQ.getPendingForUser(req.user.id);
-  res.json(requests.map(r => ({ id: r.friendship_id, username: r.username })));
+  res.json(requests.map((r) => ({ id: r.friendship_id, username: r.username, profilePicture: r.profile_picture_url })));
 });
 
 router.post('/acceptRequest', authenticateToken, async (req, res) => {
@@ -51,6 +66,111 @@ router.get('/friends', authenticateToken, async (req, res) => {
 router.delete('/delete/:friendId', authenticateToken, async (req, res) => {
   await friendshipsQ.remove(req.user.id, parseInt(req.params.friendId, 10));
   res.status(200).json({ message: 'Friend removed successfully' });
+});
+
+router.get('/friend-lists/:friendId', authenticateToken, async (req, res) => {
+  try {
+    const friendId = parseInt(req.params.friendId, 10);
+    const isFriend = await friendshipsQ.areFriends(req.user.id, friendId);
+    if (!isFriend) return res.status(403).json({ message: 'Not friends with this user' });
+
+    const friend = await users.findById(friendId);
+    if (!friend) return res.status(404).json({ message: 'User not found' });
+
+    const listRows = await listEntriesQ.getAllForUser(friendId);
+    const lists = listRows.map((r) => ({
+      id: `${r.media_type}/${r.external_id}`, media: r.media_type, title: r.title, image: r.image_url, listType: r.status,
+    }));
+
+    const favRows = await favoritesQ.getForUser(friendId);
+    const favorites = favRows.map((r) => ({
+      id: `${r.media_type}/${r.external_id}`, media: r.media_type, title: r.title, image: r.image_url,
+    }));
+
+    const reviewRows = await reviewsQ.getAllForUser(friendId);
+    const reviews = reviewRows.map((r) => ({ id: `${r.media_type}/${r.external_id}`, rating: r.rating }));
+
+    res.json({
+      username: friend.username, bio: friend.bio, view_setting: friend.view_setting,
+      profilePicture: friend.profile_picture_url,
+      lists, favorites, reviews,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching friend lists' });
+  }
+});
+
+router.get('/:friendId/lists/detailed', authenticateToken, async (req, res) => {
+  try {
+    const friendId = parseInt(req.params.friendId, 10);
+    const isFriend = await friendshipsQ.areFriends(req.user.id, friendId);
+    if (!isFriend) return res.status(403).json({ message: 'Not friends with this user' });
+
+    const friend = await users.findById(friendId);
+    if (!friend) return res.status(404).json({ message: 'User not found' });
+
+    const rows = await listEntriesQ.getDetailedForUser(friendId);
+    res.json({
+      username: friend.username,
+      items: rows.map((r) => ({
+        id: `${r.media_type}/${r.external_id}`,
+        media: r.media_type, title: r.title, image: r.image_url, status: r.status,
+        loggedAt: r.logged_at,
+        friendRating: r.target_rating,
+        globalRating: r.global_rating != null ? parseFloat(r.global_rating) : null,
+        globalRatingCount: parseInt(r.global_rating_count || 0, 10),
+        externalRating: r.external_rating != null ? parseFloat(r.external_rating) : null,
+        tags: r.tags,
+      })),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch friend list' });
+  }
+});
+
+/** GET /api/friends/:friendId/tags — every tag a friend has that isn't private. */
+router.get('/:friendId/tags', authenticateToken, async (req, res) => {
+  try {
+    const friendId = parseInt(req.params.friendId, 10);
+    const isFriend = await friendshipsQ.areFriends(req.user.id, friendId);
+    if (!isFriend) return res.status(403).json({ message: 'Not friends with this user' });
+
+    const lists = await customListsQ.getVisibleListsForFriend(friendId);
+    res.json(lists);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch tags' });
+  }
+});
+
+/** GET /api/friends/:friendId/tags/:listId — a specific tag's items with the friend's own rating per item. */
+router.get('/:friendId/tags/:listId', authenticateToken, async (req, res) => {
+  try {
+    const friendId = parseInt(req.params.friendId, 10);
+    const listId = parseInt(req.params.listId, 10);
+    const isFriend = await friendshipsQ.areFriends(req.user.id, friendId);
+    if (!isFriend) return res.status(403).json({ message: 'Not friends with this user' });
+
+    const list = await customListsQ.getById(listId);
+    if (!list || list.user_id !== friendId || list.visibility === 'private') {
+      return res.status(404).json({ message: 'Tag not found or not visible' });
+    }
+
+    const items = await customListsQ.getItemsWithOwnerRating(listId);
+    res.json({
+      ...list,
+      items: items.map((r) => ({
+        id: `${r.media_type}/${r.external_id}`,
+        media: r.media_type, title: r.title, image: r.image_url,
+        friendRating: r.owner_rating,
+      })),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch tag details' });
+  }
 });
 
 module.exports = router;

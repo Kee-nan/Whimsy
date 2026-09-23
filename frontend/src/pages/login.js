@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
+import { scheduleRefresh } from '../utils/tokenManager';
 
 
 /**
@@ -20,30 +21,29 @@ const LoginPage = () => {
   //Function to handle logging in
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Try calling backend api to get details about
+    setError('');
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/accounts/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ username, password }),
       });
+      const data = await response.json(); // now always valid JSON regardless of success/failure
 
-      if (response.ok) {
-        // If login is successful, navigate to the homepage
-        const data = await response.json();
-        localStorage.setItem('user_token', data.user_token); // Store the token in localStorage
-        localStorage.setItem('tokenExpiry', data.expiresAt); // Store the expiration in localStorage
-        navigate('/homepage');
-      } else {
-        // If login fails, set error message
-        setError('Failed to login. Please check your username and password.');
+      if (!response.ok) {
+        setError(data.message || 'Login failed.');
+        return;
       }
-    } catch (error) {
-      console.error('Error:', error);
-      setError('An error occurred. Please try again.');
+
+      localStorage.setItem('user_token', data.user_token);
+      localStorage.setItem('tokenExpiry', data.expiresAt);
+      scheduleRefresh(data.expiresAt);
+
+      navigate('/homepage');
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Could not reach the server. Please try again.');
     }
   };
 
