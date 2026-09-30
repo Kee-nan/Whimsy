@@ -17,7 +17,7 @@
   background-color: #1e1a29;
 }
 
-.whimsy-table img { width: 60px; height: auto; border-radius: 5px; }
+/* .whimsy-table img { width: 60px; height: auto; border-radius: 5px; } */
 
 .whimsy-table thead th {
   background: var(--base-gradient);
@@ -47,7 +47,10 @@
   text-align: center;
   border-color: #332b3d;
 }
-
+ .whimsy-table td {
+  height: 140px;   /* fixed row height — was the invalid "1000" with no unit */
+ }
+ 
 .whimsy-group-header td {
   background-color: #2a2438 !important;
   color: #a8c1d6;
@@ -67,3 +70,18 @@
 .tag-chip-more { color: #999; font-size: 0.75rem; }
 
 .whimsy-table thead th.sorted-col { background: linear-gradient(135deg, var(--three-purple), var(--one-purple)); }
+
+/* Uniform table row height, independent of source image aspect ratio.
+   Height is fixed; width is left free (up to a cap) so portrait, square,
+   and landscape thumbnails all render at the same height without
+   distortion — this is what makes every row the same height regardless
+   of media type. */
+.table-thumb {
+  height: 110px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+  border-radius: 5px;
+  display: block;
+  margin: 0 auto;
+}

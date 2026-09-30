@@ -67,8 +67,20 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
 
   const changeSelection = (ci, idx) => setCandidates((c) => c.map((blk, i) => (i === ci ? { ...blk, selectedIndex: idx } : blk)));
 
+  /** Drops a single row from the import entirely — used when a user
+      decides one mismatched/misspelled row shouldn't be added at all,
+      without discarding the rest of the import. */
+  const handleRemoveRow = (ci) => {
+    setCandidates((prev) => prev.filter((_, idx) => idx !== ci));
+  };
+
+  // Keep the current page in bounds if removing rows empties the last page.
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(candidates.length / PAGE_SIZE));
+    if (page > totalPages) setPage(totalPages);
+  }, [candidates.length, page]);
+
   const handleConfirm = async () => {
-    // Applies to ALL matched candidates across every page, not just the visible one.
     const toAdd = candidates.filter((c) => c.selectedIndex >= 0).map((c) => normalizeResult(c.hits[c.selectedIndex], c.row.media)).filter(Boolean);
     const token = localStorage.getItem('user_token');
     const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
@@ -105,7 +117,7 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
             <div className="whimsy-table-container">
               <div className="whimsy-table-wrapper">
                 <table className="table whimsy-table table-striped table-hover">
-                  <thead><tr><th>#</th><th>Image</th><th>Media</th><th>Title</th><th>Match</th></tr></thead>
+                  <thead><tr><th>#</th><th>Image</th><th>Media</th><th>Title</th><th>Match</th><th></th></tr></thead>
                   <tbody>
                     {paginated.map((c, i) => {
                       const ci = (page - 1) * PAGE_SIZE + i;
@@ -114,7 +126,7 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
                       return (
                         <tr key={ci}>
                           <td>{ci + 1}</td>
-                          <td>{norm?.image ? <img src={norm.image} alt={norm.title} style={{ width: '50px' }} /> : <span style={{ color: '#aaa' }}>No image</span>}</td>
+                          <td>{norm?.image ? <img src={norm.image} alt={norm.title} className="table-thumb" /> : <span style={{ color: '#aaa' }}>No image</span>}</td>
                           <td>{c.row.media}</td>
                           <td>{c.row.title}</td>
                           <td>
@@ -124,6 +136,17 @@ export default function CSVImportModal({ show, onHide, onImportDone }) {
                                 return <option key={hi} value={hi}>{optNorm?.title} ({optNorm?.id})</option>;
                               }) : <option value={-1}>No matches</option>}
                             </Form.Select>
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className="whimsy-btn whimsy-btn-ghost"
+                              style={{ padding: '0.3rem 0.7rem' }}
+                              onClick={() => handleRemoveRow(ci)}
+                              title="Remove this row from the import"
+                            >
+                              ✕
+                            </button>
                           </td>
                         </tr>
                       );

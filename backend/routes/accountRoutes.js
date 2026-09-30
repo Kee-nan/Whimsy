@@ -9,12 +9,14 @@ const { authLimiter } = require('../middleware/rateLimiters');
 const { generateToken, hashToken } = require('../utils/tokens');
 const { upload } = require('../middleware/upload');
 
+const isProd = process.env.NODE_ENV === 'production';
 const ACCESS_TOKEN_TTL = '15m';
 const REFRESH_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
 const REFRESH_COOKIE_OPTS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production', // requires HTTPS in prod; fine as false over local http
-  sameSite: 'lax',
+  secure: isProd,                 // required for SameSite=None; also fine since Render serves HTTPS
+  sameSite: isProd ? 'none' : 'lax', // 'none' is required for the Vercel↔Render cross-site case
   path: '/api/accounts',
   maxAge: REFRESH_TOKEN_TTL_MS,
 };
@@ -75,7 +77,7 @@ router.post('/refresh', async (req, res) => {
     if (existing.revoked_at) {
       // Reuse of an already-rotated token — treat as compromise.
       await authTokensQ.revokeAllRefreshTokensForUser(existing.user_id);
-      res.clearCookie('refresh_token', { path: '/api/accounts' });
+      res.clearCookie('refresh_token', { path: '/api/accounts', sameSite: isProd ? 'none' : 'lax', secure: isProd });
       return res.status(401).json({ message: 'Session invalidated. Please log in again.' });
     }
 
@@ -101,7 +103,7 @@ router.post('/logout', async (req, res) => {
       const existing = await authTokensQ.findRefreshToken(hashToken(raw));
       if (existing && !existing.revoked_at) await authTokensQ.revokeRefreshToken(existing.id);
     }
-    res.clearCookie('refresh_token', { path: '/api/accounts' });
+    res.clearCookie('refresh_token', { path: '/api/accounts', sameSite: isProd ? 'none' : 'lax', secure: isProd });
     res.json({ message: 'Logged out.' });
   } catch (error) {
     console.error(error);

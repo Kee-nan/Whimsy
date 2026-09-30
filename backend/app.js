@@ -1,11 +1,13 @@
 require('dotenv').config();
 require('./config/env')();
 
-
 const express = require('express');
 const cors = require('cors');
-
-
+const helmet = require('helmet');
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
+const path = require('path');
 
 const accountRoutes = require('./routes/accountRoutes');
 const listRoutes = require('./routes/listRoutes');
@@ -15,22 +17,19 @@ const friendRoutes = require('./routes/friendRoutes');
 const customListRoutes = require('./routes/customListRoutes');
 const activityRoutes = require('./routes/activityRoutes');
 const globalRoutes = require('./routes/globalRoutes');
-const cookieParser = require('cookie-parser');
-
-const app = express();
-
-const helmet = require('helmet');
-
-const morgan = require('morgan');
+const errorHandler = require('./middleware/errorHandler');
+const pool = require('./db/pool');
 
 const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
-  : ['http://localhost:3000']; // default covers local dev automatically
+  : ['http://localhost:3000'];
+
+const app = express();
+
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 app.use(cors({
   origin: (origin, callback) => {
-    // `origin` is undefined for same-origin/non-browser requests (e.g. curl,
-    // server-to-server) — always allow those through.
     if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
     callback(new Error('Not allowed by CORS'));
   },
@@ -38,13 +37,15 @@ app.use(cors({
 }));
 
 app.use(express.json({ limit: '1mb' }));
+app.use(cookieParser());
 
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' }, // was blocking frontend from reading API responses across ports
-  crossOriginOpenerPolicy: false,                         // not needed for a plain REST API, and adds no value here
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  crossOriginOpenerPolicy: false,
 }));
 
-app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+const searchLimiter = rateLimit({ windowMs: 60 * 1000, max: 60 });
+app.use('/api/search', searchLimiter);
 
 app.use('/api/accounts', accountRoutes);
 app.use('/api/list', listRoutes);
@@ -54,9 +55,18 @@ app.use('/api/friends', friendRoutes);
 app.use('/api/custom-lists', customListRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/global', globalRoutes);
-app.use(cookieParser());
 
-const errorHandler = require('./middleware/errorHandler');
-app.use(errorHandler); // MUST be last
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.get('/health', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.json({ status: 'ok' });
+  } catch {
+    res.status(503).json({ status: 'db unreachable' });
+  }
+});
+
+app.use(errorHandler); // must stay last
 
 module.exports = app;
