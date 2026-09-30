@@ -287,7 +287,7 @@ const Lists = () => {
                               </tr>
                             )}
                             <tr onClick={() => handleNavigate(item.id)}>
-                              <td><img src={item.image} alt={item.title} style={{ width: '50px' }} /></td>
+                              <td><img src={item.image} alt={item.title} className="table-thumb" /></td>
                               <td>{item.title}</td>
                               {activeColumns.map((c) => (
                                 <td key={c.key} onClick={(c.key === 'friendsWithItem' || c.key === 'tags') ? (e) => e.stopPropagation() : undefined}>
