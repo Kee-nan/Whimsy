@@ -20,6 +20,11 @@ const SearchBar = ({
     }
   };
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault(); // stops the page from reloading, which is the default <form> behavior
+    searchFunction();
+  };
+
   return (
     <div className="filter-bar">
       <div className="filter-bar-inner">
@@ -34,13 +39,15 @@ const SearchBar = ({
             <Dropdown.Item onClick={() => handleViewChange('table')}>Table View</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        <FormControl
-          className="whimsy-form-control filter-bar-search"
-          type="search"
-          placeholder={placeholder}
-          value={searchKey}
-          onChange={(e) => setSearchKey(e.target.value)}
-        />
+        <Form onSubmit={handleFormSubmit}>
+          <FormControl
+            className="whimsy-form-control filter-bar-search"
+            type="search"
+            placeholder={placeholder}
+            value={searchKey}
+            onChange={(e) => setSearchKey(e.target.value)}
+          />
+        </Form>
         {mediaTypeSelector && <div className="unified-search-tabs">{mediaTypeSelector}</div>}
       </div>
     </div>

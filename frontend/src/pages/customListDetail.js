@@ -197,7 +197,7 @@ const CustomListDetail = () => {
                               <tr ref={dragProvided.innerRef} {...dragProvided.draggableProps} {...dragProvided.dragHandleProps}
                                   style={{ ...dragProvided.draggableProps.style, backgroundColor: dragSnapshot.isDragging ? '#37304a' : undefined, cursor: 'grab' }}>
                                 <td>#{index + 1}</td>
-                                <td><img src={item.image} alt={item.title} style={{ width: '50px' }} /></td>
+                                <td><img src={item.image} alt={item.title} className="table-thumb" /></td>
                                 <td>{item.title}</td>
                                 <td>{item.media}</td>
                                 <td>{item.ownerRating != null ? `${item.ownerRating}/30` : '—'}</td>
