@@ -50,7 +50,7 @@ const FriendTagDetail = ({ friendId, listId, onBack }) => {
               <tbody>
                 {paginated.map((item) => (
                   <tr key={item.id} onClick={() => navigate(`/${item.media}/${item.id.split('/').slice(1).join('/')}`)}>
-                    <td><img src={item.image} alt={item.title} style={{ width: '50px' }} /></td>
+                    <td><img src={item.image} alt={item.title} className="table-thumb" /></td>
                     <td>{item.title}</td>
                     <td>{item.media}</td>
                     <td>{item.friendRating != null ? `${item.friendRating}/30` : '—'}</td>

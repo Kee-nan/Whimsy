@@ -9,7 +9,7 @@ const TableView = ({ items, onRowClick, placeholder }) => {
       case 'album':
         return (
           <>
-            <td><img src={item.images?.[0]?.url || 'placeholder.jpg'} alt="" width="50" /></td>
+            <td><img src={item.images?.[0]?.url || 'placeholder.jpg'} alt="" className="table-thumb" /></td>
             <td>{item.name}</td>
           </>
         );
@@ -17,14 +17,14 @@ const TableView = ({ items, onRowClick, placeholder }) => {
       case 'manga':
         return (
           <>
-            <td><img src={item.images?.jpg?.image_url || 'placeholder.jpg'} alt="" width="50" /></td>
+            <td><img src={item.images?.jpg?.image_url || 'placeholder.jpg'} alt="" className="table-thumb" /></td>
             <td>{item.title}</td>
           </>
         );
       case 'book':
         return (
           <>
-            <td><img src={item.volumeInfo?.imageLinks?.thumbnail || 'placeholder.jpg'} alt="" width="50" /></td>
+            <td><img src={item.volumeInfo?.imageLinks?.thumbnail || 'placeholder.jpg'} alt="" className="table-thumb" /></td>
             <td>{item.volumeInfo?.title}</td>
           </>
         );
@@ -32,7 +32,7 @@ const TableView = ({ items, onRowClick, placeholder }) => {
         // FIX: RAWG returns background_image, not cover.url (that was IGDB's field name)
         return (
           <>
-            <td><img src={item.background_image || 'placeholder.jpg'} alt="" width="50" /></td>
+            <td><img src={item.background_image || 'placeholder.jpg'} alt="" className="table-thumb" /></td>
             <td>{item.name}</td>
           </>
         );
@@ -40,7 +40,7 @@ const TableView = ({ items, onRowClick, placeholder }) => {
         return (
           <>
             <td>
-              <img src={item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'placeholder.jpg'} alt="" width="50" />
+              <img src={item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'placeholder.jpg'} className="table-thumb" />
             </td>
             <td>{item.title}</td>
           </>
@@ -50,7 +50,7 @@ const TableView = ({ items, onRowClick, placeholder }) => {
         // fields live directly on item, not item.show
         return (
           <>
-            <td><img src={item.image?.medium || 'placeholder.jpg'} alt="" width="50" /></td>
+            <td><img src={item.image?.medium || 'placeholder.jpg'} alt="" className="table-thumb" /></td>
             <td>{item.name}</td>
           </>
         );
@@ -68,7 +68,7 @@ const TableView = ({ items, onRowClick, placeholder }) => {
           </thead>
           <tbody>
             {items.map((item) => (
-              <tr key={item.id || item.mal_id} onClick={() => onRowClick(item.id || item.mal_id)}>
+              <tr key={item.id || item.mal_id} onClick={() => onRowClick(item.id || item.mal_id)} >
                 {renderRow(item)}
               </tr>
             ))}

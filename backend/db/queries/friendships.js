@@ -86,6 +86,8 @@ async function areFriends(userId, otherUserId) {
   return result.rowCount > 0;
 }
 
+// in db/queries/friendships.js, searchUsers — change LIMIT 10 is already correct,
+// confirm it reads LIMIT 10 (not fewer) so "top 10" is accurate:
 async function searchUsers(query, excludeUserId) {
   const result = await pool.query(
     `SELECT id, username, profile_picture_url FROM users
